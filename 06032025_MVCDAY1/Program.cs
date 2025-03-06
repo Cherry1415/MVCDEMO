@@ -31,8 +31,8 @@ namespace _06032025_MVCDAY1
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
-            Console.WriteLine("Hello");
-            Console.WriteLine("jenci so-call Admin");
+            //Console.WriteLine("Hello");
+            //Console.WriteLine("jenci so-call Admin");
         }
     }
 }
