@@ -7,4 +7,8 @@
     <RootNamespace>_06032025_MVCDAY1</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="image\" />
+  </ItemGroup>
+
 </Project>
