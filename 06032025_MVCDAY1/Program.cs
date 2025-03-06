@@ -31,6 +31,7 @@ namespace _06032025_MVCDAY1
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
+            Console.WriteLine("Hello");
         }
     }
 }
