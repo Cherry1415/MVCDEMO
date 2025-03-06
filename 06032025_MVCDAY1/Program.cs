@@ -32,6 +32,7 @@ namespace _06032025_MVCDAY1
 
             app.Run();
             Console.WriteLine("Hello");
+            Console.WriteLine("jenci so-call Admin");
         }
     }
 }
