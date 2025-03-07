@@ -3,16 +3,49 @@
 *@
 @{
 }
-
-
-    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); width: 350px; text-align: center;">
-        <h2>Login</h2>
-        <form>
-            <input type="text" placeholder="Username" required style="width: 100%; margin: 10px 0; padding: 10px;">
-            <input type="password" placeholder="Password" required style="width: 100%; margin: 10px 0; padding: 10px;">
-            <button type="submit" style="width: 100%; padding: 10px; background: blue; color: white; border: none; cursor: pointer;">Login</button>
+<div class="container">
+    <div class="payment-container">
+        <h3 class="text-center">Registration</h3>
+        <form id="registerForm">
+            <div class="mb-3">
+                <label class="form-label">FirstName</label>
+                <input type="text" class="form-control" id="firstName" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">LastName</label>
+                <input type="text" class="form-control" id="lastName" maxlength="16" required>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="text" class="form-control" id="email" placeholder="MM/YY" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" placeholder="+91 XXXXXXXX" required>
+                   
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" maxlength="3" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Register</button>
         </form>
     </div>
+</div>
+   @*  <div>
+        <h2>Registration</h2>
+        <form  >
+            <input type="text" placeholder="firstname" required style="width: 25%; margin: 10px 0; padding: 10px;">
+            <input type="text" placeholder="lastname" required style="width: 25%; margin: 10px 0; padding: 10px;">
+            <input type="email" placeholder="email" required style="width: 25%; margin: 10px 0; padding: 10px;">
+         
+            <input type="text" placeholder="+91 xxxxxxxxxx" required style="width: 25%; margin: 10px 0; padding: 10px;">
+            <input type="password" placeholder="Password" required style="width: 25%; margin: 10px 0; padding: 10px;">
+            <button type="submit" style="width: 25%; padding: 10px; background: blue; color: white; border: none; cursor: pointer;">Login</button>
+        </form>
+    </div> *@
 
 
 

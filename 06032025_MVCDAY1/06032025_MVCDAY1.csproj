@@ -8,7 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="image\" />
+    <Folder Include="wwwroot\image\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\akshay2.jpg" />
+    <None Include="wwwroot\nikunj.jpg" />
   </ItemGroup>
 
 </Project>

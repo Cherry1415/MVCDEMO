@@ -5,59 +5,134 @@
     <meta name="viewport" content="width=device-width" />
     <link  href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
     <link  href="~/bootstrap/js/bootstrap.min.js" rel="stylesheet"/>
+    <link rel="stylesheet" href="~/css/mycss.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <title>@ViewBag.Title</title>
 </head>
 <body>
-    <div class="container">
-       @*  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container">
-                <a class="navbar-brand" href="#">Amazon Clone</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Shop</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Cart</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav> *@
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">DealBazar</a>
+    <div >
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
+                <a class="navbar-brand" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">DealBazar</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
+                <form class="d-flex w-50" role="search">
+                    <input class="form-control me-2 " type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100 justify-content-end align-items-end">
+                    
+                    <li class="nav-item">
                             <a class="nav-link active" aria-current="page" asp-area="" asp-controller="UserBuy" asp-action="BuyProduct">Buy Product</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" aria-current="page" asp-area="" asp-controller="Register" asp-action="RegUser">Register</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        </li>`
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" a><i class='fas fa-cart-arrow-down'  style='font-size:40px'></i>Cart</a>
+                    </li>`
+
+                       @*  <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" >
                                 Dropdown
                             </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <ul class="dropdown">
+                                <li><a class="dropdown-content" href="#">Action</a></li>
+                                <li><a class="dropdown-content" href="#">Another action</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="#">Something else here</a></li>
                             </ul>
-                        </li>
+                        </li> *@
                         
                     </ul>
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
+                
                 </div>
             </div>
         </nav>
+    </div>
+
+    <div >
+        <input type="checkbox" id="menu-toggle">
+        <label for="menu-toggle" class="overlay"></label>
+
+        <!-- ====== NAVBAR (New) ====== -->
+        <div class="navbar">
+            <label for="menu-toggle" class="open-btn">☰ Menu</label>
+            @* <div class="logo">My Website</div> *@
+            <div class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+
+        <!-- ====== SIDEBAR MENU ====== -->
+        
+   
+        
+        <div class="sidebar">
+            <label for="menu-toggle" class="close-btn">&times;</label>
+            <hr />
+            <div class="sidebar-header">
+                <a aria-current="page" asp-area="" asp-controller="Login" asp-action="LogInPage">Hello,Log IN</a>
+            </div>
+            <div class="menu">
+                <h3>Trending</h3>
+                <a href="#">Best Sellers</a>
+              
+                <hr />
+
+                <h3>Shop by Category</h3>
+                <label for="menu-toggle-3" class="menu-toggle" style="margin-left: 20px;">Mobiles, Computers <i class='fas fa-angle-right' style='font-size:24px'></i></label>
+                <input type="checkbox" id="menu-toggle-3">
+                <div class="sidebar-3">
+                    <label for="menu-toggle-3" class="close-btn">&times;</label>
+                    <a href="#">Category 1</a>
+                    <a href="#">Category 2</a>
+                    <a href="#">Category 3</a>
+                    <a href="#">Category 4</a>
+                </div>
+
+                @* <div class="overlay"></div> *@
+               @*  <div class="sidebar">
+                    <label for="menu-toggle" class="close-btn">&times;</label>
+                    <div class="menu">
+                        <h3>Mobile,Tablets</h3>
+                        <a href="#">All Mobile Phones</a> 
+                        <a href="#">All Mobile Phone Accessories</a> 
+                        <a href="#">Power Banks</a>
+                        <hr />
+                        <a href="#">Laptops</a>
+                        <a href="#">All Computers and Accessories</a>
+
+
+                    </div>
+                </div> *@
+                <a href="#">TV, Appliances, Electronics</a>
+                <a href="#">Men's Fashion</a>
+                <a href="#">Women's Fashion</a>
+                <a href="#">Home,Kitchen</a>
+                <a href="#">Sports,Fitness,Begs</a>
+                <a href="#">Toys,Baby Products</a>
+                <a href="#">Books</a>
+                <a href="#">Movies,Music</a>
+                <hr />
+               
+                
+                <h3>Programs & Features</h3>
+                <a href="#">Amazon Pay</a>
+                
+            </div>
+        </div>
+
+       @*  <!-- ====== CONTENT CONTAINER (New) ====== -->
+        <div class="content">
+            <h2>Welcome to My Website</h2>
+            <p>This is a simple page layout that includes a sidebar menu, a top navigation bar, and a main content section.</p>
+            <p>The sidebar can be toggled using the ☰ button, and it works without JavaScript.</p>
+            <p>Feel free to customize it as per your needs!</p>
+        </div> *@
     </div>
 
     
@@ -65,7 +140,7 @@
     <div>
         @RenderBody()
     </div>
-
+    <br />
     <footer class="bg-dark text-white text-center py-3">
         <div class="container">
             <p>&copy; 2025 Your Company. All Rights Reserved.</p>
