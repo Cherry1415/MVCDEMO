@@ -28,7 +28,7 @@ namespace _06032025_MVCDAY1
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=DashBoard}/{action=HomeDashBoard}/{id?}");
 
             app.Run();
             //Console.WriteLine("Hello");

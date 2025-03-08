@@ -173,7 +173,7 @@
     color: white;
     overflow-y: auto;
     z-index: 1002;
-    transition: 0.3s ease-in-out;
+    transition: 0.1s ease-in-out;
     padding-top: 20px;
 }
 

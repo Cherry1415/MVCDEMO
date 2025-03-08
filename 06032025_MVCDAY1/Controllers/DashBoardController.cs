@@ -2,20 +2,15 @@
 
 namespace _06032025_MVCDAY1.Controllers
 {
-    public class UserBuyController : Controller
+    public class DashBoardController : Controller
     {
         public IActionResult Index()
         {
             return View();
         }
-        public IActionResult BuyProduct()
+        public IActionResult HomeDashBoard()
         {
             return View();
         }
-
-        //public ActionResult GetPartial()
-        //{
-        //    return PartialView("BuyProduct");
-        //}
     }
 }

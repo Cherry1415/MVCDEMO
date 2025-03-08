@@ -7,50 +7,122 @@
 <link href="./bootstrap/js/bootstrap.min.js" rel="stylesheet" />
  *@
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4">BuY IT</h2>
-    <div class="row">
-        <!-- Product 1 -->
-        <div class="col-md-4">
-            <div class="card product-card" style="backdrop-filter:blur(10px)">
-                
+
+
+<div class="modal fade" id="buyNowModal" tabindex="-1" aria-labelledby="buyNowModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="buyNowModalLabel">Confirm Your Purchase</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="productImage" src="" width="200" height="200" class="mb-3" alt="Product Image">
+                <h5 id="productName"></h5>
+                <p class="text-success">You are eligible for free shipping.</p>
+                <p><strong>Price: ₹ <span id="productPrice"></span></strong></p>
+                <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" asp-area="" asp-controller="Payment" asp-action="PaymentProduct">Proceed to Checkout</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".buyNowBtn").click(function () {
+            let name = $(this).data("name");
+            let price = $(this).data("price");
+            let image = $(this).data("image");
+
+            $("#productName").text(name);
+            $("#productPrice").text(price);
+            $("#productImage").attr("src", image);
+
+            $("#buyNowModal").modal("show");
+        });
+    });
+</script>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Festive Collections</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .modal-content {
+            border-radius: 10px;
+        }
+
+        .modal-footer {
+            background: navy;
+            color: white;
+            text-align: center;
+            border-radius: 0 0 10px 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">BuY IT</h2>
+        <div class="row">
+            <!-- Product 1 -->
+
+            <div class="col-md-4">
+                <div class="card product-card">
                     <a href="#"><i class="fas fa-heart position-absolute top-0 end-0 p-2 text-danger" style="z-index: 1;"></i></a>
-                    <img src="https://cdn.pixabay.com/photo/2022/10/03/20/01/iphone-13-pro-max-7496758_640.jpg" width="400" height="400" class="card-img-top" alt="Product Image">
-                
-                <div class="card-body">
-                    <h5 class="card-title">Iphone 16Pro Max</h5>
-                    <p class="card-text">$99.99</p>
-                    <a asp-area="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary">Buy Now</a>
+                    <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" width="400" height="400" class="card-img-top" alt="Product Image" id="image">
+                    <div class="card-body">
+                        <h5 class="card-title" id="name">samsung s25 ultra</h5>
+                        <p class="card-text" id="price">₹ 130000</p>
+                        <button class="btn btn-primary buyNowBtn" data-name="samsung s25 ultra" data-price="₹130000" data-image="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg">Buy Now</button>
+                        @* <a asp-area="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
+                    </div>
                 </div>
             </div>
-        </div>
+            <div class="col-md-4">
+                <div class="card product-card" style="backdrop-filter:blur(10px)">
 
+                    <a href="#"><i class="fas fa-heart position-absolute top-0 end-0 p-2 text-danger" style="z-index: 1;"></i></a>
+                    <img src="https://cdn.pixabay.com/photo/2022/10/03/20/01/iphone-13-pro-max-7496758_640.jpg" width="400" height="400" class="card-img-top" alt="Product Image" id="image">
 
-        <!-- Product 2 -->
-        <div class="col-md-4">
-            <div class="card product-card">
-                <a href="#"><i class="fas fa-heart position-absolute top-0 end-0 p-2 text-danger" style="z-index: 1;"></i></a>
-                <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" width="400" height="400" class="card-img-top" alt="Product Image">
-                <div class="card-body">
-                    <h5 class="card-title">samsung s25 ultra</h5>
-                    <p class="card-text">$79.99</p>
-                    <a href="#" class="btn btn-primary">Buy Now</a>
+                    <div class="card-body">
+                        <h5 class="card-title" id="name">Iphone 16Pro Max</h5>
+                        <p class="card-text" id="price">₹ 1500000</p>
+                        <button class="btn btn-primary buyNowBtn">Buy Now</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Product 3 -->
-        <div class="col-md-4">
-            <div class="card product-card">
-                <a href="#"><i class="fas fa-heart position-absolute top-0 end-0 p-2 text-danger" style="z-index: 1;"></i></a>
-                <img src="https://cdn.pixabay.com/photo/2015/12/14/22/26/mobile-phone-1093358_640.jpg" width="400" height="400" class="card-img-top" alt="Product Image">
-                <div class="card-body">
-                    <h5 class="card-title">NoooKiaa</h5>
-                    <p class="card-text">$59.99</p>
-                    <a href="#" class="btn btn-primary">Buy Now</a>
+
+            <!-- Product 2 -->
+           
+
+            <!-- Product 3 -->
+            <div class="col-md-4">
+                <div class="card product-card">
+                    <a href="#"><i class="fas fa-heart position-absolute top-0 end-0 p-2 text-danger" style="z-index: 1;"></i></a>
+                    <img src="https://cdn.pixabay.com/photo/2015/12/14/22/26/mobile-phone-1093358_640.jpg" width="400" height="400" class="card-img-top" alt="Product Image" id="image">
+                    <div class="card-body">
+                        <h5 class="card-title" id="name">NoooKiaa</h5>
+                        <p class="card-text" id="price">$59.99</p>
+                        <button class="btn btn-primary buyNowBtn">Buy Now</button>
+                        @* <a asp-area ="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</body>
+</html>  
