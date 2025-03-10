@@ -30,9 +30,9 @@ namespace _06032025_MVCDAY1
                 name: "default",
                 pattern: "{controller=DashBoard}/{action=HomeDashBoard}/{id?}");
 
+            app.MapControllers(); // Required for Attribute Routing
             app.Run();
-            //Console.WriteLine("Hello");
-            //Console.WriteLine("jenci so-call Admin");
+            
         }
     }
 }

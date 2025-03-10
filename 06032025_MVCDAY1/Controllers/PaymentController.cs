@@ -13,5 +13,9 @@ namespace _06032025_MVCDAY1.Controllers
         {
             return View();
         }
+        public IActionResult CheckOutSection()
+        {
+            return View();
+        }
     }
 }

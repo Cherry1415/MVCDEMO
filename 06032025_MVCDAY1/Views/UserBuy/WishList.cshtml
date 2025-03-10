@@ -1,0 +1,130 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<style>
+    .product {
+        display: inline-block;
+        width: 200px;
+        margin: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        position: relative;
+    }
+
+    .wishlist-checkbox {
+        display: none;
+    }
+
+    .heart-icon {
+        width: 24px;
+        height: 24px;
+        fill: white;
+        stroke: black;
+        stroke-width: 2;
+        transition: fill 0.3s ease-in-out, stroke 0.3s ease-in-out;
+        cursor: pointer;
+    }
+
+    /* Change heart color when checkbox is checked */
+    .wishlist-checkbox:checked + .heart-icon {
+        fill: red;
+        stroke: red;
+    }
+
+    /* Wishlist Section */
+    .wishlist-container {
+        width: 60%;
+        margin: 20px auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .wishlist-content {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    /* Wishlist Items (Hidden by Default) */
+    .wishlist-card {
+        display: none;
+        width: 200px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    /* Show item in wishlist when checkbox is checked */
+    #item1:checked ~ .wishlist-container .wishlist-card:nth-child(1),
+    #item2:checked ~ .wishlist-container .wishlist-card:nth-child(2) {
+        display: block;
+    }
+</style>
+<h2>Product List</h2>
+
+<div class="product">
+    <img src="https://via.placeholder.com/150" alt="Product 1">
+    <h3>Samsung S25 Ultra</h3>
+    <p>₹130000</p>
+    <label>
+        <input type="checkbox" class="wishlist-checkbox" id="item1">
+        <svg class="heart-icon" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+        </svg>
+    </label>
+    <div class="wishlist-item" id="wishlist-item1">
+        <img src="https://via.placeholder.com/150" alt="Product 1">
+        <h3>Samsung S25 Ultra</h3>
+        <p>₹130000</p>
+    </div>
+</div>
+
+<div class="product">
+    <img src="https://via.placeholder.com/150" alt="Product 2">
+    <h3>iPhone 16 Pro Max</h3>
+    <p>₹150000</p>
+    <label>
+        <input type="checkbox" class="wishlist-checkbox" id="item2">
+        <svg class="heart-icon" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+        </svg>
+    </label>
+    <div class="wishlist-item" id="wishlist-item2">
+        <img src="https://via.placeholder.com/150" alt="Product 2">
+        <h3>iPhone 16 Pro Max</h3>
+        <p>₹150000</p>
+    </div>
+</div>
+
+<h2>My Wishlist</h2>
+<div class="wishlist-container">
+    <div class="wishlist-content">
+        <label for="item1">
+            <div class="wishlist-card" id="wishlist-card1">
+                <img src="https://via.placeholder.com/150" alt="Product 1">
+                <h3>Samsung S25 Ultra</h3>
+                <p>₹130000</p>
+            </div>
+        </label>
+
+        <label for="item2">
+            <div class="wishlist-card" id="wishlist-card2">
+                <img src="https://via.placeholder.com/150" alt="Product 2">
+                <h3>iPhone 16 Pro Max</h3>
+                <p>₹150000</p>
+            </div>
+        </label>
+    </div>
+</div>

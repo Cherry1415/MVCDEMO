@@ -1,0 +1,210 @@
+﻿/*body {
+}
+
+.product-card {
+    display: inline-block;
+    width: 200px;
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+}
+
+.wishlist-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: grey;
+}
+
+    .wishlist-btn.active {
+        color: red;
+    }
+
+.wishlist-popup-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background: blue;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 5px;
+}
+
+.wishlist-modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.wishlist-content {
+    background-color: white;
+    width: 50%;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.close {
+    float: right;
+    font-size: 28px;
+    cursor: pointer;
+}*/
+
+
+/*another*/
+
+
+
+/* Wishlist Heart Button */
+/*.wishlist-label {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.wishlist-checkbox {
+    display: none;
+}
+
+.wishlist-icon {*/
+/*font-size: 24px;*/
+/*width: 24px;
+    height: 24px;
+    fill: white;
+    stroke: black;
+    transition: fill 0.3s, stroke 0.3s;
+}*/
+
+/* When Checkbox is Checked, Change Heart Color */
+/*.wishlist-checkbox:checked + .wishlist-icon {
+    fill: red;
+    stroke: red;
+}*/
+
+/* Wishlist Popup Button */
+/*.wishlist-popup-btn {
+    display: inline-block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background: blue;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 5px;
+}*/
+
+/* Hidden Modal Checkbox */
+/*.modal-checkbox {
+    display: none;
+}*/
+
+/* Wishlist Modal */
+/*.wishlist-modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}*/
+
+/* Show Modal When Checkbox is Checked */
+/*.modal-checkbox:checked + .wishlist-modal   {
+    display: block;
+    
+}
+
+.wishlist-content {
+    background-color: white;
+    width: 50%;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.close {
+    float: right;
+    font-size: 28px;
+    cursor: pointer;
+}*/
+
+
+.product {
+    display: inline-block;
+    width: 200px;
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+}
+
+.wishlist-label {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.wishlist-checkbox {
+    display: none;
+}
+
+.heart-icon {
+    width: 24px;
+    height: 24px;
+    fill: white;
+    stroke: black;
+    stroke-width: 2;
+    transition: fill 0.3s ease-in-out, stroke 0.3s ease-in-out;
+}
+
+/* Change heart color when checkbox is checked */
+.wishlist-checkbox:checked + .heart-icon {
+    fill: red;
+    stroke: red;
+}
+
+/* Wishlist Items (Hidden by Default) */
+.wishlist-item {
+    display: none;
+    width: 200px;
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Show item in wishlist when checkbox is checked */
+#item1:checked ~ .wishlist-container label[for="item1"]::after {
+    content: "";
+    display: block;
+}
+
+#item2:checked ~ .wishlist-container label[for="item2"]::after {
+    content: "";
+    display: block;
+}

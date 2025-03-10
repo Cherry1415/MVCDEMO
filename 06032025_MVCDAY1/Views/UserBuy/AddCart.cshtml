@@ -1,0 +1,153 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .container {
+        max-width: 800px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 24px;
+    }
+
+    .cart-items {
+        margin-top: 20px;
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+    }
+
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+
+    .cart-item-details {
+        flex: 1;
+    }
+
+    .cart-item h3 {
+        margin: 5px 0;
+        font-size: 16px;
+    }
+
+    .cart-item p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .cart-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    button {
+        padding: 8px 12px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .delete-btn {
+        background: #d9534f;
+        color: white;
+    }
+
+    .save-btn {
+        background: #f0ad4e;
+        color: white;
+    }
+
+    #proceedToBuy {
+        width: 100%;
+        background: #ffd814;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 10px;
+        margin-top: 15px;
+    }
+</style>
+
+<h1>Your Cart</h1>
+
+<div id="cart-items"></div>
+
+<p><strong>Total: ₹<span id="cart-total">0</span></strong></p>
+
+<button onclick="clearCart()" class="clear-btn">Clear Cart</button>
+<a href="index.html" class="back-btn">Back to Shopping</a>
+
+<script>
+            function addToCart(name, price, image) {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        let existingItem = cart.find(item => item.name === name);
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({ name, price, image, quantity: 1 });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        alert("Item added to cart!");
+    }
+
+    // Function to display cart items
+    function displayCart() {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        let cartItemsDiv = document.getElementById("cart-items");
+        let cartTotalSpan = document.getElementById("cart-total");
+        cartItemsDiv.innerHTML = "";
+        let total = 0;
+
+        cart.forEach((item, index) => {
+            total += item.price * item.quantity;
+            cartItemsDiv.innerHTML += `
+                <div class="cart-item">
+                    <img src="${item.image}" alt="${item.name}">
+                    <h3>${item.name}</h3>
+                    <p>₹${item.price} x ${item.quantity}</p>
+                    <button onclick="removeFromCart(${index})" class="remove-btn">Remove</button>
+                </div>
+            `;
+        });
+
+        cartTotalSpan.innerText = total;
+    }
+
+    // Function to remove an item from the cart
+    function removeFromCart(index) {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        cart.splice(index, 1);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        displayCart();
+    }
+
+    // Function to clear the cart
+    function clearCart() {
+        localStorage.removeItem("cart");
+        displayCart();
+    }
+
+    // Ensure cart items are displayed when on cart page
+    if (window.location.pathname.includes("cart.html")) {
+        displayCart();
+    }
+</script>

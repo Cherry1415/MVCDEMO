@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width" />
     <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/bootstrap/js/bootstrap.min.js" rel="stylesheet" />
-    <link href="~/bootstrap/js/bootstrap.bundle.min.js" rel="stylesheet" />
+    <script href="~/bootstrap/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="~/css/mycss.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/wishlist.css" asp-append-version="true" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
+
     <title>@ViewBag.Title</title>
 </head>
 <body>
@@ -30,10 +31,13 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" asp-area="" asp-controller="Register" asp-action="RegUser">Register</a>
-                    </li>`
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" asp-area="" asp-controller="UserBuy" asp-action="WishList">Your List</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" a><i class='fas fa-cart-arrow-down' style='font-size:40px'></i>Cart</a>
-                    </li>`
+                    </li>
 
                     @*  <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" >
@@ -77,58 +81,170 @@
             <label for="menu-toggle" class="close-btn">&times;</label>
             <hr />
             <div class="sidebar-header">
-                <a aria-current="page" asp-area="" asp-controller="Login" asp-action="LogInPage">Hello,Log IN</a>
+                <a aria-current="page" asp-area="" asp-controller="Login" asp-action="LogInPage">HELLO,LOG IN</a>
             </div>
+            <hr />
+
             <div class="menu">
-                <h3>Trending</h3>
+                <h4>Trending</h4>
                 <a href="#">Best Sellers</a>
 
                 <hr />
 
-                <h3>Shop by Category</h3>
-                
-                <a href="#">Mobiles, Computers</a>
-              @*   <i class='fas fa-angle-right' style='font-size:24px'></i> *@
-               @*  <input type="checkbox" id="menu-toggle-3">
-                <div class="sidebar-3">
-                    <label for="menu-toggle-3" class="close-btn">&times;</label>
-                    <a href="#">Category 1</a>
-                    <a href="#">Category 2</a>
-                    <a href="#">Category 3</a>
-                    <a href="#">Category 4</a>
+                <h4>Shop by Category</h4>
+
+                <a href="#"><label for="submenu-toggle">Mobiles, Computers<i class='fas fa-angle-right' style='font-size:15px'></i></label></a>
+                <input type="checkbox" id="submenu-toggle" class="submenu-toggle">
+                <div class="submenu">
+                    <label for="submenu-toggle" class="close-submenu">&times;</label>
+                    <hr />
+
+                    <h5>Mobile,Tablets,Watches And More</h5>
+                    <a href="#">All Mobile Phones</a>
+                    <a href="#">Power Banks</a>
+                    <a href="#">Tablets</a>
+                    <a href="#">Covers</a>
+                    <hr />
+                    <h5>Computor Components</h5>
+                    <a href="#">Laptops</a>
+                    <a href="#">Drives & Storages</a>
+                    <a href="#">Mouse,KeyBoard etc.</a>
+                    <a href="#">Printers</a>
+
+                </div>
+
+                <a href="#"><label for="submenu-toggle2">TV, Appliances, Electronics<i class='fas fa-angle-right' style='font-size:15px'></i></label></a>
+                <input type="checkbox" id="submenu-toggle2" class="submenu-toggle2">
+                <div class="submenu2">
+                    <label for="submenu-toggle2" class="close-submenu">&times;</label>
+                    <hr />
+
+                    <h5>Tv,Audio And Cameras</h5>
+                    <a href="#">Televisions</a>
+                    <a href="#">Headphones</a>
+                    <a href="#">Speakers</a>
+                    <a href="#">Cameras</a>
+                    <a href="#">Security Cameras</a>
+                    <a href="#">Gaming Consoles</a>
+                    <a href="#">Cameras</a>
+                    <hr />
+                    <h5>Home Appliances</h5>
+                    <a href="#">Air Conditioners</a>
+                    <a href="#">Refrigerators</a>
+                    <a href="#">Washing Machines</a>
+
+
+                </div>
+                <a href="#"><label for="submenu-toggle3">Men's Fashion<i class='fas fa-angle-right' style='font-size:15px'></i></label></a>
+                <input type="checkbox" id="submenu-toggle3" class="submenu-toggle3">
+                <div class="submenu3">
+                    <label for="submenu-toggle3" class="close-submenu">&times;</label>
+                    <hr />
+
+                    <h5>Men's Clothing</h5>
+                    <a asp-area="" asp-controller="Product" asp-action="ManProduct">Clothing</a>
+                    <a href="#">T-Shirts</a>
+                    <a href="#">Shirts</a>
+                    <a href="#">Jeans</a>
+                    <a href="#">Innerwaer </a>
+
+                    <hr />
+                    <h5>Accessories</h5>
+                    <a href="#">Watches</a>
+                    <a href="#">Wallets</a>
+                    <a href="#">Sunglasses</a>
+
+                    <hr />
+                    <h5>Shoes</h5>
+                    <a href="#">Sports Shoes</a>
+                    <a href="#">Fomral Shoes</a>
+                    <a href="#">Casual Shoes</a>
+                </div>
+                <a href="#"><label for="submenu-toggle">Women's Fashion<i class='fas fa-angle-right' style='font-size:15px'></i></label></a>
+                <input type="checkbox" id="submenu-toggle" class="submenu-toggle">
+                <div class="submenu">
+                    <label for="submenu-toggle" class="close-submenu">&times;</label>
+                    <hr />
+
+                    <h5>Women's Clothing</h5>
+                    <a href="#">Clothing</a>
+                    <a href="#">T-Shirts</a>
+                    <a href="#">Shirts</a>
+                    <a href="#">Jeans</a>
+                    <a href="#">Innerwaer </a>
+
+                    <hr />
+                    <h5>Accessories</h5>
+                    <a href="#">Watches</a>
+                    <a href="#">Wallets</a>
+                    <a href="#">Sunglasses</a>
+
+                    <hr />
+                    <h5>Shoes</h5>
+                    <a href="#">Sports Shoes</a>
+                    <a href="#">Fomral Shoes</a>
+                    <a href="#">Casual Shoes</a>
+                </div>
+                @* <a href="#">Sports,Fitness,Begs</a> *@
+                <a href="#"><label for="submenu-toggle">Toys,Baby Products<i class='fas fa-angle-right' style='font-size:15px'></i></label></a>
+                <input type="checkbox" id="submenu-toggle" class="submenu-toggle">
+                <div class="submenu">
+                    <label for="submenu-toggle" class="close-submenu">&times;</label>
+                    <hr />
+
+                    <h5>Toys & Baby Products</h5>
+                    <a href="#">Toys & Games</a>
+                    <a href="#">Baby Products</a>
+                    <a href="#">Diapers</a>
+                    <a href="#">Pantry</a>
+                    <a href="#">Baby Bath & Grooming </a>
+
+                    <hr />
+                    <h5>Kid's Fashion</h5>
+                    <a href="#">Clothing</a>
+                    <a href="#">Shoes</a>
+                    <a href="#">Watches</a>
+
+                    <hr />
+                    <h5>Shoes</h5>
+                    <a href="#">Sports Shoes</a>
+                    <a href="#">Fomral Shoes</a>
+                    <a href="#">Casual Shoes</a>
+                </div>
+                @*  <a href="#"><label for="submenu-toggle">Books<i class='fas fa-angle-right' style='font-size:15px'></i></label></a>
+                <input type="checkbox" id="submenu-toggle" class="submenu-toggle">
+                <div class="submenu">
+                    <label for="submenu-toggle" class="close-submenu">&times;</label>
+                    <hr />
+
+                    <h5>Books</h5>
+                    <a href="#">Exam Central</a>
+                    <a href="#">Children's Book</a>
+                    <a href="#">Textbooks</a>
+                    <a href="#">Comic Books</a>
+                    <a href="#">Language books </a>
                 </div> *@
 
-                @* <div class="overlay"></div> *@
-                @*  <div class="sidebar">
-                    <label for="menu-toggle" class="close-btn">&times;</label>
-                    <div class="menu">
-                        <h3>Mobile,Tablets</h3>
-                        <a href="#">All Mobile Phones</a> 
-                        <a href="#">All Mobile Phone Accessories</a> 
-                        <a href="#">Power Banks</a>
-                        <hr />
-                        <a href="#">Laptops</a>
-                        <a href="#">All Computers and Accessories</a>
-
-
-                    </div>
-                </div> *@
-                <a href="#">TV, Appliances, Electronics</a>
-                <a href="#">Men's Fashion</a>
-                <a href="#">Women's Fashion</a>
-                <a href="#">Home,Kitchen</a>
-                <a href="#">Sports,Fitness,Begs</a>
-                <a href="#">Toys,Baby Products</a>
-                <a href="#">Books</a>
-                <a href="#">Movies,Music</a>
                 <hr />
 
 
-                <h3>Programs & Features</h3>
+                <h4>Programs & Features</h4>
                 <a href="#">Amazon Pay</a>
 
             </div>
         </div>
+
+        @* <input type="checkbox" id="submenu-toggle" class="submenu-toggle">
+        <div class="submenu">
+            <label for="submenu-toggle" class="close-submenu">&times;</label>
+            <h2>Categories</h2>
+            <ul>
+                <li><a href="#">Mobiles</a></li>
+                <li><a href="#">TV & Electronics</a></li>
+                <li><a href="#">Men's Fashion</a></li>
+                <li><a href="#">Women's Fashion</a></li>
+            </ul>
+        </div> *@
 
         @*  <!-- ====== CONTENT CONTAINER (New) ====== -->
         <div class="content">
@@ -140,25 +256,17 @@
     </div>
 
 
-    
 
 
-   
+
+
 
     <div>
 
         @RenderBody()
     </div>
     <br />
-    @* <footer class="bg-dark text-white text-center py-3">
-        <div class="container">
-            <p>&copy; 2025 Your Company. All Rights Reserved.</p>
-            <p>
-                <a href="#" class="text-white me-3">Privacy Policy</a>
-                <a href="#" class="text-white">Terms of Service</a>
-            </p>
-        </div>
-    </footer> *@
+
 
     <div class="container">
         <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-6 py-5 my-5 border-top">

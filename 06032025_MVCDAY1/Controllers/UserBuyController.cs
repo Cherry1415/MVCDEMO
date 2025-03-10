@@ -2,13 +2,37 @@
 
 namespace _06032025_MVCDAY1.Controllers
 {
+
+    [Route("Product")]
     public class UserBuyController : Controller
     {
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+        //    return View();
+        //}
+        //[Route("BuyProduct")]
+
+       // [Route("")]
+        [Route("BuyProduct")]
+        public IActionResult BuyProduct()
         {
             return View();
         }
-        public IActionResult BuyProduct()
+
+        [Route("WishList")]
+        public IActionResult WishList()
+        {
+            return View();
+        }
+
+        [Route("AddCart")]
+        public IActionResult AddCart()
+        {
+            return View();
+        }
+
+        [Route("ManProduct")]
+        public IActionResult ManProduct()
         {
             return View();
         }
