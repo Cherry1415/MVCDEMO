@@ -1,0 +1,33 @@
+﻿@model IEnumerable<_06032025_MVCDAY1.Models.Employee>
+<h2>Employee List</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>FirstName</th>
+            <th>LastName</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var emp in Model)
+        {
+            <tr>
+                <td>@emp.id</td>
+                <td>@emp.fname</td>
+                <td>@emp.lname</td>
+                <td>@emp.email</td>
+                <td>@emp.phone</td>
+                <td>
+                    <a href="@Url.Action("EditUser", new { id = emp.id })" class="btn btn-warning">Edit</a>
+                    <a href="@Url.Action("DeleteUser", new { id = emp.id })" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("RegUser")" class="btn btn-primary">Add Employee</a>

@@ -1,0 +1,187 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<style>
+    .sidebarfilter {
+        position: relative;
+        top: 0;
+        width: 250px;
+        height: 100%;
+        background: #232f3e;
+        color: white;
+        overflow-y: auto;
+        z-index: 500;
+        transition: 0.1s ease-in-out;
+        padding-top: 20px;
+    }
+
+        .sidebarfilter a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+    .sidebarfilter {
+        left: 0;
+    }
+
+    .menu-toggle {
+        font-size: 20px;
+        cursor: pointer;
+        padding: 15px;
+        background: #232f3e;
+        color: white;
+        display: inline-block;
+    }
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s;
+        z-index: 900;
+    }
+
+    .sidebarfilter a {
+        display: block;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+    }
+
+</style>
+
+
+<div class="container-fluid d-inline-block" >
+    <div class="d-inline-flex">
+        @{Html.RenderPartial("~/Views/Product/ProductFilter.cshtml");}
+
+
+        <div>
+            <div class="container-fluid mt-5">
+                <h2 class="text-center mb-4">BuY IT</h2>
+                <div class="row">
+                    <!-- Product 1 -->
+
+                    <div class="col-md-4" style="z-index:1;position:relative">
+                        <div class="card product-card">
+                            <label class="wishlist-label">
+                                <input type="checkbox" class="wishlist-checkbox">
+                                <svg class="heart-icon" viewBox="0 0 24 24">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                                </svg>
+                            </label>
+
+                            <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" width="400" height="400" class="card-img-top" alt="Product Image" id="image">
+                            <div class="card-body" class="wishlist-item" id="wishlist-item1">
+                                <h5 class="card-title" id="name">samsung s25 ultra</h5>
+                                <p class="card-text" id="price">₹ 130000</p>
+                                <button class="btn btn-primary buyNowBtn" data-name="samsung s25 ultra" data-price="₹130000" data-image="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg">Buy Now</button>
+                                <button class="btn btn-primary cart-btn" onclick="addToCart('Samsung S25 Ultra', 130000, 'https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg')" asp-area="" asp-controller="UserBuy" asp-action="AddCart">Add to Cart</button>
+                                @* <a asp-area="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card product-card" style="backdrop-filter:blur(10px)">
+                            <label class="wishlist-label">
+                                <input type="checkbox" class="wishlist-checkbox">
+                                <svg class="heart-icon" viewBox="0 0 24 24">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                                </svg>
+                            </label>
+                            @*  <a href="#"><i class="fas fa-heart position-absolute top-0 end-0 p-2 text-danger" style="z-index: 1;"></i></a> *@
+                            <img src="https://cdn.pixabay.com/photo/2022/10/03/20/01/iphone-13-pro-max-7496758_640.jpg" width="400" height="400" class="card-img-top" alt="Product Image" id="image">
+
+                            <div class="card-body">
+                                <h5 class="card-title" id="name">Iphone 16Pro Max</h5>
+                                <p class="card-text" id="price">₹ 1500000</p>
+                                <button class="btn btn-primary buyNowBtn">Buy Now</button>
+                                <button class="btn btn-primary cart-btn" onclick="addToCart('Iphone 16Pro Max', 1500000, 'https://cdn.pixabay.com/photo/2022/10/03/20/01/iphone-13-pro-max-7496758_640.jpg')">Add To Cart</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Product 2 -->
+                    <!-- Product 3 -->
+                    <div class="col-md-4">
+                        <div class="card product-card">
+                            <label class="wishlist-label">
+                                <input type="checkbox" class="wishlist-checkbox">
+                                <svg class="heart-icon" viewBox="0 0 24 24">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                                </svg>
+                            </label>
+                            @* <a href="#"><i class="fas fa-heart position-absolute top-0 end-0 p-2 text-danger" style="z-index: 1;"></i></a> *@
+                            <img src="https://cdn.pixabay.com/photo/2015/12/14/22/26/mobile-phone-1093358_640.jpg" width="400" height="400" class="card-img-top" alt="Product Image" id="image">
+                            <div class="card-body">
+                                <h5 class="card-title" id="name">NoooKiaa</h5>
+                                <p class="card-text" id="price">60000</p>
+                                <button class="btn btn-primary buyNowBtn">Buy Now</button>
+                                <button class="btn btn-primary cart-btn" onclick="addToCart('NoooKiaa', 60000, 'https://cdn.pixabay.com/photo/2015/12/14/22/26/mobile-phone-1093358_640.jpg')">
+                                    Add To Cart
+                                </button>
+                                @* <a asp-area ="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Toggle sidebar
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('content');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const overlay = document.getElementById('overlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+        }
+
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        // Close sidebar when clicking a link on mobile
+        const sidebarLinks = document.querySelectorAll('.sidebar a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 992) {
+                    sidebar.classList.remove('show');
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+
+        // Adjust content margin based on screen size
+        function adjustLayout() {
+            if (window.innerWidth >= 992) {
+                content.style.marginLeft = '260px';
+            } else {
+                content.style.marginLeft = '0';
+            }
+        }
+
+        // Initial layout adjustment
+        adjustLayout();
+
+        // Layout adjustment on window resize
+        window.addEventListener('resize', adjustLayout);
+    });
+</script>
