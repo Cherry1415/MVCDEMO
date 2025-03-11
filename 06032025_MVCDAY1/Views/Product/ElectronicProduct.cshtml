@@ -4,65 +4,14 @@
 @{
 }
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<style>
-    .modal-content {
-        border-radius: 10px;
-    }
 
 
-    .product-card .position-relative {
-        position: relative;
-    }
 
-    .quick-view-btn {
-        display: none; /* Initially hide the button */
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.4); /* Transparent background */
-        color: white;
-        border: 2px solid rgba(255, 255, 255, 0.6); /* Light border */
-        padding: 10px 0;
-        cursor: pointer;
-        border-radius: 5px;
-        font-size: 14px;
-        transition: background-color 0.3s, border-color 0.3s;
-    }
-
-    .product-card:hover .quick-view-btn {
-        display: block; /* Show the button on hover */
-    }
-
-    .quick-view-btn:hover {
-        background-color: rgba(0, 0, 0, 0.7); /* Darker background on hover */
-        border-color: rgba(255, 255, 255, 1);
-    }
-
-    .small-images img {
-        width: 80px;
-        height: 130px;
-        object-fit: cover;
-        cursor: pointer;
-        margin-bottom: 10px;
-    }
-
-    .small-images {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    /* .carousel-item{
-        height:500px;
-    } */
-</style>
-
-
-<div class="container-fluid d-inline-block" >
+<div class="container-fluid d-inline-block">
     <div class="d-inline-flex">
-        @{Html.RenderPartial("~/Views/Product/ProductFilter.cshtml");}
+        @{
+            Html.RenderPartial("~/Views/Product/ElectronicFilter.cshtml");
+        }
 
 
         <div>
@@ -70,7 +19,7 @@
                 <h2 class="text-center mb-4">BuY IT</h2>
                 <div class="row">
                     <!-- Samsung -->
-                    <div class="col-md-3" >
+                    <div class="col-md-3">
                         <div class="card product-card">
                             <label class="wishlist-label">
                                 <input type="checkbox" class="wishlist-checkbox">
@@ -78,12 +27,11 @@
                                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
                                 </svg>
                             </label>
-                            <button class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" data-bs-toggle="modal" data-bs-target="#quickViewModal">Quick View</button>
-                            <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
-                            
+
+                            <img src="~/image/electronic/boat.webp" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
                             <div class="card-body" class="wishlist-item" id="wishlist-item1">
-                                <h5 class="card-title" id="name">samsung s25 ultra</h5>
-                                <p class="card-text" id="price">₹ 130000</p>
+                                <h5 class="card-title" id="name">boAt</h5>
+                                <p class="card-text" id="price">₹ 1400</p>
                                 <button class="btn btn-primary buyNowBtn" data-name="samsung s25 ultra" data-price="₹130000" data-image="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg">Buy Now</button>
                                 <button class="btn btn-primary cart-btn" onclick="addToCart('Samsung S25 Ultra', 130000, 'https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg')" asp-area="" asp-controller="UserBuy" asp-action="AddCart">Add to Cart</button>
                                 @* <a asp-area="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
@@ -99,17 +47,17 @@
                                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
                                 </svg>
                             </label>
-                           
-                            <img src="https://cdn.pixabay.com/photo/2022/10/03/20/01/iphone-13-pro-max-7496758_640.jpg" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
+
+                            <img src="~/image/electronic/oneplus.jpg" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
 
                             <div class="card-body">
-                                <h5 class="card-title" id="name">Iphone 16Pro Max</h5>
-                                <p class="card-text" id="price">₹ 1500000</p>
+                                <h5 class="card-title" id="name">Oneplus WireLess</h5>
+                                <p class="card-text" id="price">₹ 1800</p>
                                 <button class="btn btn-primary buyNowBtn">Buy Now</button>
                                 <button class="btn btn-primary cart-btn" onclick="addToCart('Iphone 16Pro Max', 1500000, 'https://cdn.pixabay.com/photo/2022/10/03/20/01/iphone-13-pro-max-7496758_640.jpg')">Add To Cart</button>
                             </div>
                         </div>
-                    </div>               
+                    </div>
                     <!-- nokia -->
                     <div class="col-md-3">
                         <div class="card product-card">
@@ -119,11 +67,11 @@
                                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
                                 </svg>
                             </label>
-                            
-                            <img src="https://cdn.pixabay.com/photo/2015/12/14/22/26/mobile-phone-1093358_640.jpg" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
+
+                            <img src="~/image/electronic/jbl.png" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
                             <div class="card-body">
-                                <h5 class="card-title" id="name">Nokia</h5>
-                                <p class="card-text" id="price">₹60000</p>
+                                <h5 class="card-title" id="name">JBL</h5>
+                                <p class="card-text" id="price">₹1000</p>
                                 <button class="btn btn-primary buyNowBtn">Buy Now</button>
                                 <button class="btn btn-primary cart-btn" onclick="addToCart('NoooKiaa', 60000, 'https://cdn.pixabay.com/photo/2015/12/14/22/26/mobile-phone-1093358_640.jpg')">
                                     Add To Cart
@@ -131,7 +79,7 @@
                                 @* <a asp-area ="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
                             </div>
                         </div>
-                    </div> 
+                    </div>
                     <!-- Oneplus -->
                     <div class="col-md-3">
                         <div class="card product-card">
@@ -154,8 +102,8 @@
                             </div>
                         </div>
                     </div>
-                     <hr />
-                     <hr />
+                    <hr />
+                    <hr />
 
                     <!-- Poco -->
                     <div class="col-md-3">
@@ -241,87 +189,14 @@
                             </div>
                         </div>
                     </div>
-                   
+
                 </div>
             </div>
         </div>
     </div>
-    
-    
+
+
 </div>
 
-<!-- Quick View Modal -->
 
-<div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body d-flex flex-column flex-md-row">
-                <!-- Left: Small Images (visible only on larger screens and hidden on <=992px) -->
-                <div class="d-flex flex-wrap justify-content-center mb-4 mb-md-0 d-none d-md-flex">
-                    <div class="small-images">
-                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 1" data-bs-toggle="tooltip" title="Image 1" data-bs-target="#mainImage" data-bs-slide-to="0">
-                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 2" data-bs-toggle="tooltip" title="Image 2" data-bs-target="#mainImage" data-bs-slide-to="1">
-                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 3" data-bs-toggle="tooltip" title="Image 3" data-bs-target="#mainImage" data-bs-slide-to="2">
-                    </div>
-                </div>
-
-                <!-- Right: Product Details -->
-                <div class="ms-md-4 flex-grow-1">
-                    <!-- Main Product Image -->
-                    <div id="mainImageCarousel" class="carousel slide mb-3" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img id="modalImage" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block w-100" alt="Image 1">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block w-100" alt="Image 2">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block w-100" alt="Image 3">
-                            </div>
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div>
-
-                    <!-- Product Details Scrollable Area -->
-                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="scrollspy-example-2" tabindex="0" style="max-height:70%; overflow-y: auto;">
-                        <h5 id="modalName"></h5>
-                        <div>
-                            <h3>Red Saree</h3>
-                            <strong>Price: ₹ <span id="modalPrice"></span></strong>
-                        </div>
-                        <p></p>
-                        <p class="text-success">You are eligible for free shipping.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // When "Quick View" button is clicked, pass the product data to the modal
-    $('#quickViewModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var image = button.data('image'); // Extract info from data-* attributes
-        var name = button.data('name');
-        var price = button.data('price');
-
-        var modal = $(this);
-        modal.find('#modalImage').attr('src', image);
-        modal.find('#modalName').text(name);
-        modal.find('#modalPrice').text(price);
-    });
-</script>
 

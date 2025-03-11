@@ -13,7 +13,7 @@
         top: 0;
         width: 300px;
         height: 100%;
-        background:white;
+        background: white;
         color: black;
         overflow-y: auto;
         z-index: 500;
@@ -38,6 +38,7 @@
         color: black;
         display: inline-block;
     }
+
     .overlay {
         position: fixed;
         top: 0;
@@ -58,14 +59,14 @@
         text-decoration: none;
     }
 
-     .color-box {
-            width: 20px;
-            height: 20px;
-            display: inline-block;
-            margin-right: 10px;
-            cursor: pointer;
-            border-radius: 50%;
-        }
+    .color-box {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        margin-right: 10px;
+        cursor: pointer;
+        border-radius: 50%;
+    }
 
 </style>
 
@@ -79,61 +80,70 @@
         <a href="#">Best Sellers</a> *@
 
         <h4>Brands</h4>
-        <label><input type="checkbox"> Apple</label><br>
-        <label><input type="checkbox"> Samsung </label><br>
+        <label><input type="checkbox"> boAt</label><br>
         <label><input type="checkbox"> OnePlus </label><br>
-        <label><input type="checkbox"> IQOO </label><br>
-        <label><input type="checkbox"> Redmi </label><br>
-        <label><input type="checkbox"> Vivo </label><br>
-        <label><input type="checkbox"> Nokia </label><br>
-        <label><input type="checkbox"> Oppo </label><br>
+        <label><input type="checkbox"> JBL </label><br>
+        <label><input type="checkbox"> Sony </label><br>
+        <label><input type="checkbox"> Boult </label><br>
+        <label><input type="checkbox"> Noise </label><br>
+        <label><input type="checkbox"> Samsung </label><br>
+        <label><input type="checkbox"> Apple </label><br>
         <a href="#" class="text-danger" id="resetCategory">Reset</a>
 
         <hr />
 
-        <h4>Seller</h4>
-        <label><input type="checkbox"> A_jensi Mobile</label><br>
-        <label><input type="checkbox"> Shani Business </label><br>
-        <label><input type="checkbox"> SSM Authorized </label><br>
-       
+        <h4>Specific Use</h4>
+        <label><input type="checkbox"> Travel</label><br>
+        <label><input type="checkbox"> Entertainment </label><br>
+        <label><input type="checkbox"> Gaming </label><br>
+        <label><input type="checkbox"> Fitness </label><br>
+
         <a href="#" class="text-danger" id="resetCategory">Reset</a>
 
         <hr />
 
-        <h4>Memory Storage</h4>
-        <label><input type="checkbox"> 8 GB</label><br>
-        <label><input type="checkbox"> 16 GB </label><br>
-        <label><input type="checkbox"> 32 GB </label><br>
-        <label><input type="checkbox"> 64 GB </label><br>
-        <label><input type="checkbox"> 128 GB </label><br>
-        <label><input type="checkbox"> 256 GB </label><br>
-        <label><input type="checkbox"> 512 GB </label><br>
-        <label><input type="checkbox"> 1024 GB </label><br>
+        <h4>MicroPhone</h4>
+        <label><input type="checkbox"> With MicroPhone</label><br>
+        <label><input type="checkbox"> Without MicroPhone </label><br>
         <a href="#" class="text-danger" id="resetCategory">Reset</a>
 
         <hr />
 
         <h4>Shop by Price</h4>
-        
+
         <div id="price-slider"></div>
         <p class="mt-2">Price: ₹<span id="min-price">0</span> - ₹<span id="max-price">150000</span></p>
         <a href="#" class="text-danger" id="resetPrice">Reset</a>
 
         <hr />
 
-        <h4>Available Colors</h4>
-        <div>
+        <h4>Compatible Devices</h4>
+        <label><input type="checkbox"> Cellphones</label><br>
+        <label><input type="checkbox"> Laptops </label><br>
+        <label><input type="checkbox"> Car Audio </label><br>
+        <label><input type="checkbox"> Desktops </label><br>
+        <a href="#" class="text-danger" id="resetCategory">Reset</a>
+        @* <div>
             <label><input type="checkbox" class="color-filter" value="beige"> <span class="color-box" style="background: beige;"></span> Beige</label><br>
             <label><input type="checkbox" class="color-filter" value="black"> <span class="color-box" style="background: black;"></span> Black</label><br>
             <label><input type="checkbox" class="color-filter" value="blue"> <span class="color-box" style="background: blue;"></span> Blue</label><br>
             <label><input type="checkbox" class="color-filter" value="brown"> <span class="color-box" style="background: brown;"></span> Brown</label><br>
             <label><input type="checkbox" class="color-filter" value="cream"> <span class="color-box" style="background: cyan;"></span> Cream</label><br>
             <label><input type="checkbox" class="color-filter" value="green"> <span class="color-box" style="background: green;"></span> Green</label><br>
-        </div>
-        <a href="#" class="text-danger" id="resetColor">Reset</a>
+        </div> 
+        <a href="#" class="text-danger" id="resetColor">Reset</a>*@
+
+        <hr />
+
+        <h4>Included Components</h4>
+        <label><input type="checkbox"> Cables</label><br>
+        <label><input type="checkbox"> Headband </label><br>
+        <label><input type="checkbox"> WireLess charging Case </label><br>
+        <label><input type="checkbox"> Ear Cushions  </label><br>
+        <a href="#" class="text-danger" id="resetCategory">Reset</a>
 
     </div>
-</div> 
+</div>
 
 @* <div class="container-fluid d-md-none bg-primary text-white text-center p-3">
     <button class="btn btn-primary text-white w-100" id="openFilterSidebar">
@@ -207,7 +217,7 @@
         </div>
 
         <!-- Products Section -->
-        
+
 
     </div>
 </div>

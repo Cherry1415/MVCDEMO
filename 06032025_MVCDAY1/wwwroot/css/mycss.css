@@ -273,7 +273,7 @@
 /*css form SubMenu */
 
 
-.submenu,.submenu2,.submenu3 {
+.submenu,.submenu2,.submenu3,.submenumobcom {
     position: fixed;
     left: -350px;
     top: 0;
@@ -286,11 +286,11 @@
     z-index: 1100; /* Higher z-index to overlay on first menu */
 }
 
-.submenu-toggle:checked ~ .submenu, .submenu-toggle2:checked ~ .submenu2, .submenu-toggle3:checked ~ .submenu3 {
+.submenu-toggle:checked ~ .submenu, .submenu-toggle2:checked ~ .submenu2, .submenu-toggle3:checked ~ .submenu3, .submenu-togglemobcom:checked ~ .submenumobcom {
     left: 0;
 }
 
-#submenu-toggle, #submenu-toggle2, #submenu-toggle3 {
+#submenu-toggle, #submenu-toggle2, #submenu-toggle3, #submenu-togglemobcom {
     display: none;
 }
 

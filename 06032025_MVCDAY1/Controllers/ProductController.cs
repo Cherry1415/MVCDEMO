@@ -13,7 +13,21 @@ namespace _06032025_MVCDAY1.Controllers
             return View();
         }
 
+        //Mobile
         public IActionResult ProductFilter()
+        {
+            return View();
+        }
+        public IActionResult ClothFilter()
+        {
+            return View();
+        }
+        public IActionResult ElectronicFilter()
+        {
+            return View();
+        }
+
+        public IActionResult ElectronicProduct()
         {
             return View();
         }
