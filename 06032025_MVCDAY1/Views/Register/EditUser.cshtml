@@ -7,24 +7,28 @@
     <div class="payment-container">
         <h3 class="text-center">Registration</h3>
         <form asp-action="EditUser" method="post">
-            <input type="hidden" asp-for="id" />
+            <input type="hidden" asp-for="uid" />
             <div class="mb-3">
                 <label class="form-label">FirstName</label>
-                <input type="text" class="form-control" id="firstName" name="fname" asp-for="fname"  >
+                <input type="text" class="form-control" id="firstName" asp-for="fname"  >
             </div>
             <div class="mb-3">
                 <label class="form-label">LastName</label>
-                <input type="text" class="form-control" id="lastName" maxlength="16" name="lname" asp-for="lname">
+                <input type="text" class="form-control" id="lastName" maxlength="16"  asp-for="lname">
             </div>
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Email</label>
-                    <input type="text" class="form-control" id="email"  name="email" asp-for="email" >
+                    <input type="text" class="form-control" id="email"  asp-for="email" >
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Phone</label>
-                    <input type="text" class="form-control" id="phone"  name="phone" asp-for="phone" >
+                    <input type="text" class="form-control" id="phone"   asp-for="phone" >
 
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" maxlength="3" asp-for="password" required>
                 </div>
                 
             </div>

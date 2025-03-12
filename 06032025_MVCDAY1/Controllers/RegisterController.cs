@@ -20,31 +20,33 @@ namespace _06032025_MVCDAY1.Controllers
         {
             if (ModelState.IsValid)
             {
-                emp.id = _emp.Count + 1;
+                emp.uid = _emp.Count + 1;
                 _emp.Add(emp);
                 return RedirectToAction("Index");
             }
             return View(emp);
         }
-
         public IActionResult EditUser(int id)
         {
-            var employee = _emp.FirstOrDefault(e => e.id == id);
+            var employee = _emp.FirstOrDefault(e => e.uid == id);
             if (employee == null) return NotFound();
             return View(employee);
         }
 
+        // Edit: POST
         [HttpPost]
         public IActionResult EditUser(Employee emp)
         {
-            var employee = _emp.FirstOrDefault(e => e.id == emp.id);
+            var employee = _emp.FirstOrDefault(e => e.uid == emp.uid);
             if (employee == null) return NotFound();
+
             if (ModelState.IsValid)
             {
                 employee.fname = emp.fname;
                 employee.lname = emp.lname;
                 employee.email = emp.email;
                 employee.phone = emp.phone;
+                employee.password = emp.password;
                 return RedirectToAction("Index");
             }
             return View(emp);
@@ -52,7 +54,7 @@ namespace _06032025_MVCDAY1.Controllers
 
         public IActionResult DeleteUser(int id)
         {
-            var employee = _emp.FirstOrDefault(e => e.id == id);
+            var employee = _emp.FirstOrDefault(e => e.uid == id);
             if (employee == null) return NotFound();
             return View(employee);
         }
@@ -63,7 +65,7 @@ namespace _06032025_MVCDAY1.Controllers
         [HttpPost, ActionName("DeleteConfirmed")]
         public IActionResult DeleteConfirmed(int id)
         {
-            var employee = _emp.FirstOrDefault(e => e.id == id);
+            var employee = _emp.FirstOrDefault(e => e.uid == id);
             if (employee == null) return NotFound();
 
             _emp.Remove(employee);

@@ -16,14 +16,14 @@
         @foreach (var emp in Model)
         {
             <tr>
-                <td>@emp.id</td>
+                <td>@emp.uid</td>
                 <td>@emp.fname</td>
                 <td>@emp.lname</td>
                 <td>@emp.email</td>
                 <td>@emp.phone</td>
                 <td>
-                    <a href="@Url.Action("EditUser", new { id = emp.id })" class="btn btn-warning">Edit</a>
-                    <a href="@Url.Action("DeleteUser", new { id = emp.id })" class="btn btn-danger">Delete</a>
+                    <a href="@Url.Action("EditUser", new { id = emp.uid })" class="btn btn-warning">Edit</a>
+                    <a href="@Url.Action("DeleteUser", new { id = emp.uid })" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }

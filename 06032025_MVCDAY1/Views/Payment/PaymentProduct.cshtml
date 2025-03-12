@@ -3,7 +3,7 @@
 *@
 @{
 }
-<div class="container">
+@* <div class="container">
     <div class="payment-container">
         <h3 class="text-center">Payment Details</h3>
         <form id="paymentForm">
@@ -28,4 +28,91 @@
             <button type="submit" class="btn btn-success w-100">Pay Now</button>
         </form>
     </div>
+</div> *@
+
+<style>
+    .image-preview {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+        .image-preview img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+</style>
+
+<div class="container mt-3 pb-3 shadow-lg bg-light">
+    <div class="text-end mt-3 pt-1">
+        <button>Save Draft</button>
+
+
+    </div>
+    <h2 class="mb-4 text-decoration-underline ">Billing Information</h2>
+    <div class="row">
+        <!-- Left Column - Product Details -->
+        <div class="col-md-12  justify-content-center align-items-center">
+            <div class="card p-4 shadow-lg">
+                <form action="/user/AddProduct" method="post">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">First Name</label>
+                            <input type="text" class="form-control" id="email" placeholder="FirstName" name="fname" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Last Name</label>
+                            <input type="text" class="form-control" id="phone" placeholder="LastName" name="lname" required>
+
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Email (Optional)</label>
+                       
+                        <input type="text" class="form-control" placeholder="abc@gmail.com" name="email">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Address</label>
+                        <input type="text" class="form-control" placeholder="XX,street..." name="add1">
+                        
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Address 2</label>
+                        <input type="text" class="form-control" placeholder="apartment name etc." name="add2">
+
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Country</label>
+                        
+                        <select class="form-select" id="country" required="">
+                            <option value="">Choose...</option>
+                            <option>India</option>
+                        </select>
+                    </div>
+                    
+
+                    <h4 style="color:black;font-family: 'Arial Narrow Bold';">Pricing and Stock</h4>
+                    <div class="mb-3">
+                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold';">Base Price</label>
+                        <input type="text" class="form-control" placeholder="$47.55" name="price">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold';">Stock</label>
+                        <input type="number" class="form-control" placeholder="77" name="stock">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold';">Discount</label>
+                        <input type="text" class="form-control" placeholder="10%">
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit">Add Product</button>
+                    </div>
+                </form>
+                <a href="@Url.Action("GetProduct")" class="btn btn-secondary mt-2">Back to List</a>
+            </div>
+        </div>
+        </div>
 </div>

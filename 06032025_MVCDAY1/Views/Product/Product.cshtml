@@ -14,8 +14,11 @@
     }
 
 
-    .product-card .position-relative {
+    /* .product-card .position-relative {
         position: relative;
+    } */
+    #imgdiv{
+        position:relative;
     }
 
     .quick-view-btn {
@@ -29,6 +32,8 @@
         border-radius: 5px;
         font-size: 14px;
         transition: background-color 0.3s, border-color 0.3s;
+        position:absolute;
+        transform:translate(-50%,-50%);
     }
 
     .product-card:hover .quick-view-btn {
@@ -54,6 +59,30 @@
         align-items: center;
     }
 
+    @@media (max-width: 765px) {
+        /* Hide small image thumbnails on small screens */
+        .small-images {
+            display: none !important;
+        }
+        /* Make the image carousel full width and show all images */
+        #mainImageCarousel .carousel-item {
+            width: 100% !important;
+        }
+
+        #mainImageCarousel .carousel-control-prev,
+        #mainImageCarousel .carousel-control-next {
+            display: block;
+        }
+        /* Stack columns vertically on small screens */
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .modal-body .col-md-9, .modal-body .col-md-3 {
+                width: 100%;
+            }
+    }
     /* .carousel-item{
         height:500px;
     } */
@@ -72,19 +101,22 @@
                     <!-- Samsung -->
                     <div class="col-md-3" >
                         <div class="card product-card">
-                            <label class="wishlist-label">
-                                <input type="checkbox" class="wishlist-checkbox">
-                                <svg class="heart-icon" viewBox="0 0 24 24">
-                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                                </svg>
-                            </label>
-                            <button class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" data-bs-toggle="modal" data-bs-target="#quickViewModal">Quick View</button>
-                            <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
-                            
+                            <div id="imgdiv">
+                                <label class="wishlist-label">
+                                    <input type="checkbox" class="wishlist-checkbox">
+                                    <svg class="heart-icon" viewBox="0 0 24 24">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                                    </svg>
+                                </label>
+
+                                <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
+                                <button class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" data-bs-toggle="modal" data-bs-target="#quickViewModal">Quick View</button>
+                            </div>
+                           
                             <div class="card-body" class="wishlist-item" id="wishlist-item1">
                                 <h5 class="card-title" id="name">samsung s25 ultra</h5>
                                 <p class="card-text" id="price">₹ 130000</p>
-                                <button class="btn btn-primary buyNowBtn" data-name="samsung s25 ultra" data-price="₹130000" data-image="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg">Buy Now</button>
+                                <a class="btn btn-primary" asp-action="PaymentProduct" asp-controller="Payment">Buy Now</a>
                                 <button class="btn btn-primary cart-btn" onclick="addToCart('Samsung S25 Ultra', 130000, 'https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg')" asp-area="" asp-controller="UserBuy" asp-action="AddCart">Add to Cart</button>
                                 @* <a asp-area="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
                             </div>
@@ -251,58 +283,94 @@
 </div>
 
 <!-- Quick View Modal -->
+<!-- Quick View Modal -->
 
 <div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
+            <!-- First Row: Close Button -->
             <div class="modal-header">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body d-flex flex-column flex-md-row">
-                <!-- Left: Small Images (visible only on larger screens and hidden on <=992px) -->
-                <div class="d-flex flex-wrap justify-content-center mb-4 mb-md-0 d-none d-md-flex">
-                    <div class="small-images">
-                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 1" data-bs-toggle="tooltip" title="Image 1" data-bs-target="#mainImage" data-bs-slide-to="0">
-                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 2" data-bs-toggle="tooltip" title="Image 2" data-bs-target="#mainImage" data-bs-slide-to="1">
-                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 3" data-bs-toggle="tooltip" title="Image 3" data-bs-target="#mainImage" data-bs-slide-to="2">
+
+            <div class="row">
+                <!-- Second Row: Image and Product Details Section -->
+                <div class="col-12 col-md-8 modal-body d-flex flex-column">
+                    <div class="row">
+                        <!-- First Column: Small Image Thumbnails -->
+                        <div class="col-12 col-md-3 small-images">
+                            <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 1" data-bs-toggle="tooltip" title="Image 1" data-bs-target="#mainImageCarousel" data-bs-slide-to="0">
+                            <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 2" data-bs-toggle="tooltip" title="Image 2" data-bs-target="#mainImageCarousel" data-bs-slide-to="1">
+                            <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 3" data-bs-toggle="tooltip" title="Image 3" data-bs-target="#mainImageCarousel" data-bs-slide-to="2">
+                        </div>
+
+                        <!-- Second Column: Main Image Carousel -->
+                        <div class="col-12 col-md-9">
+                            <!-- Main Product Image Carousel with 3s interval -->
+                            <div id="mainImageCarousel" class="carousel slide mb-3" data-bs-ride="carousel" data-bs-interval="2000">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <img id="modalImage" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block w-100" alt="Image 1">
+                                    </div>
+                                    <div class="carousel-item">
+                                        <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block w-100" alt="Image 2">
+                                    </div>
+                                    <div class="carousel-item">
+                                        <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block w-100" alt="Image 3">
+                                    </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Right: Product Details -->
-                <div class="ms-md-4 flex-grow-1">
-                    <!-- Main Product Image -->
-                    <div id="mainImageCarousel" class="carousel slide mb-3" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img id="modalImage" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block w-100" alt="Image 1">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block w-100" alt="Image 2">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block w-100" alt="Image 3">
-                            </div>
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div>
-
-                    <!-- Product Details Scrollable Area -->
-                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="scrollspy-example-2" tabindex="0" style="max-height:70%; overflow-y: auto;">
+                <!-- Product Details Section: Right Column -->
+                <div class="col-12 col-md-4 scrollspy-example-2" tabindex="0">
+                    <div class="container">
                         <h5 id="modalName"></h5>
                         <div>
                             <h3>Red Saree</h3>
                             <strong>Price: ₹ <span id="modalPrice"></span></strong>
                         </div>
-                        <p></p>
-                        <p class="text-success">You are eligible for free shipping.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <div style="max-height: 500px;
+                             overflow-y: auto;
+                             overflow-x:auto;
+                             border: 1px solid #ccc;
+                             padding: 10px;">
+                            <p class="text-success">You are eligible for free shipping.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+
+                        </div>
+                        
                     </div>
                 </div>
             </div>
