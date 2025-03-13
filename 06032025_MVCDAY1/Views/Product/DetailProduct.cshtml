@@ -1,0 +1,390 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<style>
+    .modal-content {
+        border-radius: 10px;
+    }
+
+
+    /* #imgdiv { */
+    /*     position: relative; */
+    /* } */
+
+    .col-8.modal-body {
+        position: relative;
+        top: 20px; /* Adjust this value as needed */
+        z-index: 10; /* Ensure the sticky column stays above other content */
+        /* height:60%; */
+    }
+
+    /* Optional: Add a bit of padding and box-shadow to make the sticky column stand out */
+    .col-8.modal-body {
+        padding-top: 20px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .quick-view-btn {
+        display: none; /* Initially hide the button */
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.4); /* Transparent background */
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.6); /* Light border */
+        padding: 10px 0;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .product-card:hover .quick-view-btn {
+        display: block; /* Show the button on hover */
+    }
+
+    .quick-view-btn:hover {
+        background-color: rgba(0, 0, 0, 0.7); /* Darker background on hover */
+        border-color: rgba(255, 255, 255, 1);
+    }
+
+    .small-images img {
+        width: 80px;
+        height: 130px;
+        object-fit: cover;
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    .small-images {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Mobile Sidebar */
+    .sidebar-mobile {
+        position: fixed;
+        top: 0;
+        left: -250px;
+        width: 250px;
+        height: 100%;
+        background-color: #f8f9fa;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        transition: left 0.3s ease-in-out;
+        z-index: 1050;
+    }
+
+        .sidebar-mobile.show {
+            left: 0;
+        }
+
+    /* Overlay */
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1040;
+    }
+
+        .overlay.show {
+            display: block;
+        }
+
+    /* Color Box Selection */
+    .color-box {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        margin-right: 10px;
+        cursor: pointer;
+        border-radius: 50%;
+    }
+
+        .color-box.selected {
+            border: 2px solid #000;
+        }
+
+    .wishlist-label {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+    .wishlist-checkbox {
+        display: none;
+    }
+
+    .heart-icon {
+        width: 24px;
+        height: 24px;
+        fill: white;
+        stroke: black;
+        stroke-width: 2;
+        transition: fill 0.3s ease-in-out, stroke 0.3s ease-in-out;
+    }
+
+    /* Change heart color when checkbox is checked */
+    .wishlist-checkbox:checked + .heart-icon {
+        fill: red;
+        stroke: red;
+    }
+
+    .qty-selector {
+        display: flex;
+        transform: translateX(-28px);
+    }
+
+    .qty-selector__btn--minus {
+        transform: translateX(15px);
+    }
+
+    .product-quantity .form-input {
+        max-width: 44px;
+        text-align: center;
+    }
+
+    .qty-selector__input {
+        border: 0;
+        padding-top: 0;
+        padding-bottom: 5px;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .qty-selector__btn--add {
+        transform: translateX(-15px);
+    }
+
+    .qty-selector__btn {
+        border: 0;
+        background: 0 0;
+        height: 44px;
+        width: 44px;
+    }
+
+    .form-field:not(.swatch-color), .product-form .selector-wrapper {
+        margin-bottom: 24px;
+    }
+
+</style>
+
+<div class="container">
+    <div class="row align-content-center justify-content-center align-items-center">
+        <div class="d-flex justify-content-center align-items-center ">
+            <h1>Products Details</h1>
+        </div>
+
+    </div>
+
+    <div class="container">
+        @* <div class="row">
+            <!-- 1st col -->
+            <div class="col-8 modal-body d-flex flex-column">
+                <div class="row">
+                    <div class="col-4 small-images">
+                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 1" data-bs-toggle="tooltip" title="Image 1" data-bs-target="#mainImage" data-bs-slide-to="0">
+                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 2" data-bs-toggle="tooltip" title="Image 2" data-bs-target="#mainImage" data-bs-slide-to="1">
+                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 3" data-bs-toggle="tooltip" title="Image 3" data-bs-target="#mainImage" data-bs-slide-to="2">
+
+                    </div>
+                    <div class="col-8 carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img id="modalImage" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg"  alt="Image 1">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg"  alt="Image 2">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg"  alt="Image 3">
+                            </div>
+                        </div>
+                         <button class="carousel-control-prev" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button> 
+                    </div>
+
+                </div>
+            </div>
+            <!-- 2nd col-->
+            <div class="col-4 col-md-4 modal-body d-flex flex-column">
+                <div class="container">
+                    <div class="mt-1 pt-3">
+                        <h3>samsung s25 ultra</h3>
+                        <strong>Price: ₹ <span id="modalPrice">130000</span></strong>
+                    </div>
+                    <hr />
+                    <div class="form-field product-quantity">
+                        <label class="form-label" for="product-quantity">
+                            <span class="form-field-title">Quantity</span>
+                            <button class="qty-selector__btn qty-selector__btn--minus" type="button" aria-label="Reduce item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588"></path></g></svg></button>
+                            <input class="form-input qty-selector__input" type="text" name="quantity" value="1" id="product-quantity" data-product-quantity="">
+                            <button class="qty-selector__btn qty-selector__btn--add" type="button" aria-label="Increase item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588M8 4.706v6.588"></path></g></svg></button>
+                        </label>
+                    </div>
+
+                    <button class="btn btn-outline-dark" type="button">Button</button>
+                    <button class="btn btn-primary" type="button">Button</button>
+                    <hr />
+
+                    <div class="d-grid gap-2" style="max-height: 380px;
+                             overflow-y: auto;
+                             overflow-x:auto;
+                             border: 1px solid #ccc;
+                             padding: 10px;">
+
+
+                        <div class=" pt-4">
+                            <h3>Product Details</h3>
+                            <p>Limited Edition Designer Weaves </p>
+                            <p>
+                                These sarees are specially designed with Pure Silk Threads, featuring unique borders and trendy color combinations. Handwoven by our skilled senior weavers, they are lightweight, easy to drape, and stylish, blending tradition with modern design.
+
+
+
+
+
+                                Whether for festive events or formal gatherings, this saree brings an air of sophistication and luxury to your wardrobe..
+                            </p>
+                            <p>This Handloom Pure Soft Silk Saree is a beautiful fusion of grace and style, designed for the woman who appreciates tradition with a contemporary twist. The soft silk feels light and luxurious against the skin.</p>
+                            <p>
+                                Adorned with intricate patterns and rich detailing that embody sophistication and grace. the Designer pallu adds a stunning contrast to the saree's body, creating a look that’s regal and unique
+                            </p>
+                            <p>Design:- Handloom Pure Soft Silk Saree with Designer Pallu </p>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div> *@
+        <div class="row">
+            <!-- Second Row: Image and Product Details Section -->
+            <div class="col-12 col-md-7 modal-body d-flex flex-column">
+                <div class="row">
+                    <!-- First Column: Small Image Thumbnails -->
+                    <div class="col-12 col-md-3 small-images">
+                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 1" data-bs-toggle="tooltip" title="Image 1" data-bs-target="#mainImageCarousel" data-bs-slide-to="0">
+                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 2" data-bs-toggle="tooltip" title="Image 2" data-bs-target="#mainImageCarousel" data-bs-slide-to="1">
+                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 3" data-bs-toggle="tooltip" title="Image 3" data-bs-target="#mainImageCarousel" data-bs-slide-to="2">
+                    </div>
+
+                    <!-- Second Column: Main Image Carousel -->
+                    <div class="col-12 col-md-9">
+                        <!-- Main Product Image Carousel with 3s interval -->
+                        <div id="mainImageCarousel" class="carousel slide mb-3" data-bs-ride="carousel" data-bs-interval="2000">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img id="modalImage" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block"  alt="Image 1">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block " alt="Image 2">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block " alt="Image 3">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center align-content-center">
+                        <div class="form-field product-quantity">
+                            <label class="form-label" for="product-quantity">
+                                <span class="form-field-title" style="font-weight:bold">Quantity</span>
+                                <button class="qty-selector__btn qty-selector__btn--minus" type="button" aria-label="Reduce item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588"></path></g></svg></button>
+                                <input class="form-input qty-selector__input" type="text" name="quantity" value="1" id="product-quantity" data-product-quantity="">
+                                <button class="qty-selector__btn qty-selector__btn--add" type="button" aria-label="Increase item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588M8 4.706v6.588"></path></g></svg></button>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Product Details Section: Right Column -->
+            <div class="col-12 col-md-5 scrollspy-example-2" tabindex="0">
+                <div class="container">
+                    <div class="mt-1 pt-3">
+                        <h3>samsung s25 ultra</h3>
+                        <strong>Price: ₹ <span id="modalPrice">130000</span></strong>
+                    </div>
+                    <hr />
+                    @*  <div class="form-field product-quantity">
+                        <label class="form-label" for="product-quantity">
+                            <span class="form-field-title">Quantity</span>
+                            <button class="qty-selector__btn qty-selector__btn--minus" type="button" aria-label="Reduce item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588"></path></g></svg></button>
+                            <input class="form-input qty-selector__input" type="text" name="quantity" value="1" id="product-quantity" data-product-quantity="">
+                            <button class="qty-selector__btn qty-selector__btn--add" type="button" aria-label="Increase item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588M8 4.706v6.588"></path></g></svg></button>
+                        </label>
+                    </div> *@
+
+                    <button class="btn btn-outline-dark" type="button">Button</button>
+                    <button class="btn btn-primary" type="button">Button</button>
+                    <hr />
+
+                    <div style="max-height: 500px;
+                             overflow-y: auto;
+                             overflow-x:auto;
+                             border: 1px solid #ccc;
+                             padding: 10px;">
+                        <p class="text-success">You are eligible for free shipping.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        
+        
+    </div>
+</div>
+<div class="d-flex justify-content-center align-content-center">
+    <h2>FAQs</h2>
+   </div>
+@{
+    Html.RenderPartial("~/Views/Product/ProductFAQ.cshtml");
+}

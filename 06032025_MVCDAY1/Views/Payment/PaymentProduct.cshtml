@@ -46,18 +46,18 @@
         }
 </style>
 
-<div class="container mt-3 pb-3 shadow-lg bg-light">
-    <div class="text-end mt-3 pt-1">
+<div class="container mt-3 pb-3 shadow-lg bg-light" style="padding:50px;">
+    @* <div class="text-end mt-3 pt-1">
         <button>Save Draft</button>
 
 
-    </div>
+    </div> *@
     <h2 class="mb-4 text-decoration-underline ">Billing Information</h2>
     <div class="row">
         <!-- Left Column - Product Details -->
         <div class="col-md-12  justify-content-center align-items-center">
             <div class="card p-4 shadow-lg">
-                <form action="/user/AddProduct" method="post">
+                <form>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">First Name</label>
@@ -84,34 +84,97 @@
                         <input type="text" class="form-control" placeholder="apartment name etc." name="add2">
 
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Country</label>
-                        
-                        <select class="form-select" id="country" required="">
-                            <option value="">Choose...</option>
-                            <option>India</option>
-                        </select>
-                    </div>
-                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">State</label>
+                            <select class="form-select" id="country" required="">
+                                <option value="">Choose...</option>
+                                <option>Gujarat</option>
+                                <option>Maharastra</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">City</label>
+                            <select class="form-select" id="city" required="">
+                                <option value="">Choose...</option>
+                                <option>Surat</option>
+                                <option>Baroda</option>
+                            </select>
 
-                    <h4 style="color:black;font-family: 'Arial Narrow Bold';">Pricing and Stock</h4>
-                    <div class="mb-3">
-                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold';">Base Price</label>
-                        <input type="text" class="form-control" placeholder="$47.55" name="price">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Pincode</label>
+                            <input type="text" class="form-control" id="pincode"  name="pincode" required>
+
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold';">Stock</label>
-                        <input type="number" class="form-control" placeholder="77" name="stock">
+                    <hr />
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="same-address">
+                        <label class="form-check-label" for="same-address">Shipping address is the same as my billing address</label>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold';">Discount</label>
-                        <input type="text" class="form-control" placeholder="10%">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="save-info">
+                        <label class="form-check-label" for="save-info">Save this information for next time</label>
                     </div>
+                    <hr />
+
+                    <h4 style="color:black;font-family: 'Arial Narrow Bold';">Payment Type</h4>
+                    <div class="my-3">
+                        <div class="form-check">
+                            <input id="credit" name="paymentMethod" type="radio" class="form-check-input" checked="" required="">
+                            <label class="form-check-label" for="credit">Credit card</label>
+                        </div>
+                        <div class="form-check">
+                            <input id="debit" name="paymentMethod" type="radio" class="form-check-input" required="">
+                            <label class="form-check-label" for="debit">Debit card</label>
+                        </div>
+                        <div class="form-check">
+                            <input id="paypal" name="paymentMethod" type="radio" class="form-check-input" required="">
+                            <label class="form-check-label" for="paypal">PayPal</label>
+                        </div>
+                    </div>
+                    <div class="row gy-3">
+                        <div class="col-md-6">
+                            <label for="cc-name" class="form-label">Name on card</label>
+                            <input type="text" class="form-control" id="cc-name" placeholder="" required="">
+                            <small class="text-body-secondary">Full name as displayed on card</small>
+                            <div class="invalid-feedback">
+                                Name on card is required
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="cc-number" class="form-label">Credit card number</label>
+                            <input type="number" class="form-control" id="cc-number" placeholder="" required="">
+                            <div class="invalid-feedback">
+                                Credit card number is required
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="cc-expiration" class="form-label">Expire Date</label>
+                            <input type="month" class="form-control" id="cc-expiration" placeholder="" required="">
+                            <div class="invalid-feedback">
+                                Expire date required
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="cc-cvv" class="form-label">CVV</label>
+                            <input type="text" class="form-control" id="cc-cvv" maxlength="3" placeholder="" required="">
+                            <div class="invalid-feedback">
+                                Security code required
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+
                     <div class="mb-3">
-                        <button type="submit">Add Product</button>
+                        <button type="submit" class="btn btn-success w-100">Proccess To Buy</button>
                     </div>
                 </form>
-                <a href="@Url.Action("GetProduct")" class="btn btn-secondary mt-2">Back to List</a>
+               
             </div>
         </div>
         </div>
