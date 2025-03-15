@@ -12,4 +12,8 @@
     <None Include="wwwroot\image\nikunj.jpg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Razorpay" Version="3.1.4" />
+  </ItemGroup>
+
 </Project>

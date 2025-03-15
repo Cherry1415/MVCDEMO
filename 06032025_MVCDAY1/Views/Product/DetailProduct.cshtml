@@ -62,7 +62,9 @@
         flex-direction: column;
         align-items: center;
     }
-
+    .main-image{
+        width:80%;
+    }
     /* Mobile Sidebar */
     .sidebar-mobile {
         position: fixed;
@@ -185,128 +187,23 @@
     </div>
 
     <div class="container">
-        @* <div class="row">
-            <!-- 1st col -->
-            <div class="col-8 modal-body d-flex flex-column">
-                <div class="row">
-                    <div class="col-4 small-images">
-                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 1" data-bs-toggle="tooltip" title="Image 1" data-bs-target="#mainImage" data-bs-slide-to="0">
-                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 2" data-bs-toggle="tooltip" title="Image 2" data-bs-target="#mainImage" data-bs-slide-to="1">
-                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 3" data-bs-toggle="tooltip" title="Image 3" data-bs-target="#mainImage" data-bs-slide-to="2">
-
-                    </div>
-                    <div class="col-8 carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img id="modalImage" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg"  alt="Image 1">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg"  alt="Image 2">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg"  alt="Image 3">
-                            </div>
-                        </div>
-                         <button class="carousel-control-prev" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button> 
-                    </div>
-
-                </div>
-            </div>
-            <!-- 2nd col-->
-            <div class="col-4 col-md-4 modal-body d-flex flex-column">
-                <div class="container">
-                    <div class="mt-1 pt-3">
-                        <h3>samsung s25 ultra</h3>
-                        <strong>Price: ₹ <span id="modalPrice">130000</span></strong>
-                    </div>
-                    <hr />
-                    <div class="form-field product-quantity">
-                        <label class="form-label" for="product-quantity">
-                            <span class="form-field-title">Quantity</span>
-                            <button class="qty-selector__btn qty-selector__btn--minus" type="button" aria-label="Reduce item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588"></path></g></svg></button>
-                            <input class="form-input qty-selector__input" type="text" name="quantity" value="1" id="product-quantity" data-product-quantity="">
-                            <button class="qty-selector__btn qty-selector__btn--add" type="button" aria-label="Increase item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588M8 4.706v6.588"></path></g></svg></button>
-                        </label>
-                    </div>
-
-                    <button class="btn btn-outline-dark" type="button">Button</button>
-                    <button class="btn btn-primary" type="button">Button</button>
-                    <hr />
-
-                    <div class="d-grid gap-2" style="max-height: 380px;
-                             overflow-y: auto;
-                             overflow-x:auto;
-                             border: 1px solid #ccc;
-                             padding: 10px;">
-
-
-                        <div class=" pt-4">
-                            <h3>Product Details</h3>
-                            <p>Limited Edition Designer Weaves </p>
-                            <p>
-                                These sarees are specially designed with Pure Silk Threads, featuring unique borders and trendy color combinations. Handwoven by our skilled senior weavers, they are lightweight, easy to drape, and stylish, blending tradition with modern design.
-
-
-
-
-
-                                Whether for festive events or formal gatherings, this saree brings an air of sophistication and luxury to your wardrobe..
-                            </p>
-                            <p>This Handloom Pure Soft Silk Saree is a beautiful fusion of grace and style, designed for the woman who appreciates tradition with a contemporary twist. The soft silk feels light and luxurious against the skin.</p>
-                            <p>
-                                Adorned with intricate patterns and rich detailing that embody sophistication and grace. the Designer pallu adds a stunning contrast to the saree's body, creating a look that’s regal and unique
-                            </p>
-                            <p>Design:- Handloom Pure Soft Silk Saree with Designer Pallu </p>
-
-
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div> *@
+        
         <div class="row">
             <!-- Second Row: Image and Product Details Section -->
             <div class="col-12 col-md-7 modal-body d-flex flex-column">
                 <div class="row">
                     <!-- First Column: Small Image Thumbnails -->
                     <div class="col-12 col-md-3 small-images">
-                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 1" data-bs-toggle="tooltip" title="Image 1" data-bs-target="#mainImageCarousel" data-bs-slide-to="0">
-                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 2" data-bs-toggle="tooltip" title="Image 2" data-bs-target="#mainImageCarousel" data-bs-slide-to="1">
-                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 3" data-bs-toggle="tooltip" title="Image 3" data-bs-target="#mainImageCarousel" data-bs-slide-to="2">
+                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 1" data-bs-toggle="tooltip" title="Image 1" onclick="changeImage(this)">
+                        <img class="small-img main-image" src="~/image/mobile/iqooz9.jpg" alt="Small Image 2" data-bs-toggle="tooltip" title="Image 2" onclick="changeImage(this)">
+                        <img class="small-img" src="~/image/mobile/pocox6pro.jpg" alt="Small Image 3" data-bs-toggle="tooltip" title="Image 3" onclick="changeImage(this)">
                     </div>
 
                     <!-- Second Column: Main Image Carousel -->
                     <div class="col-12 col-md-9">
                         <!-- Main Product Image Carousel with 3s interval -->
-                        <div id="mainImageCarousel" class="carousel slide mb-3" data-bs-ride="carousel" data-bs-interval="2000">
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img id="modalImage" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block"  alt="Image 1">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block " alt="Image 2">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block " alt="Image 3">
-                                </div>
-                            </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
-                        </div>
+                        
+                        <img id="mainImage"  src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Main Product Image">
                     </div>
                     <div class="d-flex justify-content-center align-content-center">
                         <div class="form-field product-quantity">
@@ -384,7 +281,13 @@
 </div>
 <div class="d-flex justify-content-center align-content-center">
     <h2>FAQs</h2>
-   </div>
+</div>
 @{
     Html.RenderPartial("~/Views/Product/ProductFAQ.cshtml");
 }
+
+<script>
+    function changeImage(element) {
+        document.getElementById("mainImage").src = element.src;
+    }
+</script>
