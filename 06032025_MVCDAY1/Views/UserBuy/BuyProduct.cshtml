@@ -13,8 +13,11 @@
 
 <div class="modal fade" id="buyNowModal" tabindex="-1" aria-labelledby="buyNowModalLabel" aria-hidden="true">
     <div class="modal-dialog">
+
         <div class="modal-content">
+            @* <form method="post" asp-action="InitiateOrder"> *@
             <div class="modal-header">
+
                 <h5 class="modal-title" id="buyNowModalLabel">Confirm Your Purchase</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -22,14 +25,18 @@
                 <img id="productImage" src="" width="200" height="200" class="mb-3" alt="Product Image">
                 <h5 id="productName"></h5>
                 <p class="text-success">You are eligible for free shipping.</p>
-                <p><strong>Price: ₹ <span id="productPrice"></span></strong></p>
+
+                
+                    <input type="text" id="amount" name="amount" />
+                
+                 
                 <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" asp-area="" asp-controller="Payment" asp-action="CheckOutSection">Proceed to Checkout</a>
+                <a class="btn btn-primary" asp-area="" asp-controller="Payment" asp-action="InitiateOrder">Proceed to Checkout</a>
             </div>
-
+            @* </form> *@
         </div>
     </div>
 </div>

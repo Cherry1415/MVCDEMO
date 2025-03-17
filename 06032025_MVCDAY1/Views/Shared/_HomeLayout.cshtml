@@ -63,15 +63,19 @@
     <header id="headercolor">
         <nav class="navbar">
             <div class="container-fluid">
-                <span class="navbar-brand mb-0 h1">DealBazar</span>
+                
+                <span class="navbar-brand mb-0 h1"><a class="navbar-brand" aria-current="page" asp-area="" asp-controller="DashBoard" asp-action="HomeDashBoard">DealBazar</a></span>
                 <form class="d-flex w-50" role="search">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
 
                 </form>
                 <div>
-                    <i class="fa fa-fw fa-user" style='font-size:16px'></i>
-                    <i class='fas fa-shopping-cart' style='font-size:16px'></i>
+                    <i class='fas fa-heart' style='font-size:20px;color:red;'></i>
+                    <i class="fa fa-fw fa-user" style='font-size:20px'></i>
+                    <i class='fas fa-cart-arrow-down' style='font-size:20px'></i>
+                   
+                    @* <i class='fas fa-shopping-cart' style='font-size:16px'></i> *@
 
                 </div>
 
@@ -280,21 +284,22 @@
                         <li class="nav-item">
                             <a class="nav-link" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" asp-area="" asp-controller="User" asp-action="LoginView">Login</a>
-                        </li>
-                        @* <li class="nav-item"> *@
-                        @*     <a class="nav-link" asp-area="" asp-controller="User" asp-action="RegisterVendor">Register</a> *@
-                        @* </li> *@
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="User" asp-action="AddProduct">Add Product</a>
+                            <a class="nav-link active" aria-current="page" asp-area="" asp-controller="Product" asp-action="orders">Orders</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Orders By Customers</a>
+                            <a class="nav-link active" aria-current="page" asp-area="" asp-controller="UserBuy" asp-action="BuyProduct">Buy Product</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Contact</a>
+                            <a class="nav-link" aria-current="page" asp-area="" asp-controller="Register" asp-action="Index">Register</a>
                         </li>
+                        @* <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" asp-area="" asp-controller="UserBuy" asp-action="WishList">Your List</a>
+                        </li> *@
+                       @*  <li class="nav-item">
+                            <a class="nav-link" aria-current="page" a><i class='fas fa-cart-arrow-down' style='font-size:40px'></i></a>
+                        </li> *@
                     </ul>
                 </div>
             </div>

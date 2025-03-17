@@ -9,11 +9,23 @@
 
 <div class="container-fluid d-inline-block">
     <div class="d-inline-flex">
-        @{
-            Html.RenderPartial("~/Views/Product/ElectronicFilter.cshtml");
-        }
+        <div>
+            <input type="checkbox" id="menu-togglemobilefilter">
+            <label for="menu-togglemobilefilter" class="overlay"></label>
+
+            <!-- ====== NAVBAR (New) ====== -->
+            <div class="navbar">
+                <label for="menu-togglemobilefilter" class="open-btn">☰</label>
+            </div>
 
 
+            <div class="filtersidebar">
+                <label for="menu-togglemobilefilter" class="close-btn">&times;</label>
+                @{
+                    Html.RenderPartial("~/Views/Product/ElectronicFilter.cshtml");
+                }
+            </div>
+        </div>
         <div>
             <div class="container-fluid mt-5">
                 <h2 class="text-center mb-4">BuY IT</h2>
