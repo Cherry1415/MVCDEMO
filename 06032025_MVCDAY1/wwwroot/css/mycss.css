@@ -224,7 +224,16 @@
             background: rgba(255, 255, 255, 0.2);
             transform: scale(1.05);
         }
-
+.menu {
+    padding: 10px;
+    margin-left:10px;
+}
+    .menu h4 {
+        margin-top: 20px;
+        margin-bottom: 5px;
+        font-size: 16px;
+        font-weight: bold;
+    }
 .menu-toggle, .menu-togglemobilefilter {
     font-size: 20px;
     cursor: pointer;

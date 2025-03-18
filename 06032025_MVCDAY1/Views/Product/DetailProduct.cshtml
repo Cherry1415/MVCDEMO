@@ -5,7 +5,7 @@
 }
 
 <style>
-    .modal-content {
+    /* .modal-content {
         border-radius: 10px;
     }
 
@@ -174,6 +174,137 @@
 
     .form-field:not(.swatch-color), .product-form .selector-wrapper {
         margin-bottom: 24px;
+    } */
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .product-container {
+        margin-top: 20px;
+    }
+
+    .main-image {
+        width: 80%;
+        height: 80%;
+        border-radius: 5px;
+    }
+
+    .thumbnail-images img {
+        width: 80px;
+        height: auto;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-right: 5px;
+    }
+
+    .addon-container {
+        margin-top: 20px;
+    }
+
+    .addon-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .addon-btn {
+        background-color: #52a09e;
+        color: white;
+        border: none;
+        padding: 5px 15px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .btn-cart, .btn-buy {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+    }
+
+    .btn-cart {
+        background-color: #8dadcf;
+        color: white;
+    }
+
+    .btn-buy {
+        background-color: #8dadcf;
+        color: white;
+    }
+    /*
+                    .emi-section {
+                        background-color: #52a09e;
+                        color: white;
+                        text-align: center;
+                        padding: 12px;
+                        margin-top: 10px;
+                    } */
+
+    .review-btn {
+        position: fixed;
+        right: 10px;
+        top: 50%;
+        background-color: #ccc;
+        padding: 10px;
+        font-weight: bold;
+        border-radius: 5px;
+        writing-mode: vertical-rl;
+        cursor: pointer;
+    }
+
+    .whatsapp-btn {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: white;
+        border: 1px solid #ddd;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .whatsapp-btn img {
+            width: 25px;
+            margin-right: 5px;
+        }
+
+    .qty-selector {
+        display: flex;
+        transform: translateX(-28px);
+    }
+
+    .qty-selector__btn--minus {
+        transform: translateX(15px);
+    }
+
+    .product-quantity .form-input {
+        max-width: 44px;
+        text-align: center;
+    }
+
+    .qty-selector__input {
+        border: 0;
+        padding-top: 0;
+        padding-bottom: 5px;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .qty-selector__btn--add {
+        transform: translateX(-15px);
+    }
+
+    .qty-selector__btn {
+        border: 0;
+        background: 0 0;
+        height: 44px;
+        width: 44px;
     }
 
 </style>
@@ -181,7 +312,7 @@
 <div class="container">
     <div class="row align-content-center justify-content-center align-items-center">
         <div class="d-flex justify-content-center align-items-center ">
-            <h1>Products Details</h1>
+            <h3>Products Details</h3>
         </div>
 
     </div>
@@ -189,8 +320,80 @@
     <div class="container">
         
         <div class="row">
+            <div class="col-md-6">
+                <img id="mainImage" class="main-image" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Main Product Image">
+                <div class="thumbnail-images d-flex mt-2">
+                    <img src="~/image/mobile/iqooz9.jpg" onclick="changeImage(this)">
+                    <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" onclick="changeImage(this)">
+                    <img src="~/image/mobile/pocox6pro.jpg" onclick="changeImage(this)">
+                   
+                </div>
+            </div>
+
+            <!-- Right Side - Product Details -->
+            <div class="col-md-6">
+                <h2 class="fw-bold">Samsung s25 ultra</h2>
+
+                <div class="addon-container">
+                    @* <h5><strong>ADD ONS</strong> (applicable on pre-paid orders only)</h5> *@
+                    <div class="form-field product-quantity">
+                        <label class="form-label" for="product-quantity">
+                            <span class="form-field-title">Quantity</span>
+                            <div class="qty-selector">
+                                <button class="qty-selector__btn qty-selector__btn--minus" type="button" aria-label="Reduce item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588"></path></g></svg></button>
+                                <input class="form-input qty-selector__input" type="text" name="quantity" value="1" id="product-quantity" data-product-quantity="">
+                                <button class="qty-selector__btn qty-selector__btn--add" type="button" aria-label="Increase item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588M8 4.706v6.588"></path></g></svg></button>
+                            </div>
+                        </label>
+                    </div>
+                   
+                </div>
+
+                <button class="btn-cart">Add to Cart</button>
+                <button class="btn-buy">Buy it now</button>
+
+                @*  <div class="emi-section">
+                    EMI with VMI - Pay 1/3rd now, Rest in EMIs | 0% Interest | Powered by <strong>Snapmint</strong>
+                </div> *@
+
+                <div class="mt-4">
+                    <h5><strong>About the product</strong></h5>
+                    <div style="max-height: 300px;
+                             overflow-y: auto;
+                             overflow-x:auto;
+                             border: 1px solid #ccc;
+                             padding: 10px;">
+                        <p class="text-success">You are eligible for free shipping.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                       
+
+                    </div>
+
+                    @* <h5><strong>Specifications</strong></h5>
+                    <ul>
+                        <li><strong>Saree Color:</strong> Maroon</li>
+                        <li><strong>Fabric:</strong> Silk</li>
+                    </ul> *@
+                </div>
+            </div>
             <!-- Second Row: Image and Product Details Section -->
-            <div class="col-12 col-md-7 modal-body d-flex flex-column">
+           @*  <div class="col-12 col-md-7 modal-body d-flex flex-column">
                 <div class="row">
                     <!-- First Column: Small Image Thumbnails -->
                     <div class="col-12 col-md-3 small-images">
@@ -234,7 +437,7 @@
                             <input class="form-input qty-selector__input" type="text" name="quantity" value="1" id="product-quantity" data-product-quantity="">
                             <button class="qty-selector__btn qty-selector__btn--add" type="button" aria-label="Increase item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588M8 4.706v6.588"></path></g></svg></button>
                         </label>
-                    </div> *@
+                    </div> 
 
                     <button class="btn btn-outline-dark" type="button">Button</button>
                     <button class="btn btn-primary" type="button">Button</button>
@@ -251,28 +454,11 @@
                         <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
                         <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
                         <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-
+                 
                     </div>
 
                 </div>
-            </div>
+            </div> *@
         </div>
 
         
