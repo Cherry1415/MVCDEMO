@@ -8,6 +8,7 @@ namespace _06032025_MVCDAY1.Controllers
 {
     public class PaymentController : Controller
     {
+        private readonly RazorPayKeys _razorPayKeys;
         public PaymentInitiateModel paydetails { get; set; }
         public IActionResult Index()
         {

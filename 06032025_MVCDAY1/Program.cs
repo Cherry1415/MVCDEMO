@@ -1,3 +1,5 @@
+using _06032025_MVCDAY1.Models;
+
 namespace _06032025_MVCDAY1
 {
     public class Program
@@ -9,6 +11,9 @@ namespace _06032025_MVCDAY1
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            var RazorpayConfig = new RazorPayKeys();
+            builder.Configuration.GetSection("RazorPay").Bind(RazorpayConfig);
+            builder.Services.AddSingleton(RazorpayConfig);
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

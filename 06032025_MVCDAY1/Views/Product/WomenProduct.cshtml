@@ -1,0 +1,256 @@
+﻿<style>
+    /* Header - Categories */
+    /* .categories {
+            display: flex;
+            justify-content: center;
+            background: white;
+            padding: 10px;
+            gap: 20px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .category {
+            text-align: center;
+        }
+
+            .category img {
+                width: 90px;
+                height: 90px;
+                border-radius: 50%;
+            }
+
+            .category p {
+                margin-top: 5px;
+                font-size: 14px;
+            } */
+
+    /* Banner Section */
+    /* .banner {
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+                background: #fbe7d4;
+                padding: 40px 20px;
+                height: 10%;
+            }
+
+            .banner-content h2 {
+                font-size: 24px;
+                color: #333;
+            }
+
+            .banner-content h3 {
+                font-size: 28px;
+                color: #222;
+                font-weight: bold;
+            }
+
+            .brand-logos {
+                display: flex;
+                gap: 15px;
+                align-items: center;
+            }
+
+                .brand-logos img {
+                    width: 100px;
+                    height: auto;
+                }
+
+            .banner-img {
+                width: 30%;
+                height: 100%;
+                border-radius: 10px;
+            } */
+
+    /* Product Showcase
+                .products {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 20px;
+                    padding: 20px;
+                    max-width: 1200px;
+                    margin: auto;
+                }
+
+                .product {
+                    background: white;
+                    padding: 15px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                    .product img {
+                        width: 100%;
+                        border-radius: 10px;
+                    }
+
+                    .product p {
+                        margin-top: 10px;
+                        font-weight: bold;
+                    }*/
+
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .banner {
+        background-color: #fcebe3;
+        padding: 20px;
+        text-align: center;
+        margin: 20px 0;
+        width: 100%;
+    }
+
+    .brand-logos {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+        .brand-logos img {
+            width: 100px;
+            height: auto;
+        }
+
+    .banner-img {
+        width: 30%;
+        height: 100%;
+        border-radius: 10px;
+    }
+
+    .product-card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        text-align: center;
+        padding: 15px;
+        transition: transform 0.3s;
+    }
+
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+
+        .product-card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .product-card .btn {
+            margin-top: 10px;
+        }
+
+    .category-icons {
+        width: 80px; /* Adjust size */
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+        .category-icons img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+</style>
+
+<div class="container-fluid d-inline-block">
+    <div>
+        <div>
+            <div class="d-flex text-start" style="margin-left:20px; padding-left:100px;">
+                <input type="checkbox" id="menu-togglemobilefilter">
+                <label for="menu-togglemobilefilter" class="overlay"></label>
+
+                <!-- ====== NAVBAR (New) ====== -->
+                <div class="navbar">
+                    <label for="menu-togglemobilefilter" class="open-btn d-flex"><i for="menu-togglemobilefilter" class="fas fa-filter open-btn " style="font-size:24px; color:#555555"></i><h5 style="font-size:16px;">Filter</h5></label>
+                </div>
+
+
+                <div class="filtersidebar">
+                    <label for="menu-togglemobilefilter" class="close-btn">&times;</label>
+                    <hr />
+                    @{
+                        Html.RenderPartial("~/Views/Product/ClothFilter.cshtml");
+                    }
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container-fluid d-flex">
+            <div class="container-fluid mt-3">
+                <div class="container text-center my-4">
+                    <div class="row justify-content-center">
+                        <div class="col-3 col-md-2">
+                            <img src="~/image/akshay2.jpg" class="category-icons">
+                            <p>Shop now</p>
+                        </div>
+                        <div class="col-3 col-md-2">
+                            <img src="~/image/offer1.jpg" class="category-icons">
+                            <p>Under ₹299</p>
+                        </div>
+                        <div class="col-3 col-md-2">
+                            <img src="~/image/nikunj.jpg" class="category-icons">
+                            <p>Eyewear</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Banner -->
+                <div class="container">
+                    <div class="banner">
+                        <h3>Most Loved Brands</h3>
+                        <h2>Min. 50% Off</h2>
+                        <div class="brand-logos d-flex justify-content-center align-content-center">
+                        <img src="~/image/Levis-Logo.png" alt="Levi's">
+                        <img src="~/image/logo1.png" alt="US Polo">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Listing -->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4 col-lg-3 mb-4">
+                            <div class="product-card">
+                                <img src="~/image/tshirt.jpg" alt="Trendy Green Shirt">
+                                <h5>Trendy Green Shirt</h5>
+                                @* <button class="btn btn-primary">Buy Now</button>
+                                <button class="btn btn-outline-secondary">Add to Cart</button> *@
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-3 mb-4">
+                            <div class="product-card">
+                                <img src="~/image/offer1.jpg" alt="Casual Yellow Shirt">
+                                <h5>Casual Yellow Shirt</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-3 mb-4">
+                            <div class="product-card">
+                                <img src="~/image/offer2.jpg" alt="Ripped Jeans">
+                                <h5>Ripped Jeans</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-3 mb-4">
+                            <div class="product-card">
+                                <img src="~/image/prod2.jpg" alt="Sporty Look">
+                                <h5>Sporty Look</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-3 mb-4">
+                            <div class="product-card">
+                                <img src="~/image/prod3.jpg" alt="Elegant Formal Wear">
+                                <h5>Elegant Formal Wear</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
