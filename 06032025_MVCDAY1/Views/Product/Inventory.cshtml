@@ -1,0 +1,54 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<head>
+    <title>Product Inventory</title>
+    <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/bootstrap/js/bootstrap.min.js" rel="stylesheet" />
+    <script href="~/bootstrap/js/bootstrap.bundle.min.js"></script>
+</head>
+<div class="text-center">
+    <h1>All Product</h1>
+</div>
+
+<div class="container shadow">
+    <div class="border-2">
+        <div class="mt-1 mb-1 pt-3 ps-4 pb-3 shadow">
+            <button type="button" class="btn btn-outline-primary">Customer</button>
+            <button type="button" class="btn btn-outline-primary">Restaurant</button>
+            <button type="button" class="btn btn-outline-primary">Delivery Boy</button>
+        </div>
+        <div class="table-responsive border-4">
+            <table class="table table-striped table-bordered">
+                <thead>
+
+                    <tr>
+                        <th scope="col">Preview</th>
+                        <th scope="col">Product Title</th>
+                        <th scope="col">Inventory Status</th>
+                        <th scope="col">Date to ReOrder</th>
+                        <th scope="col">Inventory Level</th>
+                        <th scope="col">ReOrder Qty </th>
+                        <th scope="col">ReOrder Cost</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row"><img src="~/image/Levis-Logo.png" width="50" height="50" /></th>
+                        <td scope="col">T-Shirt</td>
+                        <td scope="col">In Stock</td>
+                        <td scope="col">12/12/2014</td>
+                        <td scope="col">200</td>
+                        <td scope="col">300</td>
+                        <td scope="col">50000</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
