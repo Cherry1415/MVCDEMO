@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Razorpay.Api;
+using System.Transactions;
 
 
 namespace _06032025_MVCDAY1.Controllers
@@ -9,7 +10,15 @@ namespace _06032025_MVCDAY1.Controllers
     public class PaymentController : Controller
     {
         private readonly RazorPayKeys _razorPayKeys;
-        public PaymentInitiateModel paydetails { get; set; }
+        private readonly ILogger<PaymentController> _logger;
+
+        public PaymentController(ILogger<PaymentController> logger,RazorPayKeys razorPayKeys)
+        {
+            _logger = logger;
+            _razorPayKeys = razorPayKeys;
+        }
+
+        //  public PaymentInitiateModel paydetails { get; set; }
         public IActionResult Index()
         {
             return View();
@@ -23,117 +32,38 @@ namespace _06032025_MVCDAY1.Controllers
         {
             return View();
         }
-      //  [HttpPost]
-        public IActionResult InitiateOrder()
+        [HttpPost]
+        public IActionResult InitiateOrder([FromBody] PaymentInitiateModel amount)
         {
-            //[FromBody] PaymentInitiateModel pay
-            string key = "rzp_test_A6DIgBxiN6cygo";
-            string secret = "j1hncXzwTkvVCC2G93PAHPHj";
+            //
+            try
+            {
+                int finalamount = amount.amount * 100;
+                RazorpayClient client = new RazorpayClient(_razorPayKeys.KeyID, _razorPayKeys.KeySecret);
+                Dictionary<string, object> options = new Dictionary<string, object>
+                {
+                    {"amount", finalamount},  // Amount will in paise
+                   
+                    { "currency", "INR"},
+                    { "receipt", "order_rcptid_14"},
+                    { "payment_capture", 1}
 
-            Random randomObj = new Random();
-            string transactionId = randomObj.Next(10000000, 100000000).ToString();
-            
-            Dictionary<string, object> input = new Dictionary<string, object>();
-            input.Add("amount",1*100); // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-            input.Add("currency", "INR");
-            input.Add("receipt", transactionId);
+                };
+                Order order = client.Order.Create(options);
+                return Json(new { orderId = order["id"].ToString() });
 
-            RazorpayClient client = new RazorpayClient(key, secret);
-            Razorpay.Api.Order order = client.Order.Create(input);
-           ViewBag.orderID=order["id"].ToString();
-            return View("Payment",paydetails);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
         }
 
-        //[HttpPost]
-        //public ActionResult CreateOrder(Models.PaymentInitiateModel _requestData)
-        //{
-        //    // Generate random receipt number for order
-        //    Random randomObj = new Random();
-        //    string transactionId = randomObj.Next(10000000, 100000000).ToString();
-
-        //    Razorpay.Api.RazorpayClient client = new Razorpay.Api.RazorpayClient("rzp_test_A6DIgBxiN6cygo", " j1hncXzwTkvVCC2G93PAHPHj");
-        //    Dictionary<string, object> options = new Dictionary<string, object>();
-        //    options.Add("amount", _requestData.amount * 100);  // Amount will in paise
-        //    options.Add("receipt", transactionId);
-        //    options.Add("currency", "INR");
-        //    options.Add("payment_capture", "0"); // 1 - automatic  , 0 - manual
-        //                                         //options.Add("notes", "-- You can put any notes here --");
-        //    Razorpay.Api.Order orderResponse = client.Order.Create(options);
-        //    string orderId = orderResponse["id"].ToString();
-
-        //    // Create order model for return on view
-        //    OrderModel orderModel = new OrderModel
-        //    {
-        //        orderId = orderResponse.Attributes["id"],
-        //        razorpayKey = "--Razorpay Key--",
-        //        amount = _requestData.amount * 100,
-        //        currency = "INR",
-        //        //name = _requestData.name,
-        //        //email = _requestData.email,
-        //        //contactNumber = _requestData.contactNumber,
-        //        //address = _requestData.address,
-        //        description = "Testing description"
-        //    };
-
-        //    // Return on PaymentPage with Order data
-        //    return View("PaymentPage", orderModel);
-        //}
-
-        //public class OrderModel
-        //{
-        //    public string orderId { get; set; }
-        //    public string razorpayKey { get; set; }
-        //    public int amount { get; set; }
-        //    public string currency { get; set; }
-        //    public string name { get; set; }
-        //    public string email { get; set; }
-        //    public string contactNumber { get; set; }
-        //    public string address { get; set; }
-        //    public string description { get; set; }
-        //}
-
-
-      //  [HttpPost]
-    //    public ActionResult Complete()
-    //    {
-    //        // Payment data comes in url so we have to get it from url
-
-    //        // This id is razorpay unique payment id which can be use to get the payment details from razorpay server
-    //        string paymentId = Request.Form["rzp_paymentid"];
-
-    //        // This is orderId
-    //        string orderId = Request.Form["rzp_orderid"];
-    //        Razorpay.Api.RazorpayClient client = new Razorpay.Api.RazorpayClient("rzp_test_A6DIgBxiN6cygo", " j1hncXzwTkvVCC2G93PAHPHj");
-
-    //        Razorpay.Api.Payment payment = client.Payment.Fetch(paymentId);
-
-    //        // This code is for capture the payment 
-    //        Dictionary<string, object> options = new Dictionary<string, object>();
-    //        options.Add("amount", payment.Attributes["amount"]);
-    //        Razorpay.Api.Payment paymentCaptured = payment.Capture(options);
-    //        string amt = paymentCaptured.Attributes["amount"];
-
-    //        //// Check payment made successfully
-
-    //        if (paymentCaptured.Attributes["status"] == "captured")
-    //        {
-    //            // Create these action method
-    //            return RedirectToAction("Success");
-    //        }
-    //        else
-    //        {
-    //            return RedirectToAction("Failed");
-    //        }
-    //    }
-
-    //    public ActionResult Success()
-    //    {
-    //        return View();
-    //    }
-
-    //    public ActionResult Failed()
-    //    {
-    //        return View();
-    //    }
+        public IActionResult Success(string paymentId)
+        {
+            ViewBag.PaymentId = paymentId;
+            return View();
+        }
+        
     }
 }
