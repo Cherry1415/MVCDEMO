@@ -1,0 +1,142 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/EcomStyles.css" />
+      
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <header id="headercolor">
+        <nav class="navbar">
+            <div class="container-fluid">
+                <span class="navbar-brand mb-0 h1">DealBazar</span>
+                <form class="d-flex w-50" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    
+                </form>
+                <div>
+                    <i class="fa fa-fw fa-user" style='font-size:16px'></i>
+                    @* <i class='fas fa-shopping-cart' style='font-size:16px'></i> *@
+                   
+                </div>
+                
+            </div>
+           
+        </nav>
+        <nav class="navbar navbar-expand-lg" >
+            <div class="container-fluid" >
+                <a class="navbar-brand" href="#" ></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon bg-dark"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav" id="navtext">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" asp-area="" asp-controller="Vendor" asp-action="Index">Home</a>
+                        </li>
+                      
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="AddProduct">Add Product</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="GetProduct"> Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Orders" asp-action="Orders">Manage Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="review">Manage Reviews</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Orders" asp-action="Inventory">Inventory</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Seller" asp-action="SellerHome">Log Out</a>
+                        </li>
+                       @*  <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="review">Report</a>
+                        </li> *@
+                        
+                      
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+   
+   
+    <div>
+        @RenderBody()
+    </div>
+
+    <div class="container-fluid sticky-bottom" id="footerText">
+       
+        <footer class="py-3 my-4">
+            <p class="text-end">© 2025 DealBazar </p>
+        </footer>
+    </div>
+
+
+    <!-- <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-6 py-5 my-5 border-top">
+
+         <div class="col"> 
+            <a href="/" class="d-flex align-items-center mb-3 link-body-emphasis text-decoration-none"> 
+                <i class='fas fa-copyright' style='font-size:16px;color:black;'></i> 
+             </a>
+             <p class="text-body-secondary">2025  </p> 
+      
+
+    <div class="col mb-3">
+            </div>
+
+            <div class="col mb-3">
+                <h5>Section</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Home</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Features</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Pricing</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">FAQs</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">About</a></li>
+                </ul>
+            </div>
+
+            <div class="col mb-3">
+                <h5>Make Money with Us</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Sell on Amazon</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Supply to Amazon</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Advertise Your Products</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Protect and Build Your Brand</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">About</a></li>
+                </ul>
+            </div>
+            <div class="col mb-3">
+                <h5>Let Us Help You</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Your Account</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Returns Centre</a></li>
+                    <li class="nav-item mb-2"><a asp-area="" asp-controller="User" asp-action="review" class="nav-link p-0 text-body-secondary">Reviews vendor</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Help</a></li>
+
+                </ul>
+            </div>
+            <div class="col mb-3">
+                <h5>Connect with Us</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Facebook</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Twitter</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Instagram</a></li>
+                   
+                </ul>
+            </div>
+              </div>
+     </footer>-->
+</body>
+</html>

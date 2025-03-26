@@ -1,0 +1,92 @@
+﻿@model IEnumerable<_06032025_MVCDAY1.Models.Products>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_UserLayout";
+}
+
+<!--<div>
+<ul>
+<li>
+Name:@TempData["pname"]
+</li>
+<li>
+description:@TempData["description"]
+</li>
+<li>
+size:@TempData["size"]
+</li>
+</ul>
+</div>
+-->
+<div class="container p-4">
+    <div class="container shadow-lg mt-2 ">
+        <table class="table ">
+            <thead>
+                <tr>
+                    <th scope="col">pid</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Product Description</th>
+                    <th scope="col">size</th>
+                    <th scope="col">Gender</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">In Stock</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>T-Shirt</td>
+                    <td>Fabric is very good </td>
+                    <td>S </td>
+                    <td>Female </td>
+                    <td>$80 </td>
+                    <td>50 </td>
+                    <td><img src="https://m.media-amazon.com/images/G/31/img24/Fashion/AF/BAU/Winterflip/Unrec/ClothingSBC/6._SY530_QL85_FMpng_.png" style=" height: 10% ;width:10%"  /></td>
+                    <td>Clothes</td>
+                    <td><button>Edit</button></td>
+                    <td><button>Delete</button></td>
+
+
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Shirt</td>
+                    <td>Fabric is very good  </td>
+                    <td>L </td>
+                    <td>Male </td>
+                    <td>$60 </td>
+                    <td>60 </td>
+                    <td><img src="https://m.media-amazon.com/images/G/31/img24/Fashion/AF/BAU/Winterflip/Unrec/ClothingSBC/6._SY530_QL85_FMpng_.png" style=" height: 10% ;width:10%" /></td>
+                    <td>Clothes</td>
+                    <td><button>Edit</button></td>
+                    <td><button>Delete</button></td>
+
+
+                </tr>
+                @foreach (var i in Model)
+                
+                {
+                    <tr>
+                        <td>@i.pid</td>
+                        <td>@i.pname</td>
+                        
+                        <td>
+                            <a href="@Url.Action("EditProduct", new { id = @i.pid })" class="btn btn-warning">Edit</a>
+                            <a href="@Url.Action("DeleteProduct", new { id = @i.pid })" class="btn btn-danger">Delete</a>
+                        </td>
+                        @* <td><button>Delete</button></td> *@
+
+
+                    </tr>
+                }
+                
+    </tbody>
+</table>
+</div>
+</div>

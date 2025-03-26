@@ -108,8 +108,16 @@
                     <label for="menu-toggle" class="close-btn">&times;</label>
                     <hr />
                     <div class="sidebar-header">
-                        <a aria-current="page" asp-area="" asp-controller="Login" asp-action="LogInPage">HELLO,LOG IN</a>
+                        @if (!string.IsNullOrEmpty(Context.Session.GetString("email")))
+                        {
+                            <a>HELLO, @Context.Session.GetString("email")</a>
+                        }
+                        else
+                        {
+                            <a aria-current="page" asp-area="" asp-controller="User" asp-action="SignIn">HELLO, LOG IN</a>
+                        }
                     </div>
+                   
                     <hr />
 
                     <div class="menu">

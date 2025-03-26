@@ -1,4 +1,5 @@
 using _06032025_MVCDAY1.Models;
+using _06032025_MVCDAY1.Repository;
 
 namespace _06032025_MVCDAY1
 {
@@ -11,9 +12,17 @@ namespace _06032025_MVCDAY1
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+
             var RazorpayConfig = new RazorPayKeys();
             builder.Configuration.GetSection("RazorPay").Bind(RazorpayConfig);
             builder.Services.AddSingleton(RazorpayConfig);
+
+
+            //add for session
+            builder.Services.AddSession();
+            builder.Services.AddHttpContextAccessor();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -26,7 +35,7 @@ namespace _06032025_MVCDAY1
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseSession();
             app.UseRouting();
 
             app.UseAuthorization();

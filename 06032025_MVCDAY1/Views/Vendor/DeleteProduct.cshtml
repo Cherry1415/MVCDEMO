@@ -1,0 +1,20 @@
+﻿@model _06032025_MVCDAY1.Models.Products
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_UserLayout";
+}
+
+<h2>Are you sure you want to delete this employee?</h2>
+
+<div>
+    <h4>@Model.pname</h4>
+   
+
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" asp-for="pid" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="@Url.Action("GetProduct")" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

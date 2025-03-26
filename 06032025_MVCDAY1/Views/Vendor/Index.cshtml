@@ -1,10 +1,39 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Home Page";
+    Layout = "_UserLayout";
 }
-<link rel="stylesheet" href="~/css/EcomStyles.css" asp-append-version="true" />
-<div class="mt-1">
+<style>
+    .bg-transparent {
+        background-color: transparent;
+    }
+</style>
+<div class="container-fluid pb-lg-5" style=" background-color:aliceblue; ">
+    <div class="text-center"> <h1>Catalogue</h1></div>
+    <div class="container-fluid" id="divLog">
+
+        <div class="container-fluid " id="divLogOuter">
+            <div>
+                <img src="https://cdn.pixabay.com/photo/2018/03/14/12/53/shopping-3225130_640.png" class="bg-transparent w-50"></img>
+                @* <img src="https://cdn.pixabay.com/photo/2024/05/28/07/31/ai-generated-8793075_1280.png" class="bg-transparent w-25"></img> *@
+            </div>
+
+
+        </div>
+        <div></div>
+        <div class="container-fluid  " id="divLogOuter">
+            <div class="container-fluid text-center ">
+                <form action="/" method="post">
+                    <input type="search" />
+                </form>
+            </div>
+            <div class="container-fluid text-center">
+                <h3>See Your Product Catalogues</h3>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--    <div class="mt-1">
     <div class="container-fluid box1" id="divLog">
 
         <div class="container-fluid " id="divLogOuter">
@@ -19,7 +48,9 @@
                 </h2>
             </div>
             <div class="container  justify-content-md-start">
-                <button type="submit"><a href="@Url.Action("LoginView","Vendor")">Login</a></button>
+                <button ><a href="@Url.Action("")" style="color:whitesmoke;">Login</a></button>
+
+
             </div>
         </div>
         <div></div>
@@ -36,7 +67,7 @@
                 <h2 class="text-center font-weight-bold">How to sell on DealBazar</h2>
             </div>
 
-            <!-- STEP 1 -->
+
             <div class="col-md-6 d-flex align-items-stretch mb-3">
                 <div class="d-flex flex-column w-100">
                     <div class="mb-3">
@@ -49,7 +80,7 @@
                 </div>
             </div>
 
-            <!-- STEP 2 -->
+
             <div class="col-md-6 d-flex align-items-stretch mb-3">
                 <div class="d-flex flex-column w-100">
                     <div class="mb-3">
@@ -62,7 +93,7 @@
                 </div>
             </div>
 
-            <!-- STEP 3 -->
+
             <div class="col-md-6 d-flex align-items-stretch mb-3">
                 <div class="d-flex flex-column w-100">
                     <div class="mb-3">
@@ -75,7 +106,7 @@
                 </div>
             </div>
 
-            <!-- STEP 4 -->
+
             <div class="col-md-6 d-flex align-items-stretch mb-3">
                 <div class="d-flex flex-column w-100">
                     <div class="mb-3">
@@ -92,8 +123,8 @@
 
 
     <div class="container p-3 text-sm-center">
-        <h1> Why To Become Our Seller </h1>
-    </div>
+            <h1> Why To Become Our Seller </h1>
+        </div>
     <div class="container">
 
         <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
@@ -103,7 +134,7 @@
                         <h4 class="my-0 fw-normal">Many Customers</h4>
                     </div>
                     <div class="card-body">
-                        <h4>this is </h4>
+                       <h4>this is </h4>
                     </div>
                 </div>
             </div>
@@ -128,7 +159,9 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
 
 
 </div>
+
+-->

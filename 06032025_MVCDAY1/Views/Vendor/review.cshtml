@@ -1,0 +1,235 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+}
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/EcomStyles.css" />
+
+<div class="content container-fluid">
+    <div class="container shadow-lg mt-3 mb-3 pt-2">
+        <div class="page-header d-flex">
+            <button class="bg-transparent"><a asp-area="" asp-controller="Home" asp-action="Index"><i class="fa fa-arrow-left" style="font-size:16px ; color:darkslategray;"></i></a></button>
+
+            <h1 class="page-header-title">Manage reviews</h1>
+        </div>
+
+        <div class="card">
+            <!-- Body -->
+            <div class="card-body ">
+                <div class="row align-items-center">
+                    <div class="col-md-auto mb-3 mb-md-0">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <img class="avatar avatar-xl avatar-4x3" src="@Url.Content("~/image/rating-star-2793.svg")" alt="Image Description" data-hs-theme-appearance="default" style="width:100px;height:100px;">
+                            </div>
+
+                            <div class="flex-grow-1 ms-5">
+                                <h4 class="display-3 text-dark mb-0">4.84</h4>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Col -->
+
+
+                </div>
+                <!-- End Row -->
+            </div>
+            <!-- End Body -->
+        </div>
+        <!-- End Card -->
+        <!-- Card -->
+
+        <div class="card">
+            <!-- Header -->
+            <div class="card-header card-header-content-md-between">
+                <div class="mb-2 mb-md-0 justify-content-center">
+                    <form>
+                        <!-- Search -->
+                        <div class="input-group input-group-merge input-group-flush">
+                            <div class="input-group-prepend input-group-text">
+                                <i class=" fas fa-search" style="color:lightslategray"></i>
+                            </div>
+                            <input id="datatableSearch" type="search" class="form-control" placeholder="Search reviews" aria-label="Search reviews">
+                        </div>
+                        <!-- End Search -->
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Table -->
+        <div class="table-responsive datatable-custom">
+            <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                <div class="dt-buttons">
+                    <table class="table w-100">
+                        <thead class="thead" style="background-color: #b0c9e4">
+
+                            <tr role="row">
+                                <th scope="col" class="table-column-pe-0 sorting_disabled" rowspan="1" colspan="1" aria-label="" style="width: 41.9531px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="datatableCheckAll">
+                                        <label class="form-check-label" for="datatableCheckAll"></label>
+                                    </div>
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Product: activate to sort column ascending" style="width: 300.734px;">Product</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Reviewer: activate to sort column ascending" style="width: 269.969px;">Reviewer</th>
+                                <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Review" style="width: 419.656px;">Review</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Date: activate to sort column ascending" style="width: 204.203px;">Date</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 123.938px;">Status</th>
+                                <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Actions" style="width: 89.547px;">Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr role="row" class="odd">
+                                <td class="table-column-pe-0">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="usersDataCheck2">
+                                        <label class="form-check-label" for="usersDataCheck2"></label>
+                                    </div>
+                                </td>
+                                <th>
+                                    <a class="d-flex align-items-center">
+                                        <div class="avatar">
+                                            <img class="avatar-img" src="https://m.media-amazon.com/images/G/31/img24/Fashion/AF/BAU/Winterflip/Unrec/ClothingSBC/6._SY530_QL85_FMpng_.png" alt="Image Description" style="width:30px; height:30px">
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <span class="card-title h5 text-dark text-inherit">T-Shirt</span>
+                                        </div>
+                                    </a>
+                                </th>
+                                <td>
+                                    <a class="d-flex align-items-center">
+                                        <div class="avatar avatar-circle">
+                                            <img class="avatar-img" src="data:image/jpeg;base64,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" alt="Image Description" style="height:35px; width:35px">
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <span class="card-title h5 text-inherit">chirag patel <i class="bi-patch-check-fill text-primary" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Verified purchase"></i></span>
+                                            <span class="d-block fs-6 text-body">chigi@gmail.com</span>
+                                        </div>
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="text-wrap" style="width: 18rem;">
+                                        <div class="d-flex gap-1 mb-2">
+                                            <img src=" @Url.Content("~/image/star.svg")" alt="Review rating" width="15px">
+                                            <img src=" @Url.Content("~/image/star.svg")" alt="Review rating" width="15px">
+                                            <img src=" @Url.Content("~/image/star.svg")" alt="Review rating" width="15px">
+                                            <img src=" @Url.Content("~/image/star.svg")" alt="Review rating" width="15px">
+                                            <img src=" @Url.Content("~/image/star.svg")" alt="Review rating" width="15px">
+
+                                        </div>
+
+                                        <h4 class="mb-1">I just love it!</h4>
+                                        <p>I bought this t-shirt and I love it!! I wear it all the time and there is no problem with the fit.</p>
+                                    </div>
+                                </td>
+                                <td>March 13, 2025  9:30 </td>
+                                <td><span class="badge bg-soft-success text-success ms-2">Published</span></td>
+                                <td>
+                                    <!-- Unfold -->
+                                    <div class="hs-unfold">
+                                        <button type="button" class="btn btn-ghost-secondary btn-icon btn-sm rounded-circle" id="settingsDropdown1" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa fa-ellipsis-v"></i>
+                                        </button>
+
+                                        <div class="dropdown-menu dropdown-menu-end mt-1" aria-labelledby="settingsDropdown1">
+
+
+                                            <div class="dropdown-divider"></div>
+
+                                            <span class="dropdown-header">Feedback</span>
+
+                                            <a class="dropdown-item" href="#">
+                                                <i class="fas fa-reply dropdown-item-icon" style="font-size:16px;color:lightgray"></i> Reply
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <!-- End Unfold -->
+                                </td>
+                            </tr>
+
+                            <tr role="row" class="odd">
+                                <td class="table-column-pe-0">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="usersDataCheck2">
+                                        <label class="form-check-label" for="usersDataCheck2"></label>
+                                    </div>
+                                </td>
+                                <th>
+                                    <a class="d-flex align-items-center">
+                                        <div class="avatar">
+                                            <img class="avatar-img" src="https://m.media-amazon.com/images/G/31/img24/Fashion/AF/BAU/Winterflip/Unrec/ClothingSBC/6._SY530_QL85_FMpng_.png" alt="Image Description" style="width:30px; height:30px">
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <span class="card-title h5 text-dark text-inherit">T-Shirt</span>
+                                        </div>
+                                    </a>
+                                </th>
+                                <td>
+                                    <a class="d-flex align-items-center">
+                                        <div class="avatar avatar-circle">
+                                            <img class="avatar-img" src="data:image/jpeg;base64,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" alt="Image Description" style="height:35px; width:35px">
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <span class="card-title h5 text-inherit">riya khadela <i class="bi-patch-check-fill text-primary" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Verified purchase"></i></span>
+                                            <span class="d-block fs-6 text-body">riya@gmail.com</span>
+                                        </div>
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="text-wrap" style="width: 18rem;">
+                                        <div class="d-flex gap-1 mb-2">
+                                            <img src=" @Url.Content("~/image/star.svg")" alt="Review rating" width="15px">
+                                            <img src=" @Url.Content("~/image/star.svg")" alt="Review rating" width="15px">
+                                            <img src=" @Url.Content("~/image/star.svg")" alt="Review rating" width="15px">
+                                            <img src=" @Url.Content("~/image/star.svg")" alt="Review rating" width="15px">
+                                            <img src=" @Url.Content("~/image/star.svg")" alt="Review rating" width="15px">
+
+                                        </div>
+
+                                        <h4 class="mb-1">I just love it!</h4>
+                                        <p>I bought this t-shirt and I love it!! I wear it all the time and there is no problem with the fit.</p>
+                                    </div>
+                                </td>
+                                <td>March 13, 2025  2:30 </td>
+                                <td><span class="badge bg-soft-success text-success ms-2">Published</span></td>
+                                <td>
+                                    <!-- Unfold -->
+                                    <div class="hs-unfold">
+                                        <button type="button" class="btn btn-ghost-secondary btn-icon btn-sm rounded-circle" id="settingsDropdown1" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa fa-ellipsis-v"></i>
+                                        </button>
+
+                                        <div class="dropdown-menu dropdown-menu-end mt-1" aria-labelledby="settingsDropdown1">
+
+
+                                            <div class="dropdown-divider"></div>
+
+                                            <span class="dropdown-header">Feedback</span>
+
+                                            <a class="dropdown-item" href="#">
+                                                <i class="fas fa-reply dropdown-item-icon" style="font-size:16px;color:lightgray"></i> Reply
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <!-- End Unfold -->
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>

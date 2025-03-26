@@ -1,0 +1,225 @@
+﻿@{
+    Layout = "_UserLayout";
+}
+
+
+<style>
+    .image-preview {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+        .image-preview img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+</style>
+<div class="container mt-3 pb-3 shadow-lg bg-light">
+    <div class="text-end mt-3 pt-1">
+        <button>Save Draft</button>
+
+
+    </div>
+    <h2 class="mb-4 text-decoration-underline ">Add New Product</h2>
+    <div class="row">
+        <!-- Left Column - Product Details -->
+        <div class="col-md-8">
+            <div class="card p-4 shadow-lg">
+                <h4 style="color:black;font-family: 'Arial Narrow Bold'">General Information</h4>
+                <form action="/user/AddProduct" method="post">
+                    <div class="mb-3">
+                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Product Name</label>
+                        <input type="text" class="form-control" placeholder="Enter product name" name="pname">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Description</label>
+                        <textarea class="form-control" rows="3" placeholder="Enter product description" name="description"></textarea>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold'">Size</label>
+                            <div>
+                                <button type="button" class="btn btn-outline-secondary" value="XS" name="size">XS</button>
+                                <button type="button" class="btn btn-outline-secondary" value="S" name="size">S</button>
+                                <button type="button" class="btn btn-outline-secondary" value="M" name="size">M</button>
+                                <button type="button" class="btn btn-outline-secondary" value="L" name="size">L</button>
+                                <button type="button" class="btn btn-outline-secondary" value="XL" name="size">XL</button>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label style=" color:black;font-size:large;font-family: 'Arial Narrow Bold';">Gender</label>
+                            <div>
+                                <label for="cig-stat" style="color:black;font-family: 'Arial Narrow Bold';"><input type="radio" name="gender" value="Male">Male</label>
+                                <label for="cig-stat" style="color:black;font-family: 'Arial Narrow Bold'"><input type="radio" name="gender" value="Female">Female</label>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 style="color:black;font-family: 'Arial Narrow Bold';">Pricing and Stock</h4>
+                    <div class="mb-3">
+                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold';">Base Price</label>
+                        <input type="text" class="form-control" placeholder="$47.55" name="price">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold';">Stock</label>
+                        <input type="number" class="form-control" placeholder="77" name="stock">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="color:black;font-family: 'Arial Narrow Bold';">Discount</label>
+                        <input type="text" class="form-control" placeholder="10%">
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit">Add Product</button>
+                    </div>
+                </form>
+                <a href="@Url.Action("GetProduct")" class="btn btn-secondary mt-2">Back to List</a>
+            </div>
+        </div>
+
+        <!-- Right Column - Image Upload & Category -->
+        <div class="col-md-4">
+            <div class="card p-4 shadow-lg">
+                <div class="container mt-2">
+                    <h3 style="color:black;font-family: 'Arial Narrow Bold';">Upload Product Images</h3>
+                    <form>
+                        <div class="mb-3">
+                            <label for="productImages" class="form-label">Select Images</label>
+                            <div class="drop-area" id="dropArea">
+                                <p>Drag and drop images here or</p>
+                                <button type="button" class="btn btn-outline-primary btn-browse" onclick="document.getElementById('productImages').click();">Browse Files</button>
+                                <input class="form-control d-none" type="file" id="productImages" accept="image/*" multiple onchange="previewImages(event)" name="image">
+                            </div>
+                        </div>
+
+                        <div id="imagePreview" class="image-preview-container">
+                            <div id="imagePreviewContent" class="image-preview">
+                                <!-- Preview images will appear here -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                </div>
+                <div class="card p-4 mt-2 shadow-lg">
+                    <div class="container mt-2">
+                    <h4 style="color:black;font-family: 'Arial Narrow Bold';">Category</h4>
+                    <!--    <input type="text" class="form-control mb-2" placeholder="Enter category">
+                            <button class="btn btn-success w-100">Add Category</button> -->
+
+                    <select namne="Category">
+                        <option>
+                            --select your option--
+                        </option>
+                        <option value="Electronics">
+                            Electronics
+                        </option>
+                        <option value="Electronics">
+                            Clothes
+                        </option>
+                        <option value="Electronics">
+                            Accesories
+                        </option>
+                    </select>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Action Buttons -->
+   
+    <script>
+        // Function to preview uploaded images
+        function previewImages(event) {
+            const previewContainer = document.getElementById('imagePreviewContent');
+            previewContainer.innerHTML = ''; // Clear previous previews
+
+            const files = event.target.files;
+
+            // Loop through the selected files and display them
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
+                    previewContainer.appendChild(imgElement);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Function to handle drag over event
+        function handleDragOver(event) {
+            event.preventDefault(); // Prevent the default action (open as link for some browsers)
+            event.stopPropagation();
+            event.target.style.backgroundColor = "#f0f0f0"; // Change background color when hovering
+        }
+
+        // Function to handle drag leave event
+        function handleDragLeave(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.target.style.backgroundColor = ""; // Reset background color when drag leaves
+        }
+
+        // Function to handle drop event
+        function handleDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const files = event.dataTransfer.files;
+            const previewContainer = document.getElementById('imagePreviewContent');
+            previewContainer.innerHTML = ''; // Clear previous previews
+
+            // Loop through the dropped files and display them
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
+                    previewContainer.appendChild(imgElement);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Add event listeners for drag-and-drop functionality
+        const dropArea = document.getElementById('dropArea');
+        dropArea.addEventListener('dragover', handleDragOver);
+        dropArea.addEventListener('dragleave', handleDragLeave);
+        dropArea.addEventListener('drop', handleDrop);
+    </script>
+</div>
+    @* <div>  *@
+    @*      <h2>@ViewBag.prodlist.pid</h2>  *@
+    @*   <h2>@ViewBag.prodlist.pname</h2>  *@
+    @* </div> *@
+
+@* @using (Html.BeginForm("AddProduct", "User", FormMethod.Post)) *@
+@* { *@
+@*     <table cellpadding="2" cellspacing="0" border="0"> *@
+@*         <tr> *@
+@*             <td>Name:</td> *@
+@*             <td> *@
+@*                 @Html.TextBox("Name") *@
+@*             </td> *@
+@*         </tr> *@
+@*         <tr> *@
+@*             <td></td> *@
+@*             <td><input type="submit" value="Submit" /></td> *@
+@*         </tr> *@
+@*     </table> *@
+@* } *@
