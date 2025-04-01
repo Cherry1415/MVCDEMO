@@ -110,7 +110,7 @@
                     <div class="sidebar-header">
                         @if (!string.IsNullOrEmpty(Context.Session.GetString("email")))
                         {
-                            <a>HELLO, @Context.Session.GetString("email")</a>
+                            <a>HELLO, @Context.Session.GetString("first_name")</a>
                         }
                         else
                         {

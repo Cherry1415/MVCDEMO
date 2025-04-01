@@ -54,7 +54,12 @@ namespace _06032025_MVCDAY1.Controllers
         {
             if(_repo.Login(email,password))
             {
+                var user = _repo.getSessionData(email);
+                string fname = user.first_name;
+                int role = user.Role_ID;
                 HttpContext.Session.SetString("email", email);
+                HttpContext.Session.SetString("first_name", fname);
+                HttpContext.Session.SetString("Role_ID", role.ToString());
                 return RedirectToAction("HomeDashBoard","DashBoard");
             }
             else

@@ -1,4 +1,5 @@
 ﻿using _06032025_MVCDAY1.Models;
+using Humanizer;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -12,6 +13,8 @@ namespace _06032025_MVCDAY1.Repository
         {
             _constring = configuration.GetConnectionString("DefaultConnection");
         }
+
+        
 
         public List<Product> GetAllProduct()
         {
@@ -46,6 +49,33 @@ namespace _06032025_MVCDAY1.Repository
             }
             return prod;
         }
+       
+
+        public User getSessionData(string email)
+        {
+            User user = null;
+            using (SqlConnection conn=new SqlConnection(_constring))
+            {
+                string query = @"SELECT * FROM customer.registeruser WHERE email=@email";
+                SqlCommand cmd = new SqlCommand(query,conn);
+                cmd.Parameters.AddWithValue("@email",email);
+                conn.Open();
+                SqlDataReader rd= cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    rd.Read();
+                    user = new User
+                    {
+                        email = rd["email"].ToString(),
+                        password = rd["password"].ToString(),
+                        first_name = rd["first_name"].ToString(),
+                        Role_ID = Convert.ToInt32(rd["Role_ID"])
+                    };
+                }
+                conn.Close();
+            }
+            return user;
+        }
 
         public bool Login(string email, string password)
         {
@@ -61,6 +91,7 @@ namespace _06032025_MVCDAY1.Repository
                 return cnt > 0;
             }
         }
+        
 
         public bool Register(User user)
         {
@@ -80,6 +111,139 @@ namespace _06032025_MVCDAY1.Repository
                 conn.Close();
                 return rowsAffected > 0;
             }
+        }
+
+        //Product side Methods
+        public int AddProduct(Product product)
+        {
+            using (SqlConnection conn=new SqlConnection(_constring))
+            {
+                string query = @"INSERT INTO vendor.Products(product_name,brand_id,category_id,vendor_id,price,sub_category_id) OUTPUT INSERTED.product_id VALUES (@prodname,@bid,@cid,@vid,@price,@subcatid)";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("prodname", product.product_name);
+                cmd.Parameters.AddWithValue("bid", product.brand_id);
+                cmd.Parameters.AddWithValue("cid", product.category_id);
+                cmd.Parameters.AddWithValue("vid", product.vendor_id);
+                cmd.Parameters.AddWithValue("price", product.price);
+               
+                cmd.Parameters.AddWithValue("subcatid", product.sub_category_id);
+
+                conn.Open();
+                int product_id = (int)cmd.ExecuteScalar();
+                conn.Close();
+
+                return product_id;
+            }
+        }
+
+        public bool AddProductImage(ProductImage productImage)
+        {
+           using(SqlConnection conn=new SqlConnection(_constring))
+            {
+                string query = @"INSERT INTO vendor.prodImages(imgName,imgType,product_id) Values(@imgname,@imgtype,@prodid)";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("imgname", productImage.imgName);
+                cmd.Parameters.AddWithValue("imgtype", productImage.imgType);
+                cmd.Parameters.AddWithValue("prodid", productImage.product_id);
+                conn.Open();
+                int rows = cmd.ExecuteNonQuery();
+                conn.Close();
+
+                return rows > 0;
+            }
+        }
+        public List<Product> GetAllProducts()
+        {
+            List<Product> products = new List<Product>();
+            using (SqlConnection conn = new SqlConnection(_constring))
+            {
+                string query = "SELECT * FROM vendor.Products";
+                SqlCommand cmd = new SqlCommand(query, conn);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    /*products.Add(new Product
+                    {
+                        productid = Convert.ToInt32(reader["productid"]),
+                        ProductName = reader["ProductName"].ToString(),
+                        Price = Convert.ToDecimal(reader["Price"]),
+                        ProductRatings = Convert.ToInt32(reader["ProductRatings"])
+                    });*/
+                    products.Add(new Product
+                    {
+                        product_id = reader["product_id"] != DBNull.Value ? Convert.ToInt32(reader["product_id"]) : 0,
+                        product_name = reader["product_name"] != DBNull.Value ? reader["product_name"].ToString() : string.Empty,
+                        brand_id = reader["brand_id"] != DBNull.Value ? Convert.ToInt32(reader["brand_id"]) : 0,
+                        category_id = reader["category_id"] != DBNull.Value ? Convert.ToInt32(reader["category_id"]) : 0,
+                        vendor_id = reader["vendor_id"] != DBNull.Value ? Convert.ToInt32(reader["vendor_id"]) : 0,
+                        price = reader["price"] != DBNull.Value ? Convert.ToInt32(reader["price"]) : 0,
+                        sub_category_id = reader["sub_category_id"] != DBNull.Value ? Convert.ToInt32(reader["sub_category_id"]) : 0,
+
+                    });
+                }
+                conn.Close();
+            }
+            return products;
+        }
+
+        
+
+        public List<ProductImage> GetImagesByProductId(int productId)
+        {
+            List<ProductImage> images = new List<ProductImage>();
+
+            using (SqlConnection conn= new SqlConnection(_constring))
+            {
+                string query = "SELECT * FROM vendor.prodImages WHERE product_id = @productid";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@productid", productId);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    images.Add(new ProductImage
+                    {
+                        prod_img_id = Convert.ToInt32(reader["prod_img_id"]),
+                        product_id = Convert.ToInt32(reader["product_id"]),
+                        imgName = reader["imgName"].ToString(),
+                        imgType = reader["imgType"].ToString()
+                    });
+                }
+                conn.Close();
+            }
+            return images;
+        }
+        public List<Product> ProductById(int id)
+        {
+            List<Product> products = new List<Product>();
+            using (SqlConnection conn = new SqlConnection(_constring))
+            {
+                string query = "SELECT * FROM Supply.Products WHERE productid = @productid";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@productid", id);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    products.Add(new Product
+                    {
+                        product_id = Convert.ToInt32(reader["product_id"]),
+                        product_name = reader["product_name"].ToString(),
+                        brand_id = Convert.ToInt32(reader["brand_id"]),
+                        category_id = Convert.ToInt32(reader["category_id"]),
+                        vendor_id = Convert.ToInt32(reader["vendor_id"]),
+                        price = Convert.ToInt32(reader["price"]),
+                        sub_category_id = Convert.ToInt32(reader["sub_category_id"]),
+                    });
+                 
+                }
+                conn.Close();
+            }
+            return products;
         }
     }
 }

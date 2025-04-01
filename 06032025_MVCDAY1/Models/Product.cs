@@ -8,11 +8,8 @@
         public int category_id { get; set; }
         public int vendor_id { get; set; }
         public decimal price { get; set; }
-        public int product_desc_id { get; set; }
-        public int prod_img_id { get; set; }
-
-        
-
+       
         public int sub_category_id { get; set; }
+        public List<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
     }
 }

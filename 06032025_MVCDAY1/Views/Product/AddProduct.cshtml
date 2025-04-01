@@ -1,0 +1,43 @@
+﻿@model _06032025_MVCDAY1.Models.Product
+
+@{
+    ViewData["Title"] = "AddProduct";
+}
+
+<h1>AddProduct</h1>
+
+<h4>Product</h4>
+<hr />
+@using (Html.BeginForm("AddProduct", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <label>Product Name:</label>
+    @Html.TextBoxFor(m => m.product_name, new { @class = "form-control" })
+
+    <label>Brand_ID:</label>
+    @Html.TextBoxFor(m => m.brand_id, new { @class = "form-control" })
+
+    <label>Category_ID:</label>
+    @Html.TextBoxFor(m => m.category_id, new { @class = "form-control" })
+
+    <label>Vendor_ID:</label>
+    @Html.TextBoxFor(m => m.vendor_id, new { @class = "form-control" })
+    <label>Price:</label>
+    @Html.TextBoxFor(m => m.price, new { @class = "form-control" })
+
+    
+
+    <label>Sub_Category_ID:</label>
+    @Html.TextBoxFor(m => m.sub_category_id, new { @class = "form-control" })
+
+
+   @*  <label>Rating:</label>
+    @Html.TextBoxFor(m => m.ProductRatings, new { @class = "form-control", type = "number", min = "1", max = "5" }) *@
+
+    <label>Upload Images:</label>
+    <input type="file" name="images" multiple class="form-control" />
+
+    <br />
+    <button type="submit" class="btn btn-primary">Add Product</button>
+}
+
+
