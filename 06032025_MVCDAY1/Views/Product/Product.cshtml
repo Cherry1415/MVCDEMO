@@ -136,6 +136,14 @@
         display: block; /* Show the button on hover */
     }
 
+    
+    .product-card img {
+        width: 100%;
+        height: 250px;
+        border-radius: 12px;
+        transition: all 0.3s ease-in-out;
+    }
+
     .quick-view-btn:hover {
         background-color: rgba(0, 0, 0, 0.7); /* Darker background on hover */
         border-color: rgba(255, 255, 255, 1);
@@ -186,7 +194,8 @@
 
 
 <div class="container-fluid d-inline-block">
-    <div class="d-inline-flex">
+
+    <div>
         <div>
             <input type="checkbox" id="menu-togglemobilefilter">
             <label for="menu-togglemobilefilter" class="overlay"></label>
@@ -206,255 +215,64 @@
             </div>
         </div>
         <div>
-            <div class="container-fluid mt-5">
+            <div class="container mt-5">
 
                 <div class="row"> 
                     @foreach (var product in Model)
                     {
                         <div class="col-md-3 col-sm-6 col-12 py-3">
                             <div class="card product-card">
-                                <div class="position-relative">
-                                    <label class="wishlist-label">
-                                        <input type="checkbox" class="wishlist-checkbox">
-                                        <svg class="heart-icon" viewBox="0 0 24 24">
-                                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                                        </svg>
-                                    </label>
+                                <div id="imgdiv">
+                                    <form action="@Url.Action("AddToWishlist", "Product")" method="post" class="wishlist-form">
+                                        <input type="hidden" name="productId" value="@product.product_id" />
+
+                                        <label class="wishlist-label">
+                                            <input type="checkbox" class="wishlist-checkbox" onclick="toggleWishlist(this)">
+                                            <svg class="heart-icon" viewBox="0 0 24 24">
+                                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                                            </svg>
+                                        </label>
+                                    </form>
+                                    
                                     @* @foreach (var img in product.ProductImages) *@
                                     @* { *@
 
                                     @* } *@
 
 
-                                    <a asp-area="" asp-controller="Products" asp-action="ProductsDetails" asp-route-id="@product.product_id">
+                                    <a asp-area="" asp-controller="Product" asp-action="DetailProduct" asp-route-id="@product.product_id">
                                         <img src="@product.ProductImages.FirstOrDefault()?.imgName" width="100" height="100"
-                                             class="product-img"
+                                             class="product-img-top"
+                                             id="image"
                                              data-name="@product.product_name"
                                              data-price="@product.price"
-                                             data-oldprice="12,800"
-                                             data-discount="16% Off"
+                                            
                                              data-description="A beautifully woven Golden Zari Saree with traditional patterns."
-                                             onclick="showQuickView(this)">
+                                        @* onclick="showQuickView(this)*@
+                                        > 
                                     </a>
-                                    <div class="fav-icon" onclick="toggleFavorite(this)">
+                                    <button class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" data-bs-toggle="modal" data-bs-target="#quickViewModal">Quick View</button>
+                                   @*  <div class="fav-icon" onclick="toggleFavorite(this)">
 
-                                        @* <a href="#" class="quick-view-btn">Quick View</a> *@
-                                    </div>
-                                    <a href="#" class="quick-view-btn" onclick="showQuickView(this)" align="center">Quick View</a>
+                                         <a href="#" class="quick-view-btn">Quick View</a> 
+                                    </div> *@
+                                    @* <a href="#" class="quick-view-btn" onclick="showQuickView(this)" align="center">Quick View</a> *@
                                 </div>
-                                <div class="product-info">
+                                <div class="card-body" class="wishlist-item" id="wishlist-item1">
+                                    <h5 class="card-title" id="product_name">@product.product_name</h5>
+                                    <p class="card-text" id="price">₹ @product.price</p>
+                                    <button class="btn btn-primary buyNowBtn" data-name="@product.product_name" data-price="₹@product.price" data-image="@product.ProductImages.FirstOrDefault()?.imgName">Buy Now</button>
+                                    @* <a class="btn btn-primary" asp-action="PaymentProduct" asp-controller="Payment">Buy Now</a> *@
+                                    <button class="btn btn-primary cart-btn" onclick="addToCart('Samsung S25 Ultra', 130000, 'https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg')" asp-area="" asp-controller="UserBuy" asp-action="AddCart">Add to Cart</button>
+                                    @* <a asp-area="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
+                                </div>
+                                @* <div class="product-info">
                                     <p class="price">@product.price<span class="original-price">@product.price</span> <span class="discount">16% Off</span></p>
                                     <a href="#" class="buy-now">BUY NOW</a>
-                                </div>
+                                </div> *@
                             </div>
                         </div>
                     }
-
-                    <!-- Samsung -->
-                    <div class="col-md-3">
-                        <div class="card product-card">
-                            <div id="imgdiv">
-                                <label class="wishlist-label">
-                                    <input type="checkbox" class="wishlist-checkbox" onclick="toggleWishlist(this)">
-                                    <svg class="heart-icon" viewBox="0 0 24 24">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                                    </svg>
-                                </label>
-                                <a href="@Url.Action("DetailProduct","Product")">
-                                    <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
-                                </a>
-
-                                <button class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" data-bs-toggle="modal" data-bs-target="#quickViewModal">Quick View</button>
-                            </div>
-                            
-                            <div class="card-body" class="wishlist-item" id="wishlist-item1">
-                                <h5 class="card-title" id="name">samsung s25 ultra</h5>
-                                <p class="card-text" id="price">₹ 130000</p>
-                                <button class="btn btn-primary buyNowBtn" data-name="samsung s25 ultra" data-price="₹130000" data-image="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg">Buy Now</button>
-                                @* <a class="btn btn-primary" asp-action="PaymentProduct" asp-controller="Payment">Buy Now</a> *@
-                                <button class="btn btn-primary cart-btn" onclick="addToCart('Samsung S25 Ultra', 130000, 'https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg')" asp-area="" asp-controller="UserBuy" asp-action="AddCart">Add to Cart</button>
-                                @* <a asp-area="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Iphone-->
-                    <div class="col-md-3">
-                        <div class="card product-card">
-                            <div id="imgdiv">
-                                <label class="wishlist-label">
-                                    <input type="checkbox" class="wishlist-checkbox">
-                                    <svg class="heart-icon" viewBox="0 0 24 24">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                                    </svg>
-                                </label>
-                                <a href="@Url.Action("DetailProduct","Product")">
-                                    <img src="https://cdn.pixabay.com/photo/2022/10/03/20/01/iphone-13-pro-max-7496758_640.jpg" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
-                                </a>
-                                <button class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" data-bs-toggle="modal" data-bs-target="#quickViewModal">Quick View</button>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title" id="name">Iphone 16Pro Max</h5>
-                                <p class="card-text" id="price">₹ 1500000</p>
-                                <button class="btn btn-primary buyNowBtn">Buy Now</button>
-                                <button class="btn btn-primary cart-btn" onclick="addToCart('Iphone 16Pro Max', 1500000, 'https://cdn.pixabay.com/photo/2022/10/03/20/01/iphone-13-pro-max-7496758_640.jpg')">Add To Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- nokia -->
-                    <div class="col-md-3">
-                        <div class="card product-card">
-                            <div id="imgdiv">
-                                <label class="wishlist-label">
-                                    <input type="checkbox" class="wishlist-checkbox">
-                                    <svg class="heart-icon" viewBox="0 0 24 24">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                                    </svg>
-                                </label>
-                                <a href="@Url.Action("DetailProduct","Product")">
-                                    <img src="https://cdn.pixabay.com/photo/2015/12/14/22/26/mobile-phone-1093358_640.jpg" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
-                                </a>
-                                <button class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" data-bs-toggle="modal" data-bs-target="#quickViewModal">Quick View</button>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title" id="name">Nokia</h5>
-                                <p class="card-text" id="price">₹60000</p>
-                                <button class="btn btn-primary buyNowBtn">Buy Now</button>
-                                <button class="btn btn-primary cart-btn" onclick="addToCart('NoooKiaa', 60000, 'https://cdn.pixabay.com/photo/2015/12/14/22/26/mobile-phone-1093358_640.jpg')">
-                                    Add To Cart
-                                </button>
-                                @* <a asp-area ="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Oneplus -->
-                    <div class="col-md-3">
-                        <div class="card product-card">
-                            <div id="imgdiv">
-                                <label class="wishlist-label">
-                                    <input type="checkbox" class="wishlist-checkbox">
-                                    <svg class="heart-icon" viewBox="0 0 24 24">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                                    </svg>
-                                </label>
-                                <a href="@Url.Action("DetailProduct","Product")">
-                                    <img src="~/image/mobile/oneplus-12r.webp" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
-                                </a>
-                                <button class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" data-bs-toggle="modal" data-bs-target="#quickViewModal">Quick View</button>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title" id="name">Nokia</h5>
-                                <p class="card-text" id="price">₹60000</p>
-                                <button class="btn btn-primary buyNowBtn">Buy Now</button>
-                                <button class="btn btn-primary cart-btn" onclick="addToCart('NoooKiaa',60000, 'https://cdn.pixabay.com/photo/2015/12/14/22/26/mobile-phone-1093358_640.jpg')">
-                                    Add To Cart
-                                </button>
-                                @* <a asp-area ="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
-                            </div>
-                        </div>
-                    </div>
-                    <hr />
-                    <hr />
-
-                    <!-- Poco -->
-                    <div class="col-md-3">
-                        <div class="card product-card">
-                            <div id="imgdiv">
-                                <label class="wishlist-label">
-                                    <input type="checkbox" class="wishlist-checkbox">
-                                    <svg class="heart-icon" viewBox="0 0 24 24">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                                    </svg>
-                                </label>
-                                <a href="@Url.Action("DetailProduct","Product")">
-                                    <img src="~/image/mobile/pocox6pro.jpg" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
-                                </a>
-                                <button class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" data-bs-toggle="modal" data-bs-target="#quickViewModal">Quick View</button>
-                            </div>
-                            <div class="card-body" class="wishlist-item" id="wishlist-item1">
-                                <h5 class="card-title" id="name">samsung s25 ultra</h5>
-                                <p class="card-text" id="price">₹ 130000</p>
-                                <button class="btn btn-primary buyNowBtn" data-name="samsung s25 ultra" data-price="₹130000" data-image="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg">Buy Now</button>
-                                <button class="btn btn-primary cart-btn" onclick="addToCart('Samsung S25 Ultra', 130000, 'https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg')" asp-area="" asp-controller="UserBuy" asp-action="AddCart">Add to Cart</button>
-                                @* <a asp-area="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
-                            </div>
-                        </div>
-                    </div>
-                    <!-- iqoo-->
-                    <div class="col-md-3">
-                        <div class="card product-card">
-                            <div id="imgdiv">
-                                <label class="wishlist-label">
-                                    <input type="checkbox" class="wishlist-checkbox">
-                                    <svg class="heart-icon" viewBox="0 0 24 24">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                                    </svg>
-                                </label>
-                                <a href="@Url.Action("DetailProduct","Product")">
-                                    <img src="~/image/mobile/iqooz9.jpg" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
-                                </a>
-                                <button class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" data-bs-toggle="modal" data-bs-target="#quickViewModal">Quick View</button>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title" id="name">Iphone 16Pro Max</h5>
-                                <p class="card-text" id="price">₹ 1500000</p>
-                                <button class="btn btn-primary buyNowBtn">Buy Now</button>
-                                <button class="btn btn-primary cart-btn" onclick="addToCart('Iphone 16Pro Max', 1500000, 'https://cdn.pixabay.com/photo/2022/10/03/20/01/iphone-13-pro-max-7496758_640.jpg')">Add To Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- redme -->
-                    <div class="col-md-3">
-                        <div class="card product-card">
-                            <div id="imgdiv">
-                                <label class="wishlist-label">
-                                    <input type="checkbox" class="wishlist-checkbox">
-                                    <svg class="heart-icon" viewBox="0 0 24 24">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                                    </svg>
-                                </label>
-                                <a href="@Url.Action("DetailProduct","Product")">
-                                    <img src="~/image/mobile/redmeA4.jpg" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
-                                </a>
-                                <button class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" data-bs-toggle="modal" data-bs-target="#quickViewModal">Quick View</button>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title" id="name">Nokia</h5>
-                                <p class="card-text" id="price">₹60000</p>
-                                <button class="btn btn-primary buyNowBtn">Buy Now</button>
-                                <button class="btn btn-primary cart-btn" onclick="addToCart('NoooKiaa', 60000, 'https://cdn.pixabay.com/photo/2015/12/14/22/26/mobile-phone-1093358_640.jpg')">
-                                    Add To Cart
-                                </button>
-                                @* <a asp-area ="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Vivo -->
-                    <div class="col-md-3">
-                        <div class="card product-card">
-                            <div id="imgdiv">
-                                <label class="wishlist-label">
-                                    <input type="checkbox" class="wishlist-checkbox">
-                                    <svg class="heart-icon" viewBox="0 0 24 24">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                                    </svg>
-                                </label>
-                                <a href="@Url.Action("DetailProduct","Product")">
-                                    <img src="~/image/mobile/vivov50.jpg" width="200" height="250" class="card-img-top" alt="Product Image" id="image">
-                                </a>
-                                <button class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" data-bs-toggle="modal" data-bs-target="#quickViewModal">Quick View</button>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title" id="name">Nokia</h5>
-                                <p class="card-text" id="price">₹60000</p>
-                                <button class="btn btn-primary buyNowBtn">Buy Now</button>
-                                <button class="btn btn-primary cart-btn" onclick="addToCart('NoooKiaa',60000, 'https://cdn.pixabay.com/photo/2015/12/14/22/26/mobile-phone-1093358_640.jpg')">
-                                    Add To Cart
-                                </button>
-                                @* <a asp-area ="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
@@ -479,19 +297,22 @@
                 <div class="col-12 col-md-8 modal-body d-flex flex-column">
                     <div class="row">
                         <!-- First Column: Small Image Thumbnails -->
-                        <div class="col-12 col-md-3 small-images">
+                        @* <div class="col-12 col-md-3 small-images">
                             <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 1" data-bs-toggle="tooltip" title="Image 1" data-bs-target="#mainImageCarousel" data-bs-slide-to="0">
                             <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 2" data-bs-toggle="tooltip" title="Image 2" data-bs-target="#mainImageCarousel" data-bs-slide-to="1">
                             <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 3" data-bs-toggle="tooltip" title="Image 3" data-bs-target="#mainImageCarousel" data-bs-slide-to="2">
-                        </div>
+                        </div> *@
 
                         <!-- Second Column: Main Image Carousel -->
                         <div class="col-12 col-md-9">
                             <!-- Main Product Image Carousel with 3s interval -->
+                            @* <div class="carousel-item active">
+                                <img id="modalImage" src="" class="d-block w-100" alt="Image 1">
+                            </div> *@
                             <div id="mainImageCarousel" class="carousel slide mb-3" data-bs-ride="carousel" data-bs-interval="2000">
                                 <div class="carousel-inner">
                                     <div class="carousel-item active">
-                                        <img id="modalImage" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block w-100" alt="Image 1">
+                                        <img id="modalImage" src="" class="d-block w-100" alt="Image 1">
                                     </div>
                                     <div class="carousel-item">
                                         <img src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" class="d-block w-100" alt="Image 2">
@@ -592,6 +413,8 @@
         modal.find('#modalImage').attr('src', image);
         modal.find('#modalName').text(name);
         modal.find('#modalPrice').text(price);
+
+
     });
 </script>
 

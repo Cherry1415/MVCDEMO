@@ -271,3 +271,74 @@
         });
     });
 </script>
+
+<h2>Snake Game</h2>
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+<script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let snake = [{ x: 10, y: 10 }];
+    let direction = "right";
+    let food = { x: 5, y: 5 };
+
+    // Function to draw the snake
+    function drawSnake() {
+        ctx.fillStyle = "green";
+        for (const segment of snake) {
+            ctx.fillRect(segment.x * 20, segment.y * 20, 20, 20);
+        }
+    }
+
+    // Function to move the snake
+    function moveSnake() {
+        let head = { ...snake[0] };
+
+        if (direction === "right") head.x += 1;
+        if (direction === "left") head.x -= 1;
+        if (direction === "up") head.y -= 1;
+        if (direction === "down") head.y += 1;
+
+        snake.unshift(head);
+
+        // Check if the snake eats food
+        if (head.x === food.x && head.y === food.y) {
+            generateFood();
+        } else {
+            snake.pop();
+        }
+    }
+
+    // Function to generate new food position
+    function generateFood() {
+        food = {
+            x: Math.floor(Math.random() * 20),
+            y: Math.floor(Math.random() * 20)
+        };
+    }
+
+    // Function to draw food
+    function drawFood() {
+        ctx.fillStyle = "red";
+        ctx.fillRect(food.x * 20, food.y * 20, 20, 20);
+    }
+
+    // Function to update the game state
+    function updateGame() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        moveSnake();
+        drawFood();
+        drawSnake();
+    }
+
+    // Handle keyboard input for direction change
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowUp" && direction !== "down") direction = "up";
+        if (event.key === "ArrowDown" && direction !== "up") direction = "down";
+        if (event.key === "ArrowLeft" && direction !== "right") direction = "left";
+        if (event.key === "ArrowRight" && direction !== "left") direction = "right";
+    });
+
+    // Game loop
+    setInterval(updateGame, 200);
+</script>

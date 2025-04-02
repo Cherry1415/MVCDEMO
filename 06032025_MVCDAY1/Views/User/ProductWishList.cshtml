@@ -3,11 +3,12 @@
 *@
 @{
 }
-
 @model List<_06032025_MVCDAY1.Models.Product>
 
 <h2>My Wishlist</h2>
 <div>
+    @if (Model != null && Model.Any()) // Check if Model is not null and has data
+    {
     @foreach (var product in Model)
     {
         <div class="product-card">
@@ -20,5 +21,10 @@
                 <button type="submit">❌ Remove</button>
             </form>
         </div>
+    }
+    }
+    else
+    {
+        <p>Your wishlist is empty.</p>
     }
 </div>
