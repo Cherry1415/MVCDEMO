@@ -7,6 +7,16 @@
 
 <h2>My Wishlist</h2>
 <div>
+    @if (!string.IsNullOrEmpty(Context.Session.GetString("email")))
+    {
+        <a>HELLO,@Context.Session.GetString("user_id")</a>
+    }
+    else
+    {
+        <a aria-current="page" asp-area="" asp-controller="User" asp-action="SignIn">HELLO, LOG IN</a>
+    }
+</div>
+<div>
     @if (Model != null && Model.Any()) // Check if Model is not null and has data
     {
     @foreach (var product in Model)

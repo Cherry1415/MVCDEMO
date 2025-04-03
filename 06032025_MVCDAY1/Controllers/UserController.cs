@@ -62,7 +62,7 @@ namespace _06032025_MVCDAY1.Controllers
                 HttpContext.Session.SetString("email", email);
                 HttpContext.Session.SetString("first_name", fname);
                 HttpContext.Session.SetString("Role_ID", role.ToString());
-                HttpContext.Session.SetString("user_id)", uid.ToString());
+                HttpContext.Session.SetString("user_id", uid.ToString());
                 return RedirectToAction("HomeDashBoard","DashBoard");
             }
             else
@@ -76,23 +76,22 @@ namespace _06032025_MVCDAY1.Controllers
 
         public ActionResult ProductWishList()
         {
-            int uid = Convert.ToInt32(HttpContext.Session.GetString("user_id")); // Replace this with your actual user ID retrieval method
+            int uid = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            List<Product> wishlist = _repo.GetUserWishlist(uid);
 
-            var wishlistItems = _repo.GetUserWishlist(uid); // Fetch wishlist items
-
-            if (wishlistItems == null)
+            foreach (var wish in wishlist)
             {
-                wishlistItems = new List<Product>(); // Ensure it's never null
+                wish.ProductImages = _repo.GetImagesByProductId(wish.product_id);
             }
+            return View(wishlist);
 
-            return View(wishlistItems);
-            
         }
 
         //Customer WishList
 
         [HttpPost]
         public ActionResult AddToWishlist(int productId)
+
         {
             int uid = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
             

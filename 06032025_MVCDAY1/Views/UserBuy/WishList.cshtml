@@ -6,7 +6,10 @@
 
 @model List<_06032025_MVCDAY1.Models.Product>
 
+
 <h2>My Wishlist</h2>
+
+<p>User id :@Context.Session.GetString("user_id")</p>
 <div>
     @foreach (var product in Model)
     {

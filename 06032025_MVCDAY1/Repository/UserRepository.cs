@@ -247,6 +247,8 @@ namespace _06032025_MVCDAY1.Repository
             return products;
         }
 
+
+
         //Customer WishList
         public void AddToWishlist(int userId, int productId)
         {
@@ -294,6 +296,21 @@ namespace _06032025_MVCDAY1.Repository
                 }
             }
             return wishlist;
+        }
+
+        public bool IsInWishlist(int productId, int userId)
+        {
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                string query = "SELECT COUNT(*) FROM customer.Wishlist WHERE product_id = @ProductId AND user_id = @Userid";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ProductId", productId);
+                cmd.Parameters.AddWithValue("@Userid", userId);
+
+                con.Open();
+                int count = (int)cmd.ExecuteScalar();
+                return count > 0;
+            }
         }
     }
 }
