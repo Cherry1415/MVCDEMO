@@ -13,7 +13,10 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-
+@{
+    int userid = Convert.ToInt32(Context.Session.GetString("user_id"));
+    
+}
 <div class="modal fade" id="buyNowModal" tabindex="-1" aria-labelledby="buyNowModalLabel" aria-hidden="true">
     <div class="modal-dialog">
 
@@ -30,7 +33,7 @@
                 <p class="text-success">You are eligible for free shipping.</p>
 
 
-                <input type="number" id="amount" name="amount" value="500" class="w-75 mx-5 mt-2" />
+                <input type="number" id="amount" name="amount" value="" class="w-75 mx-5 mt-2" />
 
 
                 <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
@@ -223,17 +226,26 @@
                         <div class="col-md-3 col-sm-6 col-12 py-3">
                             <div class="card product-card">
                                 <div id="imgdiv">
-                                    <form action="@Url.Action("AddToWishlist", "Product")" method="post" class="wishlist-form">
+                                    @{
+                                        var wishlistString = Context.Session.GetString("Wishlist");
+                                        var wishlistIds = !string.IsNullOrEmpty(wishlistString) ? wishlistString.Split(',').Select(int.Parse).ToList() : new List<int>();
+                                        bool isInWishlist = wishlistIds.Contains(product.product_id);
+                                    }
+                                    <form action="@Url.Action("AddToWishlist", "User")" method="post" target="wishlistFrame" class="wishlist-form">
                                         <input type="hidden" name="productId" value="@product.product_id" />
+                                        <input type="hidden" asp-for="@userid" />
 
-                                        <label class="wishlist-label">
-                                            <input type="checkbox" class="wishlist-checkbox" onclick="toggleWishlist(this,@product.product_id)">
+                                        <button type="submit" class="wishlist-label" style="background:none;border:none;padding:0;" onclick="return toggleWishlist(this,@product.product_id)">
+                                              @* <input type="checkbox" class="wishlist-checkbox" onclick="toggleWishlist(this)" > *@
 
-                                            <svg class="heart-icon" viewBox="0 0 24 24">
+                                            <svg class="heart-icon" viewBox="0 0 24 24"
+                                                 style="fill: @(isInWishlist ? "red" : "white");">
                                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
                                             </svg>
-                                        </label>
+                                        </button>
                                     </form>
+                                    <!-- Hidden iframe to handle form submission without page refresh -->
+                                    <iframe name="wishlistFrame" style="display:none;"></iframe>
                                     
                                     @* @foreach (var img in product.ProductImages) *@
                                     @* { *@
@@ -382,25 +394,46 @@
 </div>
 
 <script>
-    function toggleWishlist(checkbox) {
-        // Check if the user is logged in using session data (from Razor)
+    function toggleWishlist(button, productId) {
         var isLoggedIn = '@Context.Session.GetString("email")' !== '';
 
-        if (isLoggedIn) {
-            // Change color of the heart icon when checked
-            var heartIcon = checkbox.nextElementSibling;
-            if (checkbox.checked) {
-                heartIcon.style.fill = "red"; // Change to red when selected
-            } else {
-                heartIcon.style.fill = "white"; // Reset to default
-            }
-        } else {
-            // Show pop-up if the user is not logged in
+        if (!isLoggedIn) {
             alert("Please log in to add items to your wishlist.");
-            checkbox.checked = false; // Prevent checkbox from being checked
+            return false; // Stop further execution
         }
+
+        var heartIcon = button.querySelector(".heart-icon");
+
+        // Send request via hidden iframe
+        var form = button.closest("form");
+        form.submit();
+
+        // Toggle the icon color immediately
+        var currentColor = heartIcon.style.fill;
+        heartIcon.style.fill = (currentColor === "red") ? "white" : "red";
+
+        // Save wishlist state in sessionStorage (to persist color on page reload)
+        let wishlist = JSON.parse(sessionStorage.getItem("wishlist")) || [];
+        if (heartIcon.style.fill === "red") {
+            if (!wishlist.includes(productId)) wishlist.push(productId);
+        } else {
+            wishlist = wishlist.filter(id => id !== productId);
+        }
+        sessionStorage.setItem("wishlist", JSON.stringify(wishlist));
+
+        return false; // Prevent default form submission
     }
 
+    // Restore wishlist colors on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        let wishlist = JSON.parse(sessionStorage.getItem("wishlist")) || [];
+        document.querySelectorAll(".heart-icon").forEach(icon => {
+            let productId = parseInt(icon.closest("button").querySelector("input[name='productId']").value);
+            if (wishlist.includes(productId)) {
+                icon.style.fill = "red";
+            }
+        });
+    });
 </script>
 
 <script>

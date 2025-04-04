@@ -266,12 +266,21 @@ namespace _06032025_MVCDAY1.Repository
 
         public void RemoveFromWishlist(int userId, int productId)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = new SqlConnection(_constring))
+            {
+                string query = @"DELETE FROM customer.Wishlist WHERE user_id=@uid AND product_id=@prodid ";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@uid", userId);
+                cmd.Parameters.AddWithValue("@prodid", productId);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
         }
 
-        public List<Product> GetUserWishlist(int userId)
+        public List<int> GetUserWishlist(int userId)
         {
-            List<Product> wishlist = new List<Product>();
+            List<int> wishlist = new List<int>();
 
             using (SqlConnection conn = new SqlConnection(_constring))
             {
@@ -283,16 +292,7 @@ namespace _06032025_MVCDAY1.Repository
 
                 while (reader.Read())
                 {
-                    wishlist.Add(new Product
-                    {
-                        product_id = Convert.ToInt32(reader["product_id"]),
-                        product_name = reader["product_name"].ToString(),
-                        brand_id = Convert.ToInt32(reader["brand_id"]),
-                        category_id = Convert.ToInt32(reader["category_id"]),
-                        vendor_id = Convert.ToInt32(reader["vendor_id"]),
-                        price = Convert.ToInt32(reader["price"]),
-                        sub_category_id = Convert.ToInt32(reader["sub_category_id"]),
-                    });
+                    wishlist.Add(Convert.ToInt32(reader["product_id"]));
                 }
             }
             return wishlist;

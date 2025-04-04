@@ -26,6 +26,7 @@ namespace _06032025_MVCDAY1.Controllers
             {
                 product.ProductImages = _repository.GetImagesByProductId(product.product_id);
             }
+
             return View(products);
         }
 

@@ -11,5 +11,7 @@
        
         public int sub_category_id { get; set; }
         public List<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
+
+        public bool IsInWishlist { get; set; }
     }
 }

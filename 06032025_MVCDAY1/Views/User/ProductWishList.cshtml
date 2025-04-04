@@ -3,7 +3,7 @@
 *@
 @{
 }
-@model List<_06032025_MVCDAY1.Models.Product>
+@model IEnumerable<_06032025_MVCDAY1.Models.Product>
 
 <h2>My Wishlist</h2>
 <div>
@@ -26,7 +26,7 @@
             <h3>@product.product_name</h3>
             <p>₹ @product.price</p>
 
-            <form action="@Url.Action("RemoveFromWishlist", "Wishlist")" method="post">
+                <form action="@Url.Action("AddToWishlist", "User")" method="post">
                 <input type="hidden" name="product_id" value="@product.product_id" />
                 <button type="submit">❌ Remove</button>
             </form>
