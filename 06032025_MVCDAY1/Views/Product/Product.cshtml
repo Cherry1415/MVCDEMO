@@ -190,6 +190,14 @@
                 width: 100%;
             }
     }
+
+    .heart-icon.filled {
+        fill: red;
+    }
+
+    .heart-icon.empty {
+        fill: white;
+    }
     /* .carousel-item{
                 height:500px;
             } */
@@ -226,23 +234,24 @@
                         <div class="col-md-3 col-sm-6 col-12 py-3">
                             <div class="card product-card">
                                 <div id="imgdiv">
-                                    @{
+                                    @*  @{
                                         var wishlistString = Context.Session.GetString("Wishlist");
                                         var wishlistIds = !string.IsNullOrEmpty(wishlistString) ? wishlistString.Split(',').Select(int.Parse).ToList() : new List<int>();
                                         bool isInWishlist = wishlistIds.Contains(product.product_id);
-                                    }
+                                    }  *@
                                     <form action="@Url.Action("AddToWishlist", "User")" method="post" target="wishlistFrame" class="wishlist-form">
                                         <input type="hidden" name="productId" value="@product.product_id" />
                                         <input type="hidden" asp-for="@userid" />
 
-                                        <button type="submit" class="wishlist-label" style="background:none;border:none;padding:0;" onclick="return toggleWishlist(this,@product.product_id)">
+                                        <button type="submit" class="wishlist-label" style="background:none;border:none;padding:0;" onclick="toggleWishlistIcon(this);">
                                               @* <input type="checkbox" class="wishlist-checkbox" onclick="toggleWishlist(this)" > *@
 
-                                            <svg class="heart-icon" viewBox="0 0 24 24"
-                                                 style="fill: @(isInWishlist ? "red" : "white");">
+                                            <svg class="heart-icon @(product.IsInWishlist ? "filled" : "empty")" viewBox="0 0 24 24"
+                                                   @* style="fill: @(product.IsInWishlist ? "red" : "white");"   *@ >
                                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
                                             </svg>
                                         </button>
+                                        
                                     </form>
                                     <!-- Hidden iframe to handle form submission without page refresh -->
                                     <iframe name="wishlistFrame" style="display:none;"></iframe>
@@ -393,6 +402,20 @@
     </div>
 </div>
 
+<script>
+    function toggleWishlistIcon(button) {
+        var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to add items to your wishlist.");
+            return false; // Stop further execution
+        }
+        const icon = button.querySelector('.heart-icon');
+        icon.classList.toggle('filled');
+        icon.classList.toggle('empty');
+        // allow the form to submit silently
+    }
+</script>
 <script>
     function toggleWishlist(button, productId) {
         var isLoggedIn = '@Context.Session.GetString("email")' !== '';

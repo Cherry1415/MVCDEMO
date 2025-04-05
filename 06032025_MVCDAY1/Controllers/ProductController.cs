@@ -20,11 +20,25 @@ namespace _06032025_MVCDAY1.Controllers
         }
         public IActionResult Product()
         {
-            List<Product> products = _repository.GetAllProducts();
+            int uid = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+
+            List<Product> products= _repository.GetAllProducts();
+
+            List<int> wishlistid = _repository.GetUserWishlist(uid).Select(w => w.product_id)
+                                  .ToList();
+            //if(uid == 0)
+            //{
+            //   products = _repository.GetAllProducts();
+            //}
+            //else
+            //{
+            //    products = _repository.GetUserWishlist(uid);
+            //}
             //return View(products);
             foreach (var product in products)
             {
                 product.ProductImages = _repository.GetImagesByProductId(product.product_id);
+                product.IsInWishlist = wishlistid.Contains(product.product_id);
             }
 
             return View(products);

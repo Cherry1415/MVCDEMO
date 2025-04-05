@@ -80,7 +80,7 @@ namespace _06032025_MVCDAY1.Controllers
         public ActionResult ProductWishList()
         {
             int uid = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
-            List<int> wishlist = _repo.GetUserWishlist(uid);
+            List<Product> wishlist = _repo.GetUserWishlist(uid);
 
             //foreach (var wish in wishlist)
             //{
@@ -119,7 +119,7 @@ namespace _06032025_MVCDAY1.Controllers
                 
             }
             var wishlist = _repo.GetUserWishlist(userid);
-            HttpContext.Session.SetString("Wishlist", string.Join(",", wishlist));
+            //HttpContext.Session.SetString("Wishlist", string.Join(",", wishlist));
             return Content(""); // Redirect back to product listing
         }
 

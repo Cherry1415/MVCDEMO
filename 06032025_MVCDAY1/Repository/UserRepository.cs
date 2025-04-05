@@ -1,6 +1,7 @@
 ﻿using _06032025_MVCDAY1.Models;
 using Humanizer;
 using Microsoft.Data.SqlClient;
+//using Razorpay.Api;
 using System.Data;
 
 namespace _06032025_MVCDAY1.Repository
@@ -278,9 +279,9 @@ namespace _06032025_MVCDAY1.Repository
             }
         }
 
-        public List<int> GetUserWishlist(int userId)
+        public List<Product> GetUserWishlist(int userId)
         {
-            List<int> wishlist = new List<int>();
+            List<Product> wishlist = new List<Product>();
 
             using (SqlConnection conn = new SqlConnection(_constring))
             {
@@ -292,12 +293,20 @@ namespace _06032025_MVCDAY1.Repository
 
                 while (reader.Read())
                 {
-                    wishlist.Add(Convert.ToInt32(reader["product_id"]));
+                    wishlist.Add(new Product
+                    {
+                        product_id = Convert.ToInt32(reader["product_id"]),
+                        product_name = reader["product_name"].ToString(),
+                        brand_id = Convert.ToInt32(reader["brand_id"]),
+                        category_id = Convert.ToInt32(reader["category_id"]),
+                        vendor_id = Convert.ToInt32(reader["vendor_id"]),
+                        price = Convert.ToInt32(reader["price"]),
+                        sub_category_id = Convert.ToInt32(reader["sub_category_id"]),
+                    });
                 }
             }
             return wishlist;
         }
-
         public bool IsInWishlist(int productId, int userId)
         {
             using (SqlConnection con = new SqlConnection(_constring))
@@ -312,5 +321,6 @@ namespace _06032025_MVCDAY1.Repository
                 return count > 0;
             }
         }
+
     }
 }
