@@ -223,7 +223,7 @@ namespace _06032025_MVCDAY1.Repository
             List<Product> products = new List<Product>();
             using (SqlConnection conn = new SqlConnection(_constring))
             {
-                string query = "SELECT * FROM Supply.Products WHERE productid = @productid";
+                string query = "SELECT * FROM vendor.Products WHERE product_id = @productid";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@productid", id);
 

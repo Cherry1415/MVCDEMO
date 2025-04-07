@@ -69,9 +69,15 @@ namespace _06032025_MVCDAY1.Controllers
         }
 
 
-        public IActionResult DetailProduct()
+        public IActionResult DetailProduct(int id)
         {
-            return View();
+            List<Product> products = _repository.ProductById(id);
+            foreach (var product in products)
+            {
+                product.ProductImages = _repository.GetImagesByProductId(product.product_id);
+            }
+
+            return View(products);
         }
         public IActionResult ProductFAQ()
         {

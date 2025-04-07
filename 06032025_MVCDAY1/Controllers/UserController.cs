@@ -116,7 +116,7 @@ namespace _06032025_MVCDAY1.Controllers
             else
             {
                 _repo.AddToWishlist(userid, productId);
-                
+                TempData["Message"] = "Item added to wishlist.";
             }
             var wishlist = _repo.GetUserWishlist(userid);
             //HttpContext.Session.SetString("Wishlist", string.Join(",", wishlist));
