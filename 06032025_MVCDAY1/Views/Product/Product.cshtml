@@ -106,6 +106,101 @@
         });
     });
 </script>
+<script>
+    function toggleWishlistIcon(button) {
+        var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to add items to your wishlist.");
+            return false; // Stop further execution
+        }
+        const icon = button.querySelector('.heart-icon');
+        icon.classList.toggle('filled');
+        icon.classList.toggle('empty');
+        // allow the form to submit silently
+    }
+</script>
+<script>
+    function toggleWishlist(button, productId) {
+        var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to add items to your wishlist.");
+            return false; // Stop further execution
+        }
+
+        var heartIcon = button.querySelector(".heart-icon");
+
+        // Send request via hidden iframe
+        var form = button.closest("form");
+        form.submit();
+
+        // Toggle the icon color immediately
+        var currentColor = heartIcon.style.fill;
+        heartIcon.style.fill = (currentColor === "red") ? "white" : "red";
+
+        // Save wishlist state in sessionStorage (to persist color on page reload)
+        let wishlist = JSON.parse(sessionStorage.getItem("wishlist")) || [];
+        if (heartIcon.style.fill === "red") {
+            if (!wishlist.includes(productId)) wishlist.push(productId);
+        } else {
+            wishlist = wishlist.filter(id => id !== productId);
+        }
+        sessionStorage.setItem("wishlist", JSON.stringify(wishlist));
+
+        return false; // Prevent default form submission
+    }
+
+    // Restore wishlist colors on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        let wishlist = JSON.parse(sessionStorage.getItem("wishlist")) || [];
+        document.querySelectorAll(".heart-icon").forEach(icon => {
+            let productId = parseInt(icon.closest("button").querySelector("input[name='productId']").value);
+            if (wishlist.includes(productId)) {
+                icon.style.fill = "red";
+            }
+        });
+    });
+</script>
+
+<script>
+    // When "Quick View" button is clicked, pass the product data to the modal
+    $('#quickViewModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var image = button.data('image'); // Extract info from data-* attributes
+        var name = button.data('name');
+        var price = button.data('price');
+
+        var modal = $(this);
+        modal.find('#modalImage').attr('src', image);
+        modal.find('#modalName').text(name);
+        modal.find('#modalPrice').text(price);
+
+
+    });
+</script>
+
+<script>
+    function toggleFavorite(element) {
+        $(element).find("i").toggleClass("fas far");
+    }
+
+    function showQuickView(element) {
+        var product = $(element).closest('.product-card');
+        var imgSrc = product.find('.product-img').attr('src');
+        var name = product.find('.product-img').data('name');
+        var price = product.find('.product-img').data('price');
+        var description = product.find('.product-img').data('description');
+
+        $("#modalProductImage").attr("src", imgSrc);
+        $("#modalProductName").text(name);
+        $("#modalProductPrice").text(price);
+        $("#modalProductDescription").text(description);
+
+        $("#quickViewModal").modal("show");
+    }
+</script>
+
 
 <style>
     .modal-content {
@@ -334,98 +429,5 @@
     </div>
 </div>
 
-<script>
-    function toggleWishlistIcon(button) {
-        var isLoggedIn = '@Context.Session.GetString("email")' !== '';
 
-        if (!isLoggedIn) {
-            alert("Please log in to add items to your wishlist.");
-            return false; // Stop further execution
-        }
-        const icon = button.querySelector('.heart-icon');
-        icon.classList.toggle('filled');
-        icon.classList.toggle('empty');
-        // allow the form to submit silently
-    }
-</script>
-<script>
-    function toggleWishlist(button, productId) {
-        var isLoggedIn = '@Context.Session.GetString("email")' !== '';
-
-        if (!isLoggedIn) {
-            alert("Please log in to add items to your wishlist.");
-            return false; // Stop further execution
-        }
-
-        var heartIcon = button.querySelector(".heart-icon");
-
-        // Send request via hidden iframe
-        var form = button.closest("form");
-        form.submit();
-
-        // Toggle the icon color immediately
-        var currentColor = heartIcon.style.fill;
-        heartIcon.style.fill = (currentColor === "red") ? "white" : "red";
-
-        // Save wishlist state in sessionStorage (to persist color on page reload)
-        let wishlist = JSON.parse(sessionStorage.getItem("wishlist")) || [];
-        if (heartIcon.style.fill === "red") {
-            if (!wishlist.includes(productId)) wishlist.push(productId);
-        } else {
-            wishlist = wishlist.filter(id => id !== productId);
-        }
-        sessionStorage.setItem("wishlist", JSON.stringify(wishlist));
-
-        return false; // Prevent default form submission
-    }
-
-    // Restore wishlist colors on page load
-    document.addEventListener("DOMContentLoaded", function () {
-        let wishlist = JSON.parse(sessionStorage.getItem("wishlist")) || [];
-        document.querySelectorAll(".heart-icon").forEach(icon => {
-            let productId = parseInt(icon.closest("button").querySelector("input[name='productId']").value);
-            if (wishlist.includes(productId)) {
-                icon.style.fill = "red";
-            }
-        });
-    });
-</script>
-
-<script>
-    // When "Quick View" button is clicked, pass the product data to the modal
-    $('#quickViewModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var image = button.data('image'); // Extract info from data-* attributes
-        var name = button.data('name');
-        var price = button.data('price');
-
-        var modal = $(this);
-        modal.find('#modalImage').attr('src', image);
-        modal.find('#modalName').text(name);
-        modal.find('#modalPrice').text(price);
-
-
-    });
-</script>
-
-<script>
-    function toggleFavorite(element) {
-        $(element).find("i").toggleClass("fas far");
-    }
-
-    function showQuickView(element) {
-        var product = $(element).closest('.product-card');
-        var imgSrc = product.find('.product-img').attr('src');
-        var name = product.find('.product-img').data('name');
-        var price = product.find('.product-img').data('price');
-        var description = product.find('.product-img').data('description');
-
-        $("#modalProductImage").attr("src", imgSrc);
-        $("#modalProductName").text(name);
-        $("#modalProductPrice").text(price);
-        $("#modalProductDescription").text(description);
-
-        $("#quickViewModal").modal("show");
-    }
-</script>
 
