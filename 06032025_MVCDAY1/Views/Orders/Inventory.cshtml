@@ -1,4 +1,5 @@
-﻿@*
+﻿@model IEnumerable<_06032025_MVCDAY1.Models.VendorStock>
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -10,8 +11,9 @@
 
 <head>
     <title>Product Inventory</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/bootstrap/js/bootstrap.min.js" rel="stylesheet" />
+    <script src="~/bootstrap/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/EcomStyles.css" />
 
@@ -39,29 +41,122 @@
                 <thead>
 
                     <tr>
-                        <th scope="col">Preview</th>
-                        <th scope="col">Product Title</th>
-                        <th scope="col">Inventory Status</th>
-                        <th scope="col">Date to ReOrder</th>
-                        <th scope="col">Inventory Level</th>
-                        <th scope="col">ReOrder Qty </th>
+                        <th scope="col">Product ID</th>
+                        <th scope="col">stock Status</th>
+                        <th scope="col">Date to stock in </th>
+                        <th scope="col">Qty avilable</th>
+                        <th scope="col">ReStock date  </th>
+                        <th scope="col">restock QTY  </th>
                         <th scope="col">ReOrder Cost</th>
+                        <th scope="col">Edit</th>
 
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row"><img src="~/image/Levis-Logo.png" width="50" height="50" /></th>
-                        <td scope="col">T-Shirt</td>
-                        <td scope="col">In Stock</td>
-                        <td scope="col">12/12/2014</td>
-                        <td scope="col">200</td>
-                        <td scope="col">300</td>
-                        <td scope="col">50000</td>
-                    </tr>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var vs in Model)
+                        {
+                            <tr>
+                                <td>@vs.product_id</td>
+                                <td>@vs.stock_status</td>
+                                <td>@vs.stock_in_date.ToShortDateString()</td>
+                                <td>@vs.quantity_available</td>
+                                <td>@vs.restock_date.ToShortDateString()</td>
+                                <td>50</td>
+                                <td>₹2000</td>
+
+
+                                @* <td>  *@
+                                @*     <a href="@Url.Action("Restock", new { id = @vs.stock_id })" class="btn btn-outline-info"><i class="fas fa-edit" style="font-size:16px"></i></a>  *@
+                                @*  </td> *@
+                                <td>
+                                    <a href="javascript:void(0);" class="btn btn-outline-info edit-btn" data-id="@vs.stock_id">
+                                        <i class="fas fa-edit" style="font-size:16px"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="7" class="text-center">No stock data available.</td></tr>
+                    }
+
                 </tbody>
             </table>
 
         </div>
     </div>
 </div>
+
+<!-- Restock Modal -->
+<div class="modal fade" id="restockModal" tabindex="-1" aria-labelledby="restockModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="restockForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="restockModalLabel">Restock Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="stock_id" name="stock_id" />
+                    @* <div class="mb-3"> *@
+                    @*     <label for="restock_qty" class="form-label">Restock Quantity</label> *@
+                    @*     <input type="number" class="form-control" id="restock_qty" name="restock_qty" required /> *@
+                    @* </div> *@
+                    @* <div class="mb-3"> *@
+                    @*     <label for="reorder_cost" class="form-label">Reorder Cost</label> *@
+                    @*     <input type="number" class="form-control" id="reorder_cost" name="reorder_cost" required /> *@
+                    @* </div> *@
+                    <div class="mb-3">
+                        <label for="quantity_available" class="form-label">Add Quantity</label>
+                        <input type="number" class="form-control" id="quantity_available" name="quantity_available" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Update Stock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.edit-btn').on('click', function () {
+            var stockId = $(this).data('id');
+
+            // Fetch stock details from server
+            $.ajax({
+                url: '/Orders/GetStockById', // Update with your controller name and action
+                type: 'GET',
+                data: { id: stockId },
+                success: function (data) {
+                    $('#stock_id').val(data.stock_id);
+                    $('#quantity_available').val(data.quantity_available);
+                    // $('#reorder_cost').val(data.reorder_cost);
+                    // $('#restock_date').val(data.restock_date.substring(0, 10)); Format to yyyy-MM-dd
+                        var myModal = new bootstrap.Modal(document.getElementById('restockModal'));
+                    myModal.show();
+                }
+            });
+        });
+
+        // Handle form submission
+        $('#restockForm').on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/Orders/UpdateStock', // Update with your controller name and action
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function () {
+                    $('#restockModal').modal('hide');
+                    location.reload(); // reload to reflect updates
+                }
+            });
+        });
+    });
+</script>
+

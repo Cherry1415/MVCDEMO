@@ -32,8 +32,8 @@
                 <h5 id="productName"></h5>
                 <p class="text-success">You are eligible for free shipping.</p>
 
-                 <h5 id="productPrice"></h5> 
-                @* <input type="number" id="productPrice"  class="w-75 mx-5 mt-2" /> *@
+                <h5 id="amount" name="amount"></h5>
+                <input type="number" id="amountInput" name="amount" class="w-75 mx-5 mt-2" />
 
 
                 <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
@@ -50,7 +50,7 @@
 
 <script>
     function makePayment() {
-            var amt = document.getElementById("amount").value;
+            var amt =  $("#amountInput").val();
 
             var amount = parseInt(amt);
 
@@ -65,7 +65,7 @@
             .then(data => {
                 if (data.orderId) {
                     var options = {
-                        "key": "@ViewBag.KeyId",
+                        "key": "rzp_test_A6DIgBxiN6cygo",
                         "amount": 1 * 100,
                         "currency": "INR",
                         "name": "Your Company",
@@ -99,7 +99,8 @@
             let image = $(this).data("image");
 
             $("#productName").text(name);
-            $("#productPrice").text(price);
+            $("#amount").text("₹" + price);
+            $("#amountInput").val(price);
             $("#productImage").attr("src", image);
 
             $("#buyNowModal").modal("show");
@@ -345,20 +346,26 @@
                                                    @* style="fill: @(product.IsInWishlist ? "red" : "white");"   *@ >
                                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
                                             </svg>
-                                        </button>
-                                        
+                                        </button> 
                                     </form>
                                     <!-- Hidden iframe to handle form submission without page refresh -->
                                     <iframe name="wishlistFrame" style="display:none;"></iframe>
-                                    
-                                    @* @foreach (var img in product.ProductImages) *@
-                                    @* { *@
 
-                                    @* } *@
+                                    @* @if (product.ProductImages != null && product.ProductImages.Any())
+                                    {
+                                        foreach (var image in product.ProductImages)
+                                        {
+                                            <img src="~/uploads/@image.imgName" width="100" class="me-2" />
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p>No Images</p>
+                                    } *@
 
 
                                     <a asp-area="" asp-controller="Product" asp-action="DetailProduct" asp-route-id="@product.product_id">
-                                        <img src="@product.ProductImages.FirstOrDefault()?.imgName" width="100" height="100"
+                                        <img src="~/uploads/@product.ProductImages.FirstOrDefault()?.imgName" width="100" height="100"
                                              class="product-img"
                                              id="image"
                                              data-name="@product.product_name"
@@ -377,15 +384,19 @@
                                 <div class="card-body" class="wishlist-item" id="wishlist-item1">
                                     <h5 class="card-title" id="product_name">@product.product_name</h5>
                                     <p class="card-text" id="price">₹ @product.price</p>
-                                    <button class="btn btn-primary buyNowBtn" data-name="@product.product_name" data-price="₹@product.price" data-image="@product.ProductImages.FirstOrDefault()?.imgName">Buy Now</button>
-                                    @* <a class="btn btn-primary" asp-action="PaymentProduct" asp-controller="Payment">Buy Now</a> *@
-                                    <button class="btn btn-primary cart-btn" onclick="addToCart('Samsung S25 Ultra', 130000, 'https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg')" asp-area="" asp-controller="UserBuy" asp-action="AddCart">Add to Cart</button>
+                                    <div class="d-flex gap-2 align-items-center">
+                                    <button class="btn btn-primary buyNowBtn" data-name="@product.product_name" data-price="@product.price" data-image="@product.ProductImages.FirstOrDefault()?.imgName">Buy Now</button>
+                                   
+                                    <form method="post" asp-controller="Cart" asp-action="AddToCart">
+                                        <input type="hidden" name="productId" value="@product.product_id" />
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <input type="hidden" name="price" value="@product.price" />
+                                        <button type="submit" class="btn btn-primary cart-btn">Add To Cart</button>
+                                    </form>
+                                    </div>
                                     @* <a asp-area="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
                                 </div>
-                                @* <div class="product-info">
-                                    <p class="price">@product.price<span class="original-price">@product.price</span> <span class="discount">16% Off</span></p>
-                                    <a href="#" class="buy-now">BUY NOW</a>
-                                </div> *@
+                               
                             </div>
                         </div>
                     }

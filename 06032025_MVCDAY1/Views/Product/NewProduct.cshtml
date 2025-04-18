@@ -1,0 +1,174 @@
+﻿@model _06032025_MVCDAY1.Models.Products
+<style>
+    .image-preview {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+        .image-preview img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+</style>
+
+<div class="container mt-3 pb-3 shadow-lg bg-light">
+    <div class="text-end mt-3 pt-1">
+        <button>Save Draft</button>
+    </div>
+
+    <h2 class="mb-4 text-decoration-underline">Add New Product</h2>
+
+    <form action="@Url.Action("AddProduct","Product")" enctype="multipart/form-data" method="post">
+        <div class="row">
+            <!-- Left Column - Product Details -->
+            <div class="col-md-8">
+                <div class="card p-4 shadow-lg">
+                    <h4 style="color:black;font-family: 'Arial Narrow Bold'">General Information</h4>
+
+                    <div class="mb-3">
+                        <label class="form-label">Product Name</label>
+                        <input type="text" class="form-control" name="product_name" placeholder="Enter product name">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Brand Id</label>
+                        <input type="text" class="form-control" name="brand_id" placeholder="Enter brand ID">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Category Id</label>
+                        <input type="text" class="form-control" name="category_id" placeholder="Enter category ID">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Subcategory Id</label>
+                        <input type="text" class="form-control" name="subcategory_id" placeholder="Enter subcategory ID">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Vendor Id</label>
+                        <input type="text" class="form-control" name="vendor_id" placeholder="Enter vendor ID">
+                    </div>
+                    <div id="attributesContainer">
+                        @for (int i = 0; i < 1; i++) // You can make this dynamic via JS if needed
+                        {
+                            <div class="attribute-group">
+                                <label>Size:</label><br />
+                                <input type="checkbox" name="attributes[@i].size" value="S" /> S
+                                <input type="checkbox" name="attributes[@i].size" value="M" /> M
+                                <input type="checkbox" name="attributes[@i].size" value="L" /> L
+                                <input type="checkbox" name="attributes[@i].size" value="XL" /> XL
+
+                                <input type="text" name="attributes[@i].color" placeholder="Color" />
+                                <input type="text" name="attributes[@i].material" placeholder="Material" />
+                                <input type="text" name="attributes[@i].weight" placeholder="Weight" /> <br><br />
+                                @* <input type="text" name="attributes[@i].gender" placeholder="Gender" /> *@
+                                <label>Gender:</label>
+                                <input type="radio" name="attributes[@i].gender" value="Male" /> Male
+                                <input type="radio" name="attributes[@i].gender" value="Female" /> Female
+                                <input type="text" name="attributes[@i].capacity" placeholder="Capacity" />
+                                <input type="text" name="attributes[@i].display" placeholder="Display" />
+                                <input type="text" name="attributes[@i].processor" placeholder="Processor" />
+                            </div>
+                        }
+                    </div>
+
+
+                    <h4>Pricing and Stock</h4>
+                    <div id="vstockContainer">
+                        @for (int i = 0; i < 1; i++) // You can make this dynamic via JS if needed
+                        {
+                            <div class="vstock-group">
+                                <input type="number" name="vstock[@i].quanity_avilable" placeholder="quanity_avilable" />
+                            </div>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Price</label>
+                        <input type="text" class="form-control" name="price" placeholder="00.00 Rs.">
+                    </div>
+
+                    @* <div class="mb-3"> *@
+                    @*     <label class="form-label">Stock</label> *@
+                    @*     <input type="number" class="form-control" name="quanity_avilable" placeholder="100"> *@
+                    @* </div> *@
+
+                    <div class="mb-3">
+                        <label class="form-label">Discount</label>
+                        <input type="text" class="form-control" placeholder="10%">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Image Upload -->
+            <div class="col-md-4">
+                <div class="card p-4 shadow-lg">
+                    <h4>Upload Product Images</h4>
+                    <div class="mb-3">
+                        <label class="form-label">Select Images</label>
+                        <div class="drop-area" id="dropArea">
+                            <p>Drag & drop images here or</p>
+                            <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('productImages').click();">Browse Files</button>
+                            <input class="form-control d-none" type="file" id="productImages" accept="image/*" multiple name="images" onchange="previewImages(event)">
+                        </div>
+                    </div>
+                    <div id="imagePreview" class="image-preview-container">
+                        <div id="imagePreviewContent" class="image-preview"></div>
+                    </div>
+                </div>
+
+                <div class="card p-4 mt-3 shadow-lg">
+                    <h5>Category</h5>
+                    <select class="form-select" name="Category">
+                        <option selected disabled>-- Select your option --</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Accessories">Accessories</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success">Add Product</button>
+            <a href="@Url.Action("GetProduct")" class="btn btn-secondary ms-2">Back to List</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    function previewImages(event) {
+        const previewContainer = document.getElementById('imagePreviewContent');
+        previewContainer.innerHTML = '';
+        const files = event.target.files;
+
+        for (let i = 0; i < files.length; i++) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                previewContainer.appendChild(img);
+            };
+            reader.readAsDataURL(files[i]);
+        }
+    }
+
+    const dropArea = document.getElementById('dropArea');
+    dropArea.addEventListener('dragover', e => {
+        e.preventDefault(); dropArea.style.backgroundColor = "#f0f0f0";
+    });
+    dropArea.addEventListener('dragleave', e => {
+        e.preventDefault(); dropArea.style.backgroundColor = "";
+    });
+    dropArea.addEventListener('drop', e => {
+        e.preventDefault();
+        document.getElementById('productImages').files = e.dataTransfer.files;
+        previewImages({ target: { files: e.dataTransfer.files } });
+    });
+</script>

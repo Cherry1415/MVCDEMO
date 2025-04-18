@@ -1,0 +1,79 @@
+﻿@model IEnumerable<_06032025_MVCDAY1.Models.Product>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="container p-4">
+    <div class="container shadow-lg mt-2 ">
+        <table class="table ">
+            <thead>
+                <tr>
+                    <th scope="col">pid</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Product Description</th>
+                    <th scope="col">brand ID</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">sub category </th>
+                    <th scope="col">size </th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Image</th>
+
+                    <th scope="col">Edit / Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var i in Model)
+
+                {
+
+                    <tr>
+                        <td>@i.product_id</td>
+                        <td>@i.product_name</td>
+                        <td></td>
+                        <td>@i.brand_id</td>
+                        <td>@i.category_id</td>
+                        <td>@i.sub_category_id</td>
+                        <td>
+                            @if (i.Prod_Attributes != null && i.Prod_Attributes.Any())
+                            {
+                                foreach (var attri in i.Prod_Attributes)
+                                {
+                                    @attri.size
+
+                                }
+
+                            }
+                            else
+                            {
+                                <span> Not available</span>
+                            }
+                        </td>
+                        <td>@i.price</td>
+
+                        <td>
+                            @if (i.ProductImages != null && i.ProductImages.Any())
+                            {
+                                foreach (var image in i.ProductImages)
+                                {
+                                    <img src="~/uploads/@image.imgName" width="100" class="me-2" />
+                                }
+                            }
+                            else
+                            {
+                                <p>No Images</p>
+                            }
+                        </td>
+                        <td>
+                            <a href="@Url.Action("EditProduct", new { id = @i.product_id })" class="btn btn-outline-info"><i class="fas fa-edit" style="font-size:16px"></i></a>
+                            <a href="@Url.Action("DeleteProduct", new { id = @i.product_id })" class="btn btn-outline-danger"><i class="fas fa-trash" style="font-size:16px"></i></a>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>

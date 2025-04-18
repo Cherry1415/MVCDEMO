@@ -13,6 +13,8 @@ namespace _06032025_MVCDAY1.Models
        
         public int sub_category_id { get; set; }
         public List<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
+        public List<Prod_Attributes> Prod_Attributes { get; set; } = new List<Prod_Attributes>();
+        public List<VendorStock> VendorStock { get; set; } = new List<VendorStock>();
 
         [NotMapped]
         public bool IsInWishlist { get; set; }

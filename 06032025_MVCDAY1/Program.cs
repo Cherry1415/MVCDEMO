@@ -13,6 +13,8 @@ namespace _06032025_MVCDAY1
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IOrdersRepository, OrdersRepository>();
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
             var RazorpayConfig = new RazorPayKeys();
             builder.Configuration.GetSection("RazorPay").Bind(RazorpayConfig);
