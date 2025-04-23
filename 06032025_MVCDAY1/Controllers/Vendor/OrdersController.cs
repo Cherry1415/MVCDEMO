@@ -21,7 +21,7 @@ namespace _06032025_MVCDAY1.Controllers.Vendor
         }
         public IActionResult Inventory()
         {
-            int vendorId = 4; // Or get from session/auth
+            int vendorId = 1; // Or get from session/auth
             var stockList = _repository.manageInventoty(vendorId);
 
             if (stockList == null || !stockList.Any())

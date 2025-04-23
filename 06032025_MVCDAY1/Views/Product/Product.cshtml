@@ -73,12 +73,12 @@
                         "order_id": data.orderId,
                         "handler": function (response) {
                             alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
-                            window.location.href = "/Home/Success?paymentId=" + response.razorpay_payment_id;
+                            window.location.href = "/Payment/Success?paymentId=" + response.razorpay_payment_id;
                         },
                         "prefill": {
                             "name": "Test User",
                             "email": "test@example.com",
-                            "contact": "9999999999"
+                            "contact": "9909817574"
                         }
                     };
 
@@ -94,6 +94,12 @@
 <script>
     $(document).ready(function () {
         $(".buyNowBtn").click(function () {
+            var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to Buy this Item!!");
+            return false; // Stop further execution
+        }
             let name = $(this).data("name");
             let price = $(this).data("price");
             let image = $(this).data("image");

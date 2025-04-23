@@ -1,79 +1,264 @@
 ﻿@model IEnumerable<_06032025_MVCDAY1.Models.Product>
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
 @{
+    Layout = "_UserLayout";
 }
 
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
 <div class="container p-4">
-    <div class="container shadow-lg mt-2 ">
-        <table class="table ">
+    <div class="container shadow-lg mt-2">
+
+        <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">pid</th>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">Product Description</th>
-                    <th scope="col">brand ID</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">sub category </th>
-                    <th scope="col">size </th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Image</th>
-
-                    <th scope="col">Edit / Delete</th>
+                    <th>pid</th>
+                    <th>Product Name</th>
+                    <th>Description</th>
+                    <th>Brand ID</th>
+                    <th>Category</th>
+                    <th>Subcategory</th>
+                    <th>Size</th>
+                    <th>Price</th>
+                    <th>Image</th>
+                    <th>Edit / Delete</th>
                 </tr>
             </thead>
             <tbody>
-
                 @foreach (var i in Model)
-
                 {
-
+                    
                     <tr>
+
                         <td>@i.product_id</td>
                         <td>@i.product_name</td>
-                        <td></td>
+                        <td>
+                            @if (i.Prod_Attributes != null && i.Prod_Attributes.Any())
+                            {
+                                @i.Prod_Attributes.First().product_desc_id
+                            }
+                        </td>
                         <td>@i.brand_id</td>
                         <td>@i.category_id</td>
                         <td>@i.sub_category_id</td>
                         <td>
                             @if (i.Prod_Attributes != null && i.Prod_Attributes.Any())
                             {
-                                foreach (var attri in i.Prod_Attributes)
-                                {
-                                    @attri.size
-
-                                }
-
+                                @i.Prod_Attributes.First().size
                             }
                             else
                             {
-                                <span> Not available</span>
+                                <span>Not available</span>
                             }
                         </td>
                         <td>@i.price</td>
-
                         <td>
                             @if (i.ProductImages != null && i.ProductImages.Any())
                             {
-                                foreach (var image in i.ProductImages)
+                                foreach (var img in i.ProductImages)
                                 {
-                                    <img src="~/uploads/@image.imgName" width="100" class="me-2" />
+                                    <img src="~/uploads/@img.imgName" width="100" class="me-2" />
                                 }
                             }
                             else
                             {
-                                <p>No Images</p>
+                                <span>No Images</span>
                             }
                         </td>
                         <td>
-                            <a href="@Url.Action("EditProduct", new { id = @i.product_id })" class="btn btn-outline-info"><i class="fas fa-edit" style="font-size:16px"></i></a>
-                            <a href="@Url.Action("DeleteProduct", new { id = @i.product_id })" class="btn btn-outline-danger"><i class="fas fa-trash" style="font-size:16px"></i></a>
+                            
+
+                            <button type="button" class="btn btn-outline-info edit-btn"
+                                    data-bs-toggle="modal"
+                                    data-id="@i.product_id">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                           @*  <a href="javascript:void(0);" class="btn btn-outline-info edit-btn" data-id="@i.product_id">
+                                <i class="fas fa-edit" style="font-size:16px"></i>
+                            </a> *@
+                            <a href="@Url.Action("DeleteProduct", new { id = i.product_id })" class="btn btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                            </a>
                         </td>
                     </tr>
                 }
-
             </tbody>
         </table>
     </div>
 </div>
+<div class="modal fade" id="UpdateProductModal" tabindex="-1" aria-labelledby="UpdateProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow">
+            <form id="UpdateForm" method="post" enctype="multipart/form-data" asp-action="UpdateProduct" asp-controller="Product">
+                <div class="modal-header bg-primary text-white rounded-top-4">
+                    <h5 class="modal-title" id="UpdateProductModalLabel">Update Product</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body px-4 py-3">
+                    <input type="hidden" id="product_id1" name="product_id" />
+
+                    <!-- Product Info -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="product_name1" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="product_name1" name="product_name" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="number" class="form-control" id="price" name="price" required />
+                        </div>
+                    </div>
+
+                    <!-- Category / Brand Info -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="brand_id" class="form-label">Brand ID</label>
+                            <input type="text" class="form-control" id="brand_id" name="brand_id" readonly />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="category_id" class="form-label">Category ID</label>
+                            <input type="text" class="form-control" id="category_id" name="category_id" readonly />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="sub_category_id" class="form-label">Subcategory ID</label>
+                            <input type="text" class="form-control" id="sub_category_id" name="sub_category_id" readonly />
+                        </div>
+                    </div>
+
+                    <!-- Attributes -->
+                    <div class="border rounded-3 p-3 mb-3 bg-light">
+                        <h6 class="mb-3">Product Attributes</h6>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Size</label>
+                                <input type="text" class="form-control" name="attributes[0].size" id="size" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Color</label>
+                                <input type="text" class="form-control" name="attributes[0].color" id="color" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Material</label>
+                                <input type="text" class="form-control" name="attributes[0].material" id="material" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Gender</label>
+                                <input type="text" class="form-control" name="attributes[0].gender" id="gender" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Processor</label>
+                                <input type="text" class="form-control" name="attributes[0].processor" id="processor" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Display</label>
+                                <input type="text" class="form-control" name="attributes[0].display" id="display" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Capacity</label>
+                                <input type="text" class="form-control" name="attributes[0].capacity" id="capacity" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Weight</label>
+                                <input type="text" class="form-control" name="attributes[0].weight" id="weight" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Images -->
+                    <div class="mb-3">
+                        <label class="form-label">Upload New Images (optional)</label>
+                        <input type="file" class="form-control" name="images" multiple />
+                    </div>
+                    <div id="existingImages" class="d-flex flex-wrap gap-2"></div>
+                </div>
+
+                <div class="modal-footer px-4 py-3">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('.edit-btn').on('click', function () {
+            var productId = $(this).data('id');
+            console.log("DV " ,productId);
+
+
+
+            $.ajax({
+                url: '/Product/GetProductById', // Adjust if route is different
+                type: 'GET',
+                data: { id: productId },
+                success: function (data) {
+                    $('#product_id1').val(data.product_id);
+                    $('#product_name1').val(data.product_name);
+                    $('#price').val(data.price);
+                    $('#brand_id').val(data.brand_id);
+                    $('#category_id').val(data.category_id);
+                    $('#sub_category_id').val(data.sub_category_id);
+
+                     if (data.prod_Attributes && data.prod_Attributes.length > 0) {
+                            var attr = data.prod_Attributes[0]; // Assuming 1 attribute for now
+                            $('#size').val(attr.size);
+                            $('#color').val(attr.color);
+                            $('#material').val(attr.material);
+                            $('#gender').val(attr.gender);
+                            $('#processor').val(attr.processor);
+                            $('#display').val(attr.display);
+                            $('#capacity').val(attr.capacity);
+                            $('#weight').val(attr.weight);
+                        } else {
+                            // Clear the fields if no attributes are found
+                            $('#size, #color, #material, #gender, #processor, #display, #capacity, #weight').val('');
+                        }
+
+                       let imageHtml = '';
+                    if (data.productImages && data.productImages.length > 0) {
+                        data.productImages.forEach(function (img) {
+                            console.log("img:", img.imgName);
+                            imageHtml += `<img src="/uploads/${img.imgName}" width="100" class="me-2 border rounded" />`;
+                        });
+                    } else {
+                        imageHtml = `<p>No images</p>`;
+                    }
+
+                    $('#existingImages').html(imageHtml);
+
+
+                    // Show modal
+                   var myModal = new bootstrap.Modal(document.getElementById('UpdateProductModal'));
+                    myModal.show();
+                },
+                error: function () {
+                    alert('Failed to fetch product details.');
+                }
+            });
+        });
+
+        // Form submit
+        $('#UpdateForm').on('submit', function (e) {
+            console.log("submit");
+            e.preventDefault();
+
+            $.ajax({
+                url: '/Product/UpdateProduct',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function () {
+                    $('#UpdateProductModal').modal('hide');
+                    location.reload();
+                },
+                error: function () {
+                    alert('Update failed.');
+                }
+            });
+        });
+    });
+</script>
+
+

@@ -1,5 +1,19 @@
-﻿@model _06032025_MVCDAY1.Models.Products
+﻿@model _06032025_MVCDAY1.Models.Product
+@{
+    Layout = "_UserLayout";
+}
+
 <style>
+    body {
+        background-color: aliceblue;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    label {
+        font-weight: bold !important;
+        font-size: 15px;
+    }
+
     .image-preview {
         display: flex;
         gap: 10px;
@@ -13,162 +27,237 @@
             border-radius: 5px;
             border: 1px solid #ddd;
         }
+
+    .drop-area {
+        border: 2px dashed #aaa;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.6);
+    }
+
+        .drop-area:hover {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+    .form-card {
+        background-color: rgba(255, 255, 255, 0.4); /* transparent look */
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+        height: 100%;
+        backdrop-filter: blur(6px);
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #333;
+        border-bottom: 2px solid #ccc;
+        padding-bottom: 5px;
+    }
+
+    .row-equal-height {
+        display: flex;
+        align-items: stretch;
+    }
+
+    .col-equal-height {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .attributes-section input[type="text"],
+    .attributes-section input[type="number"] {
+        width: 100%;
+        max-width: 150px;
+        margin-bottom: 10px;
+    }
+
+    .attributes-section .form-check-inline {
+        font-size: 14px;
+    }
+
+    .attributes-section .form-check-input {
+        margin-top: 0;
+    }
+
+    .attributes-section .mb-3 {
+        margin-bottom: 12px;
+    }
 </style>
 
-<div class="container mt-3 pb-3 shadow-lg bg-light">
-    <div class="text-end mt-3 pt-1">
-        <button>Save Draft</button>
-    </div>
 
-    <h2 class="mb-4 text-decoration-underline">Add New Product</h2>
+<div class="container mt-4 pb-4" style="background-color: aliceblue; border-radius: 10px; padding: 30px;">
+    <h2 class="mb-4 text-decoration-underline text-center">Add New Product</h2>
 
-    <form action="@Url.Action("AddProduct","Product")" enctype="multipart/form-data" method="post">
-        <div class="row">
-            <!-- Left Column - Product Details -->
-            <div class="col-md-8">
-                <div class="card p-4 shadow-lg">
-                    <h4 style="color:black;font-family: 'Arial Narrow Bold'">General Information</h4>
+    <form action="@Url.Action("NewProduct", "Product")" method="post" enctype="multipart/form-data">
+        <div class="row row-equal-height g-4">
+            <!-- LEFT COLUMN -->
+            <div class="col-md-7 col-equal-height ">
+                <div class="form-card">
+                    <div>
+                        <div class="section-title">General Information</div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Product Name</label>
-                        <input type="text" class="form-control" name="product_name" placeholder="Enter product name">
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" class="form-control" name="product_name" required>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Brand Id</label>
-                        <input type="text" class="form-control" name="brand_id" placeholder="Enter brand ID">
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Brand ID</label>
+                            <select asp-for="brand_id" class="form-control" asp-items="@(new SelectList(ViewBag.Brands, "brand_id", "name"))">
+                                <option value="">-- Select Brand--</option>
+                            </select>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Category Id</label>
-                        <input type="text" class="form-control" name="category_id" placeholder="Enter category ID">
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Category ID</label>
+                            <select asp-for="category_id" class="form-control" asp-items="@(new SelectList(ViewBag.Categories, "category_id", "name"))">
+                                <option value="">-- Select Category--</option>
+                            </select>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Subcategory Id</label>
-                        <input type="text" class="form-control" name="subcategory_id" placeholder="Enter subcategory ID">
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Subcategory ID</label>
+                            <select asp-for="sub_category_id" class="form-control" asp-items="@(new SelectList(ViewBag.Subcategories, "sub_category_id", "name"))">
+                                <option value="">-- Select Category--</option>
+                            </select>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Vendor Id</label>
-                        <input type="text" class="form-control" name="vendor_id" placeholder="Enter vendor ID">
-                    </div>
-                    <div id="attributesContainer">
-                        @for (int i = 0; i < 1; i++) // You can make this dynamic via JS if needed
-                        {
-                            <div class="attribute-group">
-                                <label>Size:</label><br />
-                                <input type="checkbox" name="attributes[@i].size" value="S" /> S
-                                <input type="checkbox" name="attributes[@i].size" value="M" /> M
-                                <input type="checkbox" name="attributes[@i].size" value="L" /> L
-                                <input type="checkbox" name="attributes[@i].size" value="XL" /> XL
+                        <div class="mb-3">
+                            <label class="form-label">Vendor ID</label>
+                            <input type="text" class="form-control" name="vendor_id" required>
+                        </div>
 
-                                <input type="text" name="attributes[@i].color" placeholder="Color" />
-                                <input type="text" name="attributes[@i].material" placeholder="Material" />
-                                <input type="text" name="attributes[@i].weight" placeholder="Weight" /> <br><br />
-                                @* <input type="text" name="attributes[@i].gender" placeholder="Gender" /> *@
-                                <label>Gender:</label>
-                                <input type="radio" name="attributes[@i].gender" value="Male" /> Male
-                                <input type="radio" name="attributes[@i].gender" value="Female" /> Female
-                                <input type="text" name="attributes[@i].capacity" placeholder="Capacity" />
-                                <input type="text" name="attributes[@i].display" placeholder="Display" />
-                                <input type="text" name="attributes[@i].processor" placeholder="Processor" />
-                            </div>
-                        }
-                    </div>
+                        <div class="section-title">Price & Stock</div>
 
+                        <div class="mb-3">
+                            <label class="form-label">Price (Rs.)</label>
+                            <input type="text" class="form-control" name="price" required>
+                        </div>
 
-                    <h4>Pricing and Stock</h4>
-                    <div id="vstockContainer">
-                        @for (int i = 0; i < 1; i++) // You can make this dynamic via JS if needed
-                        {
-                            <div class="vstock-group">
-                                <input type="number" name="vstock[@i].quanity_avilable" placeholder="quanity_avilable" />
-                            </div>
-                        }
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Quantity Available</label>
+                            <input type="number" class="form-control" name="vstock[0].quantity_available" required>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Price</label>
-                        <input type="text" class="form-control" name="price" placeholder="00.00 Rs.">
-                    </div>
-
-                    @* <div class="mb-3"> *@
-                    @*     <label class="form-label">Stock</label> *@
-                    @*     <input type="number" class="form-control" name="quanity_avilable" placeholder="100"> *@
-                    @* </div> *@
-
-                    <div class="mb-3">
-                        <label class="form-label">Discount</label>
-                        <input type="text" class="form-control" placeholder="10%">
+                        <div class="mb-3">
+                            <label class="form-label">Discount</label>
+                            <input type="text" class="form-control">
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Column - Image Upload -->
-            <div class="col-md-4">
-                <div class="card p-4 shadow-lg">
-                    <h4>Upload Product Images</h4>
+            <!-- RIGHT COLUMN -->
+            <div class="col-md-5 col-equal-height">
+                <div class="form-card attributes-section">
+                    <div class="section-title">Product Attributes</div>
+
                     <div class="mb-3">
-                        <label class="form-label">Select Images</label>
+                        <label class="form-label d-block">Size</label>
+                        <div style="display: flex; gap: 15px;">
+                            <label style="display: flex; align-items: center; gap: 4px;">
+                                <input type="radio" name="attributes[0].size" value="S" />
+                                <span>S</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 4px;">
+                                <input type="radio" name="attributes[0].size" value="M" />
+                                <span>M</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 4px;">
+                                <input type="radio" name="attributes[0].size" value="L" />
+                                <span>L</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 4px;">
+                                <input type="radio" name="attributes[0].size" value="XL" />
+                                <span>XL</span>
+                            </label>
+                        </div>
+                    </div>
+
+
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label>Color</label>
+                            <input type="text" class="form-control" name="attributes[0].color" />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label>Material</label>
+                            <input type="text" class="form-control" name="attributes[0].material" />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label>Weight</label>
+                            <input type="text" class="form-control" name="attributes[0].weight" />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label>Capacity</label>
+                            <input type="text" class="form-control" name="attributes[0].capacity" />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label>Display</label>
+                            <input type="text" class="form-control" name="attributes[0].display" />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label>Processor</label>
+                            <input type="text" class="form-control" name="attributes[0].processor" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label d-block">Gender</label>
+                        <div style="display: flex; gap: 15px;">
+                            <label style="display: flex; align-items: center; gap: 4px;">
+                                <input type="radio" name="attributes[0].gender" value="Male" />
+                                <span>Male</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 4px;">
+                                <input type="radio" name="attributes[0].gender" value="Female" />
+                                <span>Female</span>
+                            </label>
+                        </div>
+                    </div>
+
+
+                <div>
+                    <div class="section-title">Upload Product Images</div>
+                    <div class="mb-3">
                         <div class="drop-area" id="dropArea">
                             <p>Drag & drop images here or</p>
                             <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('productImages').click();">Browse Files</button>
-                            <input class="form-control d-none" type="file" id="productImages" accept="image/*" multiple name="images" onchange="previewImages(event)">
+                            <input class="form-control d-none" type="file" id="productImages" name="images" accept="image/*" multiple onchange="previewImages(event)">
                         </div>
                     </div>
-                    <div id="imagePreview" class="image-preview-container">
-                        <div id="imagePreviewContent" class="image-preview"></div>
-                    </div>
-                </div>
-
-                <div class="card p-4 mt-3 shadow-lg">
-                    <h5>Category</h5>
-                    <select class="form-select" name="Category">
-                        <option selected disabled>-- Select your option --</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Clothes">Clothes</option>
-                        <option value="Accessories">Accessories</option>
-                    </select>
+                    <div id="imagePreview" class="image-preview"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Submit Button -->
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-success">Add Product</button>
-            <a href="@Url.Action("GetProduct")" class="btn btn-secondary ms-2">Back to List</a>
+            <button type="submit" class="btn btn-success px-4">Add Product</button>
+            <a href="@Url.Action("GetProduct")" class="btn btn-secondary ms-3 px-4">Back to List</a>
         </div>
     </form>
 </div>
 
 <script>
     function previewImages(event) {
-        const previewContainer = document.getElementById('imagePreviewContent');
-        previewContainer.innerHTML = '';
         const files = event.target.files;
-
-        for (let i = 0; i < files.length; i++) {
+        const previewContainer = document.getElementById("imagePreview");
+        previewContainer.innerHTML = "";
+        Array.from(files).forEach(file => {
             const reader = new FileReader();
             reader.onload = function (e) {
-                const img = document.createElement('img');
+                const img = document.createElement("img");
                 img.src = e.target.result;
                 previewContainer.appendChild(img);
             };
-            reader.readAsDataURL(files[i]);
-        }
+            reader.readAsDataURL(file);
+        });
     }
-
-    const dropArea = document.getElementById('dropArea');
-    dropArea.addEventListener('dragover', e => {
-        e.preventDefault(); dropArea.style.backgroundColor = "#f0f0f0";
-    });
-    dropArea.addEventListener('dragleave', e => {
-        e.preventDefault(); dropArea.style.backgroundColor = "";
-    });
-    dropArea.addEventListener('drop', e => {
-        e.preventDefault();
-        document.getElementById('productImages').files = e.dataTransfer.files;
-        previewImages({ target: { files: e.dataTransfer.files } });
-    });
 </script>

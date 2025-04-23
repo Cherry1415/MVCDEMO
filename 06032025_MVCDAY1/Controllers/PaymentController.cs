@@ -59,7 +59,7 @@ namespace _06032025_MVCDAY1.Controllers
             }
         }
 
-        public IActionResult Success(string paymentId)
+        public IActionResult Success(string paymentId, string razorpay_order_id, string razorpay_signature, int productId)
         {
             ViewBag.PaymentId = paymentId;
             return View();

@@ -4,10 +4,14 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/EcomStyles.css" />
+    <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/bootstrap/js/bootstrap.min.js" rel="stylesheet" />
+    <script href="~/bootstrap/js/bootstrap.bundle.min.js"></script>
       
     <title>@ViewBag.Title</title>
 </head>
@@ -43,10 +47,10 @@
                         </li>
                       
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="AddProduct">Add Product</a>
+                            <a class="nav-link" asp-area="" asp-controller="Product" asp-action="NewProduct">Add Product</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="GetProduct"> Products</a>
+                            <a class="nav-link" asp-area="" asp-controller="Product" asp-action="GetProduct"> Products</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Orders" asp-action="Orders">Manage Orders</a>

@@ -140,6 +140,9 @@ namespace _06032025_MVCDAY1.Controllers
         [HttpGet]
         public IActionResult NewProduct()
         {
+            ViewBag.Categories = _Prodrepository.GetCategories();
+            ViewBag.Subcategories = _Prodrepository.GetSubcategories();
+            ViewBag.Brands = _Prodrepository.GetBrands();
             return View();
         }
 
@@ -183,7 +186,9 @@ namespace _06032025_MVCDAY1.Controllers
 
             // Call repository method
             _Prodrepository.NewProduct(product, productImages, attributes, vstock);
-
+            ViewBag.Categories = _Prodrepository.GetCategories();
+            ViewBag.Subcategories = _Prodrepository.GetSubcategories();
+            ViewBag.Brands = _Prodrepository.GetBrands();
             return RedirectToAction("GetProduct");
         }
 
@@ -191,6 +196,57 @@ namespace _06032025_MVCDAY1.Controllers
         {
             var allproduct = _Prodrepository.GetProducts();
             return View(allproduct);
+        }
+
+        [HttpGet]
+        public JsonResult GetProductById(int id)
+        {
+            var product = _Prodrepository.GetProductById(id); // Ensure this fetches complete product data including attributes and images
+            return Json(product);
+
+        }
+
+
+        [HttpPost]
+        public IActionResult UpdateProduct(Product product, List<IFormFile> images, List<Prod_Attributes> attributes)
+        {
+
+            List<ProductImage> productImages = new List<ProductImage>();
+
+            string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            foreach (var file in images)
+            {
+                if (file != null && file.Length > 0)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                    productImages.Add(new ProductImage
+                    {
+                        imgName = fileName,
+                        imgType = Path.GetExtension(file.FileName).Replace(".", "")
+                        // product_id will be set later
+                    });
+                }
+            }
+
+            // Call repository method
+            _Prodrepository.UpdateProduct(product, productImages, attributes);
+            //ViewBag.Categories = _repository.GetCategories();
+            //ViewBag.Subcategories = _repository.GetSubcategories();
+            //ViewBag.Brands = _repository.GetBrands();
+
+            return RedirectToAction("GetProduct");
+
         }
 
     }
