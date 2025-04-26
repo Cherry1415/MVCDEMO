@@ -73,6 +73,7 @@ namespace _06032025_MVCDAY1.Controllers
         [HttpPost]
         public IActionResult Success([FromBody] PaymentSuccessModel paymentResponse)
         {
+            int uid = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
             try
             {
                 Console.WriteLine("Payment Response received:");
@@ -89,6 +90,7 @@ namespace _06032025_MVCDAY1.Controllers
 
                     // Update Order Status
                     _orderRepository.UpdateOrderStatus(paymentResponse.razorpay_order_id, "Paid");
+                    _orderRepository.ClearCart(uid);
 
                     return Json(new { success = true });       
                 }

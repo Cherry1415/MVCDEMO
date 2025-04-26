@@ -149,5 +149,18 @@ namespace _06032025_MVCDAY1.Repository
                 command.ExecuteNonQuery();
             }
         }
+        public void ClearCart(int userId)
+        {
+            using (SqlConnection conn = new SqlConnection(_constring))
+            {
+                string query = "DELETE FROM customer.Cart_Items WHERE user_id = @UserId";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
