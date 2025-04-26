@@ -76,5 +76,78 @@ namespace _06032025_MVCDAY1.Repository
                 cmd.ExecuteNonQuery();
             }
         }
+        public UserOrder CreateOrder(int userId, decimal totalAmount, string razorpayOrderId, List<OrderItem> items)
+        {
+            using (var connection = new SqlConnection(_constring))
+            {
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+
+                try
+                {
+                    //if (items == null || !items.Any())
+                    //    throw new Exception("No order items provided.");
+
+                    string orderQuery = "INSERT INTO Orders (UserId, TotalAmount, RazorpayOrderId, Status, CreatedDate) " +
+                                        "VALUES (@UserId, @TotalAmount, @RazorpayOrderId, 'Pending', GETDATE()); SELECT SCOPE_IDENTITY();";
+
+                    var orderCmd = new SqlCommand(orderQuery, connection, transaction);
+                    orderCmd.Parameters.AddWithValue("@UserId", userId);
+                    orderCmd.Parameters.AddWithValue("@TotalAmount", totalAmount);
+                    orderCmd.Parameters.AddWithValue("@RazorpayOrderId", razorpayOrderId);
+
+                    int orderId = Convert.ToInt32(orderCmd.ExecuteScalar());
+
+                    foreach (var item in items)
+                    {
+                        /*if (item.ProductId <= 0 || item.Quantity <= 0 || item.Price <= 0)
+                            throw new Exception("Invalid order item data.");*/
+
+                        string itemQuery = "INSERT INTO OrderItem (OrderId, ProductId, Quantity, Price) " +
+                                           "VALUES (@OrderId, @ProductId, @Quantity, @Price)";
+
+                        var itemCmd = new SqlCommand(itemQuery, connection, transaction);
+                        itemCmd.Parameters.AddWithValue("@OrderId", orderId);
+                        itemCmd.Parameters.AddWithValue("@ProductId", item.ProductId);
+                        itemCmd.Parameters.AddWithValue("@Quantity", item.Quantity);
+                        itemCmd.Parameters.AddWithValue("@Price", item.Price);
+
+                        itemCmd.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+
+                    return new UserOrder
+                    {
+                        Id = orderId,
+                        UserId = userId,
+                        TotalAmount = totalAmount,
+                        RazorpayOrderId = razorpayOrderId,
+                        Status = "Pending"
+                    };
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception("Order creation failed: " + ex.Message);
+                }
+            }
+        }
+
+
+        public void UpdateOrderStatus(string razorpayOrderId, string status)
+        {
+            using (var connection = new SqlConnection(_constring))
+            {
+                string query = "UPDATE Orders SET Status = @Status WHERE RazorpayOrderId = @RazorpayOrderId";
+
+                var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@RazorpayOrderId", razorpayOrderId);
+                command.Parameters.AddWithValue("@Status", status);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
     }
 }

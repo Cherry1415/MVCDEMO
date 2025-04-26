@@ -3,7 +3,9 @@
 *@
 @{
 }
-@model List<_06032025_MVCDAY1.Models.Product>
+@model IEnumerable<_06032025_MVCDAY1.Models.Product>
+<script src="~/js/makePayment.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
     /* .modal-content {
     border-radius: 10px;
@@ -318,7 +320,68 @@
     
 
 </style>
+<div class="modal fade" id="buyNowModal" tabindex="-1" aria-labelledby="buyNowModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
 
+        <div class="modal-content">
+            @* <form method="post" asp-action="InitiateOrder"> *@
+            <div class="modal-header">
+
+                <h5 class="modal-title" id="buyNowModalLabel">Confirm Your Purchase</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="productImage" src="" width="200" height="200" class="mb-3" alt="Product Image">
+                <h5 id="productName"></h5>
+                <p class="text-success">You are eligible for free shipping.</p>
+
+                <p>Amount: <strong id="amount"></strong></p>
+                <input type="hidden" id="amountInput"/>
+                <input type="hidden" id="productIdInput" />
+                <p>Quantity: <span id="quantityDisplay"></span></p>
+                <p>Total Amount: <strong id="amountInput"></strong></p>
+                <input type="hidden" id="quantityInput" />
+               
+
+                <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                @* <a class="btn btn-primary" asp-area="" asp-controller="Payment" asp-action="InitiateOrder">Proceed to Checkout</a> *@
+                <a class="btn btn-primary" onclick="makePayment()">Proceed to Checkout</a>
+            </div>
+            @* </form> *@
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".buyNowBtn").click(function () {
+            var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to Buy this Item!!");
+            return false; // Stop further execution
+        }
+            let name = $(this).data("name");
+            let price = $(this).data("price");
+            let image = $(this).data("image");
+            let productId = $(this).data("productid");
+            let quantity = parseInt($("#quantity").val());
+            let totalAmount = price * quantity;
+
+            $("#productIdInput").val(productId);
+            $("#productName").text(name);
+            $("#amount").text("₹" + price);
+            $("#amountInput").val(totalAmount);
+            $("#quantityInput").val(quantity);
+            $("#quantityDisplay").text(quantity);
+            $("#productImage").attr("src", image);
+
+            $("#buyNowModal").modal("show");
+        });
+    });
+</script>
 @if(Model!=null)
 {
     <div class="container">
@@ -349,10 +412,9 @@
                         <div class="d-flex justify-content-center align-items-center ">
                             <h3>Products Details</h3>
                         </div>
-
                     </div>
                     <h2 class="fw-bold">@product.product_name</h2>
-
+                    <h5 class="fw-bold">₹@product.price</h5>
                     @* <div class="quantity-container">
                         <label for="quantity">Quantity</label>
                         <div class="quantity-controls">
@@ -362,7 +424,7 @@
                         </div>
                     </div> *@
                     <div class="quantity-container mt-3">
-                        <label for="quantity" class="form-label fw-semibold">Quantity</label>
+                        <label for="quantity" class="form-label fw-semibold" >Quantity</label>
                         <div class="d-flex align-items-center gap-2">
                             <button class="circle-btn" type="button" onclick="decreaseQty()">
                                 <i class="fas fa-minus"></i>
@@ -375,7 +437,10 @@
                     </div>
 
                     <button class="btn-cart">Add to Cart</button>
-                    <button class="btn-buy">Buy it now</button>
+                    <button class="btn-buy buyNowBtn" data-name="@product.product_name" data-productid="@product.product_id"
+                            data-price="@product.price">
+                        Buy it now
+                    </button>
 
                     @*  <div class="emi-section">
                     EMI with VMI - Pay 1/3rd now, Rest in EMIs | 0% Interest | Powered by <strong>Snapmint</strong>
@@ -418,85 +483,7 @@
             </div>
 
         }
-        <div class="container">
-
-            <div class="row">
-
-
-                <!-- Right Side - Product Details -->
-
-                <!-- Second Row: Image and Product Details Section -->
-                @*  <div class="col-12 col-md-7 modal-body d-flex flex-column">
-                <div class="row">
-                    <!-- First Column: Small Image Thumbnails -->
-                    <div class="col-12 col-md-3 small-images">
-                        <img class="small-img" src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Small Image 1" data-bs-toggle="tooltip" title="Image 1" onclick="changeImage(this)">
-                        <img class="small-img main-image" src="~/image/mobile/iqooz9.jpg" alt="Small Image 2" data-bs-toggle="tooltip" title="Image 2" onclick="changeImage(this)">
-                        <img class="small-img" src="~/image/mobile/pocox6pro.jpg" alt="Small Image 3" data-bs-toggle="tooltip" title="Image 3" onclick="changeImage(this)">
-                    </div>
-
-                    <!-- Second Column: Main Image Carousel -->
-                    <div class="col-12 col-md-9">
-                        <!-- Main Product Image Carousel with 3s interval -->
-
-                        <img id="mainImage"  src="https://cdn.pixabay.com/photo/2022/03/12/09/23/smartphone-7063762_640.jpg" alt="Main Product Image">
-                    </div>
-                    <div class="d-flex justify-content-center align-content-center">
-                        <div class="form-field product-quantity">
-                            <label class="form-label" for="product-quantity">
-                                <span class="form-field-title" style="font-weight:bold">Quantity</span>
-                                <button class="qty-selector__btn qty-selector__btn--minus" type="button" aria-label="Reduce item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588"></path></g></svg></button>
-                                <input class="form-input qty-selector__input" type="text" name="quantity" value="1" id="product-quantity" data-product-quantity="">
-                                <button class="qty-selector__btn qty-selector__btn--add" type="button" aria-label="Increase item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588M8 4.706v6.588"></path></g></svg></button>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- Product Details Section: Right Column -->
-            <div class="col-12 col-md-5 scrollspy-example-2" tabindex="0">
-                <div class="container">
-                    <div class="mt-1 pt-3">
-                        <h3>samsung s25 ultra</h3>
-                        <strong>Price: ₹ <span id="modalPrice">130000</span></strong>
-                    </div>
-                    <hr />
-                    @*  <div class="form-field product-quantity">
-                        <label class="form-label" for="product-quantity">
-                            <span class="form-field-title">Quantity</span>
-                            <button class="qty-selector__btn qty-selector__btn--minus" type="button" aria-label="Reduce item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588"></path></g></svg></button>
-                            <input class="form-input qty-selector__input" type="text" name="quantity" value="1" id="product-quantity" data-product-quantity="">
-                            <button class="qty-selector__btn qty-selector__btn--add" type="button" aria-label="Increase item quantity by one"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="none" fill-rule="evenodd" stroke="#330"><circle cx="8" cy="8" r="7.5"></circle><path stroke-linecap="square" d="M4.706 8h6.588M8 4.706v6.588"></path></g></svg></button>
-                        </label>
-                    </div> 
-
-                    <button class="btn btn-outline-dark" type="button">Button</button>
-                    <button class="btn btn-primary" type="button">Button</button>
-                    <hr />
-
-                    <div style="max-height: 500px;
-                             overflow-y: auto;
-                             overflow-x:auto;
-                             border: 1px solid #ccc;
-                             padding: 10px;">
-                        <p class="text-success">You are eligible for free shipping.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-
-                    </div>
-
-                </div>
-            </div> *@
-            </div>
-
-
-
-        </div>
+        
     </div>
 }
 

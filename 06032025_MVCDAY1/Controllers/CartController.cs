@@ -71,5 +71,19 @@ namespace _06032025_MVCDAY1.Controllers
             _cartrepository.RemoveCartItem(cartId);
             return RedirectToAction("Index");
         }
+        public JsonResult GetCartQuantity()
+        {
+            int totalQuantity=0;
+
+            int? userId = Convert.ToInt32(HttpContext.Session.GetString("user_id")); // or however you're tracking user
+
+           if(userId.HasValue)
+           
+                 totalQuantity = _cartrepository.GetCartItemCount(userId.Value); // assume returns List<CartItem>
+                
+            
+
+            return Json(totalQuantity);
+        }
     }
 }
