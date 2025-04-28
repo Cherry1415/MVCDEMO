@@ -1,0 +1,47 @@
+﻿@model List<_06032025_MVCDAY1.Models.SupplierOrder>
+
+@{
+    Layout = "~/Views/Shared/_MyLayout1.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/Order.css" />
+
+
+<h2>Orders</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>User ID</th>
+            <th>Order Date</th>
+            <th>Required Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var order in Model)
+    {
+        <tr>
+            <td>@order.order_id</td>
+            <td>@order.user_id</td>
+            <td>@order.order_date</td>
+            <td>@order.required_date</td>
+            <td>@order.status</td>
+            <td>
+                <form asp-action="UpdateStatus" asp-controller="Supplier" method="post" style="display:inline;">
+                    <input type="hidden" name="orderId" value="@order.order_id" />
+                    <input type="hidden" name="newStatus" value="delivered" />
+                    <button type="submit" class="btn btn-success btn-sm">Complete</button>
+                </form>
+                    <form asp-action="UpdateStatus" asp-controller="Supplier" method="post" style="display:inline;">
+                    <input type="hidden" name="orderId" value="@order.order_id" />
+                    <input type="hidden" name="newstatus" value="rejected" />
+                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

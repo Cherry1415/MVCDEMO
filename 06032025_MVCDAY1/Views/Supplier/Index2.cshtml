@@ -1,0 +1,46 @@
+﻿@model IEnumerable<_06032025_MVCDAY1.Models.WareHouse>
+
+@{
+    Layout = "_MyLayout1";
+    ViewData["Title"] = "WareHouse Info";
+}
+
+<link rel="stylesheet" href="~/css/index2.css" />
+<h1>Warehouse Info</h1>
+
+<p>
+    <a asp-action="Create1" class="btn btn-primary mt-3">Add New Warehouse</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.warehouse_id)</th>
+            <th>@Html.DisplayNameFor(model => model.warehouse_name)</th>
+            <th>@Html.DisplayNameFor(model => model.phone)</th>
+            <th>@Html.DisplayNameFor(model => model.capacity)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.warehouse_id)</td>
+                <td>@Html.DisplayFor(modelItem => item.warehouse_name)</td>
+                <td>@Html.DisplayFor(modelItem => item.phone)</td>
+                <td>@Html.DisplayFor(modelItem => item.capacity)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.warehouse_id" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-controller="WareHouse" asp-action="WareHouseDetails" asp-route-id="@item.warehouse_id" class="btn btn-info btn-sm">
+                        Details
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.warehouse_id" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Are you sure you want to delete this warehouse?');">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

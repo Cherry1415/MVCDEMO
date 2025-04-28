@@ -1,0 +1,14 @@
+﻿.disabled-input {
+    background: #f8f9fa;
+    border: none;
+    color: #6c757d;
+    pointer-events: none;
+}
+
+/* Enable inputs when checkbox is checked */
+#editToggle:checked ~ .container .disabled-input {
+    background: white;
+    border: 1px solid #ced4da;
+    pointer-events: auto;
+    color: black;
+}

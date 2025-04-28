@@ -1,5 +1,6 @@
 ﻿using _06032025_MVCDAY1.Models;
 
+
 namespace _06032025_MVCDAY1.Repository
 {
     public interface IUserRepository
@@ -35,5 +36,9 @@ namespace _06032025_MVCDAY1.Repository
        // List<Product> GetAllProducts();
         
         List<ProductImage> GetImagesByProductId(int productId);
+
+        //supplier contanctus
+
+       
     }
 }

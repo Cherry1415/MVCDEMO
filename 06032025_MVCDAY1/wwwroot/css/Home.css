@@ -1,0 +1,179 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 100%;
+}
+/*header color*/
+#headercolor {
+    background-color: #8dadcf;
+}
+
+#footerText {
+    background-color: #8dadcf;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    position:fixed
+    /*   text-decoration-line:underline;
+   text-decoration-style:solid;
+   text-decoration-color:inherit;*/
+}
+
+    #footerText li a {
+        color: black;
+        text-decoration-line: underline;
+        text-decoration-style: solid;
+        text-decoration-color: inherit;
+    }
+
+#navtext {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+    #navtext li a {
+        color: black;
+    }
+
+.regform-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    /* max-width: 400px; */
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.form-container {
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+}
+/*.merged-container {
+    position: relative;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    width: 100%;*/ /* Keeps width same */
+/*max-width: 1100px;
+}*/
+
+/* Top section with opacity */
+.box1 {
+    /*    
+        #87CEEB-skyblue
+    #008080
+*/
+    background: linear-gradient(to bottom,#7da0c4,#ffffff);
+    padding: 40px;
+    text-align: center;
+    width: 100%;
+    /*    border-radius: 2% 2% 0 0;*/
+    position: relative;
+    z-index: 2; /* Ensure it's above the background */
+    opacity: 0.7; /* 70% transparency */
+    /*box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);*/ /* Bottom shadow */
+}
+
+    /* Keep text and button fully visible */
+    .box1 h1,
+    .box1 h2 {
+        opacity: 1;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        color: rgb(68, 12, 60);
+    }
+
+    .box1 button {
+        opacity: 1;
+        font-family: cursive;
+        color: #def5ff;
+    }
+
+/* Inner content */
+#divLogOuter {
+    /*    margin: auto;*/
+    /*    padding:20%;*/
+    width: 100%;
+    height: max-content;
+    justify-content: center;
+}
+
+#divLog {
+    width: 100%;
+    height: auto;
+    display: inline-flex;
+    align-items: center;
+    /*    justify-content: center;*/
+}
+
+#imgV {
+    width: 80%;
+    height: 100%;
+}
+/* Login Button */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+/* Bottom section overlapping */
+.box2 {
+    background-color: white;
+    padding: 40px;
+    border-radius: 12px;
+    position: relative;
+    z-index: 3;
+    margin-top: -40px; /* Overlaps the first container by 50% of its height */
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2); /* Shadow for a floating effect */
+}
+
+/* Maintain width */
+.container-fluid,
+.container-lg {
+    width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .merged-container {
+        width: 95%;
+    }
+
+    .box1, .box2 {
+        padding: 20px;
+    }
+
+    .box2 {
+        margin-top: -50px; /* Adjust overlap on smaller screens */
+    }
+}
+/*id for images of vendor signup steps*/
+#imgstep {
+    height: 150px;
+    border-radius: 50%;
+}
+
+#imgratedVendor {
+    /*    height:50%;*/
+    width: 50%;
+    border-radius: 50%;
+}

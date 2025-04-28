@@ -88,7 +88,7 @@ namespace _06032025_MVCDAY1.Repository
                     //if (items == null || !items.Any())
                     //    throw new Exception("No order items provided.");
 
-                    string orderQuery = "INSERT INTO Orders (UserId, TotalAmount, RazorpayOrderId, Status, CreatedDate) " +
+                    string orderQuery = "INSERT INTO customer.Orders (user_id, TotalAmount, RazorPayOrderId, status, order_date) " +
                                         "VALUES (@UserId, @TotalAmount, @RazorpayOrderId, 'Pending', GETDATE()); SELECT SCOPE_IDENTITY();";
 
                     var orderCmd = new SqlCommand(orderQuery, connection, transaction);
@@ -103,7 +103,7 @@ namespace _06032025_MVCDAY1.Repository
                         /*if (item.ProductId <= 0 || item.Quantity <= 0 || item.Price <= 0)
                             throw new Exception("Invalid order item data.");*/
 
-                        string itemQuery = "INSERT INTO OrderItem (OrderId, ProductId, Quantity, Price) " +
+                        string itemQuery = "INSERT INTO customer.Order_Items (order_id, product_id, quantity, price) " +
                                            "VALUES (@OrderId, @ProductId, @Quantity, @Price)";
 
                         var itemCmd = new SqlCommand(itemQuery, connection, transaction);
@@ -139,7 +139,7 @@ namespace _06032025_MVCDAY1.Repository
         {
             using (var connection = new SqlConnection(_constring))
             {
-                string query = "UPDATE Orders SET Status = @Status WHERE RazorpayOrderId = @RazorpayOrderId";
+                string query = "UPDATE customer.Orders SET status = @Status WHERE RazorPayOrderId = @RazorpayOrderId";
 
                 var command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@RazorpayOrderId", razorpayOrderId);

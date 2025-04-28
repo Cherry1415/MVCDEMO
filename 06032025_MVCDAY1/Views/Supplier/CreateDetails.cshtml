@@ -1,0 +1,26 @@
+﻿@model _06032025_MVCDAY1.Models.WareHouse_details
+@{
+    ViewData["Title"] = "Add Warehouse Details";
+}
+
+<h2>Add Details for Warehouse ID: @ViewBag.WarehouseId</h2>
+
+<form asp-action="AddWareHouseDetails" asp-controller="WareHouse" asp-route-id="@ViewBag.WarehouseId" method="post">
+    <div class="form-group">
+        <label>Available Quantity</label>
+        <input asp-for="available_quantity" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Supplier ID</label>
+        <input asp-for="supplier_id" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Vendor ID</label>
+        <input asp-for="vendor_id" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Address ID</label>
+        <input asp-for="address_id" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-success">Submit</button>
+</form>

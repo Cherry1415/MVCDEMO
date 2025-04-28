@@ -15,7 +15,7 @@ namespace _06032025_MVCDAY1.Repository
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                string query = "INSERT INTO Payments (RazorpayOrderId, PaymentId, Status, Amount, PaidOn) " +
+                string query = "INSERT INTO customer.Payment (RazorpayOrderId, PaymentId, payment_status, amount, PaidOn) " +
                                "VALUES (@RazorpayOrderId, @RazorpayPaymentId, @Status, @Amount, GETDATE())";
 
                 var command = new SqlCommand(query, connection);
