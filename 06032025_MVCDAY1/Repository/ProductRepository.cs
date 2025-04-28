@@ -84,7 +84,7 @@ namespace _06032025_MVCDAY1.Repository
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@product_id", productId);
-                    cmd.Parameters.AddWithValue("@quantity_avilable", vst.quantity_available);
+                    cmd.Parameters.AddWithValue("@quantity_available", vst.quantity_available);
 
                     con.Open();
                     cmd.ExecuteNonQuery();
