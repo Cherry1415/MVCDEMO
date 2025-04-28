@@ -6,6 +6,7 @@
     <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/bootstrap/js/bootstrap.min.js" rel="stylesheet" />
     <script href="~/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="~/css/mycss.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/wishlist.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/EcomStyles.css" asp-append-version="true" />
@@ -14,6 +15,7 @@
 
     <title>@ViewBag.Title</title>
 </head>
+
 <body>
     @* <div>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
@@ -76,7 +78,15 @@
                     <a href="@Url.Action("SignIn","User")">
                         <i class="fa fa-fw fa-user" style='font-size:20px'></i>
                     </a>
-                     <a href="@Url.Action("Index","Cart")"><i class='fas fa-cart-arrow-down' style='font-size:20px'></i></a> 
+                    @* <a href="@Url.Action("Index","Cart")" class="position-relative">
+                        <i class='fas fa-cart-arrow-down' style='font-size:20px'></i></a>
+                    <span id="cart-count" class="position-absolute top-20 start-100 translate-middle badge rounded-pill bg-danger">
+                        0
+                    </span> *@
+                    <a href="@Url.Action("Index", "Cart")" class="cart-icon position-relative">
+                        <i class="fas fa-shopping-cart fa-lg"></i>
+                        <span id="cart-count" class="cart-badge">0</span>
+                    </a>
 
                     @* <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartSidebar" aria-controls="cartSidebar" asp-area="" asp-controller="Cart" asp-action="Index">
                         <i class="fas fa-cart-arrow-down" style="font-size:20px"></i>
@@ -298,17 +308,17 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav" id="navtext">
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" aria-current="page" asp-area="" asp-controller="DashBoard" asp-action="HomeDashBoard">Home</a>
                         </li>
                         
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" asp-area="" asp-controller="Product" asp-action="orders">Orders</a>
+                            <a class="nav-link active" aria-current="page" asp-area="" asp-controller="Product" asp-action="Product">Mobile Phones</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" asp-area="" asp-controller="UserBuy" asp-action="BuyProduct">Buy Product</a>
+                            <a class="nav-link active" aria-current="page" asp-area="" asp-controller="UserBuy" asp-action="ManProduct">Men Cloths</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" asp-area="" asp-controller="Register" asp-action="Index">Register</a>
+                            <a class="nav-link" aria-current="page" asp-area="" asp-controller="Product" asp-action="ElectronicProduct">HeadPhones</a>
                         </li>
                        
                     </ul>
@@ -355,7 +365,7 @@
                 <h5>Make Money with Us</h5>
                 <ul class="nav flex-column">
                     <li class="nav-item mb-2"><a href="@Url.Action("SellerHome","Seller")" class="nav-link p-0 text-body-secondary">Sell on Amazon</a></li>
-                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Supply to Amazon</a></li>
+                    <li class="nav-item mb-2"><a href="@Url.Action("Index","Supplier")" class="nav-link p-0 text-body-secondary">Supply to Amazon</a></li>
                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Advertise Your Products</a></li>
                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Protect and Build Your Brand</a></li>
                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">About</a></li>
@@ -389,6 +399,26 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- for the cart icon -->
 
 </body>
+
 </html>
+<script>
+    $(document).ready(function () {
+        fetchCartCount();
+    });
+
+    function fetchCartCount() {
+        $.ajax({
+            url: '/Cart/GetCartQuantity',
+            type: 'GET',
+            success: function (data) {
+                $('#cart-count').text(data);
+               
+            },
+            error: function () {
+                $('#cart-count').text('0');
+            }
+        });
+    }
+</script>
 
 

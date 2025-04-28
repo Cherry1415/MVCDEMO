@@ -1,0 +1,36 @@
+﻿@model _06032025_MVCDAY1.Models.SupplierContactus
+
+@{
+    Layout = "~/Views/Shared/_MyLayout1.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/contact.css" />
+
+<div class="container">
+    <h2>Contact Us</h2>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">@TempData["Message"]</div>
+    }
+
+    <form asp-action="Contact1" asp-controller="Contactus" method="post">
+        <div class="mb-3">
+            <label asp-for="user_id" class="form-label"></label>
+            <input asp-for="user_id" class="form-control" placeholder="Enter user id" />
+            <span asp-validation-for="user_id" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Message" class="form-label"></label>
+            <textarea asp-for="Message" class="form-control" rows="4" placeholder="Enter your message"></textarea>
+            <span asp-validation-for="Message" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

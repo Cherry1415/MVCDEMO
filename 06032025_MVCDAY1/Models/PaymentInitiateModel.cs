@@ -8,7 +8,10 @@
         //public string address { get; set; }
 
         public int Id { get; set; }
-        public int amount { get; set; }
+        public int Amount { get; set; }
+        public int ProductId { get; set; } // optional, just in case
+        public int Quantity { get; set; }
+        public List<OrderItem> orderItems { get; set; } 
     }
 }
     

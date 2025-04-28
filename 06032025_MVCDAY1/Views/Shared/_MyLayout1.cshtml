@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DealBazar</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/Home.css" />
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header id="headercolor">
+        <nav class="navbar bg-body-tertiary">
+            <div class="container-fluid">
+                <span class="navbar-brand mb-0 h1">DealBazar</span>
+                <form class="d-flex w-50" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+                <div class="ms-auto d-flex align-items-center">
+                    <!-- User Profile Icon (Now Clickable) -->
+                    <a href="@Url.Action("Profile", "Demo")" class="text-dark me-3" title="Profile">
+                        <i class="fa fa-fw fa-user" style="font-size: 36px"></i>
+                    </a>
+
+                    <!-- Shopping Cart Icon (Unchanged) -->
+                    <i class="fas fa-shopping-cart" style="font-size: 36px"></i>
+                </div>
+            </div>
+        </nav>
+
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav" id="navtext">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Supplier" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Supplier" asp-action="Dashboard">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Supplier" asp-action="Order">Order</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Supplier" asp-action="vendor">Vendor</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Supplier" asp-action="Index2">Warehouse</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Supplier" asp-action="Contact1">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-primary text-white px-3" asp-area="" asp-controller="Supplier" asp-action="Login">Login</a>
+                        </li>
+                        
+
+                        
+@*                         <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Home")">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Dashboard", "Demo")">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Order", "Demo")">Order Details</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Vendor", "Demo")">Vendor</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Warehouse", "Demo")">Warehouse</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Contact", "Demo")">Contact</a></li>
+                        <li class="nav-item"><a class="nav-link btn btn-primary text-white px-3" href="@Url.Action("Login", "Demo")">Login</a></li> *@
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div>
+        @RenderBody()
+    </div>
+
+    <!-- Footer -->
+    <div class="container-fluid" id="footerText">
+        <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-6 py-5 my-5 border-top">
+            <div class="col mb-3">
+                <p class="text-body-secondary">2025 © DealBazar</p>
+            </div>
+            <div class="col mb-3"></div>
+            <div class="col mb-3">
+                <h5>Section</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Home</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Features</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Pricing</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">FAQs</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">About</a></li>
+                </ul>
+            </div>
+            <div class="col mb-3">
+                <h5>Make Money with Us</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Sell on DealBazar</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Supply to Us</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Advertise Products</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Brand Protection</a></li>
+                </ul>
+            </div>
+            <div class="col mb-3">
+                <h5>Let Us Help You</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Your Account</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Returns Center</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Help</a></li>
+                </ul>
+            </div>
+            <div class="col mb-3">
+                <h5>Connect with Us</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Facebook</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Twitter</a></li>
+                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Instagram</a></li>
+                </ul>
+            </div>
+        </footer>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

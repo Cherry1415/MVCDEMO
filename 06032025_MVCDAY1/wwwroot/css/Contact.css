@@ -1,0 +1,54 @@
+﻿/* Contact Page Styles */
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #555;
+}
+
+.form-control {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+.btn-primary {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #fff;
+    transition: background 0.3s;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+.success-message {
+    display: none;
+    margin-top: 10px;
+    color: green;
+    text-align: center;
+    font-weight: bold;
+}

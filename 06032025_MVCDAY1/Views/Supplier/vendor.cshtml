@@ -1,0 +1,126 @@
+﻿@{
+    Layout = "~/Views/Shared/_MyLayout1.cshtml";
+}
+@model IEnumerable<SupplierVendor>
+
+<link rel="stylesheet" href="~/css/Vendor.css" />
+<h2 class="page-title"><b>Vendor List</b></h2>
+
+<!-- Add Vendor Button -->
+<button id="showVendorFormBtn" class="btn btn-success">Add Vendor</button>
+
+<!-- Vendor Form (Initially Hidden) -->
+<div id="vendorFormContainer" class="vendor-form-container hidden">
+    <h3>Add Vendor</h3>
+    <form id="vendorForm">
+        <div class="form-group">
+            <label for="sellerName">Seller Name:</label>
+            <input type="text" id="sellerName" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="PANDetail">PAN Detail:</label>
+            <input type="text" id="PANDetail" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add</button>
+        <button type="button" id="closeVendorFormBtn" class="btn btn-danger">Cancel</button>
+    </form>
+</div>
+
+<!-- Vendor Table -->
+<table class="table table-bordered vendor-table mt-3">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Seller Name</th>
+            <th>User ID</th>
+            <th>PAN Detail</th>
+        </tr>
+    </thead>
+    <tbody id="vendorTableBody">
+        <!-- Data will be loaded via JS -->
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tableBody = document.getElementById("vendorTableBody");
+            const vendorFormContainer = document.getElementById("vendorFormContainer");
+            const form = document.getElementById("vendorForm");
+
+            // Show form
+            document.getElementById("showVendorFormBtn").addEventListener("click", () => {
+                vendorFormContainer.classList.remove("hidden");
+            });
+
+            // Cancel button
+            document.getElementById("closeVendorFormBtn").addEventListener("click", () => {
+                vendorFormContainer.classList.add("hidden");
+                form.reset();
+            });
+
+            // Fetch vendors
+            function fetchVendors() {
+                fetch('/Vendor/GetAllVendors')
+                    .then(response => response.json())
+                    .then(data => {
+                        renderVendors(data);
+                    })
+                    .catch(error => console.error("Error fetching vendors:", error));
+            }
+
+            function renderVendors(vendors) {
+                tableBody.innerHTML = "";
+                vendors.forEach((vendor, index) => {
+                    const row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${vendor.seller_name}</td>
+                            <td>${vendor.user_id}</td>
+                            <td>${vendor.panDetail}</td>
+                        </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            }
+
+            // Submit form
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const vendor = {
+                    seller_name: document.getElementById("sellerName").value,
+                    user_id: parseInt(document.getElementById("userId").value),
+                    panDetail: document.getElementById("PANDetail").value
+                };
+
+                fetch('/Vendor/AddVendor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(vendor)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            form.reset();
+                            vendorFormContainer.classList.add("hidden");
+                            fetchVendors();
+                        } else {
+                            alert("Error adding vendor");
+                        }
+                    })
+                    .catch(error => console.error("Error adding vendor:", error));
+            });
+
+            // Initial load
+            fetchVendors();
+        });
+    </script>
+}

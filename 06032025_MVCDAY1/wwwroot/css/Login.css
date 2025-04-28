@@ -1,0 +1,53 @@
+﻿/* Centering the login card */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 85vh;
+}
+
+/* Styling the login card */
+.card {
+    width: 500px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: #fff;
+}
+
+/* Input group styling */
+.input-group-text {
+    background-color: #f8f9fa;
+    border-right: none;
+}
+
+.input-group .form-control {
+    border-left: none;
+}
+
+/* Styling the login button */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    transition: background 0.3s;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+/* Links styling */
+.text-decoration-none {
+    color: #007bff;
+    transition: color 0.3s;
+}
+
+    .text-decoration-none:hover {
+        color: #0056b3;
+    }
+
+/* Checkbox styling */
+.form-check-input:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+}

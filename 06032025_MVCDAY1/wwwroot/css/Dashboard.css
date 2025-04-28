@@ -1,0 +1,71 @@
+﻿/* Dashboard Title */
+.dashboard-title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #007bff;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+/* Card Stats */
+.card-stats {
+    background: #ffffff;
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+    .card-stats:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 8px 18px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-stats h5 {
+        color: #555;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .card-stats h3 {
+        font-size: 32px;
+        font-weight: bold;
+        color: #007bff;
+    }
+
+/* Section Title */
+.section-title {
+    margin-top: 30px;
+    color: #258cfb;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Table */
+.table {
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+}
+
+.table-hover tbody tr:hover {
+    background: #f1f1f1;
+    transition: background 0.3s;
+}
+
+/* Table Headers */
+.table-primary th {
+    background-color: #007bff !important;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Center Align Text */
+.table th, .table td {
+    text-align: center;
+    padding: 12px;
+}

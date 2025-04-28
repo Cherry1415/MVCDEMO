@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "Supplier Dashboard";
+    Layout = "~/Views/Shared/_MyLayout1.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/Dashboard.css" />
+
+<div class="container mt-4">
+    <h2 class="dashboard-title">Supplier Dashboard</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card card-stats">
+                <div class="card-body">
+                    <h5>Total Orders</h5>
+                    <h3 id="totalOrders">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-stats">
+                <div class="card-body">
+                    <h5>Vendors</h5>
+                    <h3 id="vendorCount">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-stats">
+                <div class="card-body">
+                    <h5>Warehouses</h5>
+                    <h3 id="warehouseCount">0</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="section-title">Vendor - Warehouse Details</h3>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>Vendor Name</th>
+                    <th>Item Available</th>
+                    <th>Warehouse</th>
+                </tr>
+            </thead>
+            <tbody id="vendorWarehouseTable">
+                <!-- Dynamic rows inserted here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/Supplier/GetDashboardCounts')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('totalOrders').textContent = data.totalOrders;
+                    document.getElementById('vendorCount').textContent = data.vendorCount;
+                    document.getElementById('warehouseCount').textContent = data.warehouseCount;
+                })
+                .catch(error => console.error("Dashboard data fetch failed:", error));
+        });
+    </script>
+}
