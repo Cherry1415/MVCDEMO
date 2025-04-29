@@ -8,5 +8,6 @@
         public DateTime stock_in_date { get; set; }
         public DateTime restock_date { get; set; }
         public string stock_status { get; set; }
+        public string product_name { get; set; }
     }
 }

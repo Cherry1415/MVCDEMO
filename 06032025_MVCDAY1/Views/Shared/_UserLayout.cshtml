@@ -12,6 +12,48 @@
     <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/bootstrap/js/bootstrap.min.js" rel="stylesheet" />
     <script href="~/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+                function loadStockAlerts() {
+            const threshold = 20;
+
+            fetch('/Orders/GetLowStockNotifications?threshold=' + threshold)
+                .then(response => {
+                    if (!response.ok) throw new Error("HTTP status " + response.status);
+                    return response.json();
+                })
+                .then(data => {
+                   
+                    const count = data.length;
+                    document.getElementById("lowStockCount").innerText = count;
+
+                    const dropdown = document.getElementById("lowStockList");
+                    dropdown.innerHTML = '';
+
+                    if (count === 0) {
+                        dropdown.innerHTML = '<li class="text-success text-center">All products are in stock</li>';
+                        return;
+                    }
+
+                    data.forEach(item => {
+                        dropdown.innerHTML += `<li class="dropdown-item">
+                            <strong>${item.product_name}</strong><br/>
+                            <small>Stock: ${item.quantity_available}</small>
+                        </li>`;
+                    });
+                })
+                .catch(error => {
+                    console.error("Fetch error:", error);
+                    document.getElementById("lowStockList").innerHTML = `<li class="text-danger text-center">Failed to load alerts</li>`;
+                });
+        }
+            document.addEventListener('DOMContentLoaded', function () {
+            loadStockAlerts(); 
+
+            
+            setInterval(loadStockAlerts, 30000); //30 seconds
+        });
+    </script>
+
       
     <title>@ViewBag.Title</title>
 </head>
@@ -25,11 +67,42 @@
                     <button class="btn btn-outline-success" type="submit">Search</button>
                     
                 </form>
-                <div>
-                    <i class="fa fa-fw fa-user" style='font-size:16px'></i>
-                    @* <i class='fas fa-shopping-cart' style='font-size:16px'></i> *@
+                <div class="d-flex">
+<div>
+                        <i class="fa fa-fw fa-user" style='font-size:16px'></i>
+</div>
                    
+               <div>
+                        <li class="nav-item dropdown" style="list-style:none">
+                            <a class="nav-link position-relative" href="#" id="stockDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
+                                🔔
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="lowStockCount">
+                                    0
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="stockDropdown" style="min-width: 300px;" id="lowStockList">
+                                <li class="text-muted text-center">Loading...</li>
+                            </ul>
+                        </li>
+               </div>
+                    
+                    
                 </div>
+               @*  <div>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link position-relative" href="#" id="stockDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="loadStockAlerts()">
+                            🔔
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="lowStockCount">
+                                0
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="stockDropdown" style="min-width: 300px;" id="lowStockList">
+                            <li class="text-muted text-center">Loading...</li>
+                        </ul>
+                    </li>
+                </div> *@
+               
+
                 
             </div>
            
