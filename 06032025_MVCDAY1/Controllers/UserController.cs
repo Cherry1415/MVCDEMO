@@ -1,6 +1,7 @@
 ﻿using _06032025_MVCDAY1.Models;
 using _06032025_MVCDAY1.Repository;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace _06032025_MVCDAY1.Controllers
 {
@@ -43,9 +44,13 @@ namespace _06032025_MVCDAY1.Controllers
             // }
             return View(user);
         }
-
-        public IActionResult SignIn()
+        [HttpGet]
+        public IActionResult SignIn(int? role)
         {
+            if (role != null)
+            {
+                HttpContext.Session.SetInt32("Temp_Role", role ?? 2);
+            }
             return View();
         }
 
@@ -55,27 +60,57 @@ namespace _06032025_MVCDAY1.Controllers
             if (_repo.Login(email, password))
             {
                 var user = _repo.getSessionData(email);
+                int roleFromDB = user.Role_ID;
 
+                // Optional: Validate role from session (if someone used vendor login link)
+                int tempRole = HttpContext.Session.GetInt32("Temp_Role") ?? 2;
+                if (tempRole != roleFromDB)
+                {
+                    TempData["Error"] = "You are not allowed to login as this user type.";
+                    return View();
+                }
+                
+                var cookieData = new UserCookieModel
+                {
+                    user_id = user.user_id,
+                    name = user.first_name,
+                    role = user.Role_ID
+                };
+                string jsonData = JsonSerializer.Serialize(cookieData);
+
+                CookieOptions options = new CookieOptions
+                {
+                    Expires = DateTime.Now.AddDays(30), // Keep cookie for 30 days
+                    HttpOnly = false,  // So JS can access it
+                    Secure = false,    // Set true if using https
+                    SameSite = SameSiteMode.Lax // This prevents CSRF attacks
+                };
+
+                Response.Cookies.Append("UserData", jsonData, options);
                 string fname = user.first_name;
-                int role = user.Role_ID;
                 int uid = user.user_id;
                 var wishitem = _repo.GetUserWishlist(uid);
                 HttpContext.Session.SetString("email", email);
                 HttpContext.Session.SetString("first_name", fname);
-                HttpContext.Session.SetString("Role_ID", role.ToString());
+                HttpContext.Session.SetString("Role_ID", roleFromDB.ToString());
                 HttpContext.Session.SetString("user_id", uid.ToString());
                 HttpContext.Session.SetString("wishlist", string.Join(",", wishitem));
+
+                if (roleFromDB == 3)
+                    return RedirectToAction("SellerHome", "Seller");
+                else if (roleFromDB == 4)
+                    return RedirectToAction("Index", "Supplier");
 
                 return RedirectToAction("HomeDashBoard", "DashBoard");
             }
             else
             {
-                TempData["Error"] = "Invalid Cridetial!!";
-                //ViewBag.ErrorMessage = "Invalid Cridetial!!";
+                TempData["Error"] = "Invalid Credentials!!";
                 return View();
             }
 
         }
+
 
         public ActionResult ProductWishList()
         {
