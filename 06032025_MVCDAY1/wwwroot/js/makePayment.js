@@ -25,16 +25,18 @@
         var quantity = parseInt($("#quantityInput").val());
         var price = parseFloat(amt);
 
-        totalAmount = price * quantity;
+       // totalAmount = price;
+        //totalAmount = amt * quantity;
 
         orderItems.push({
             ProductId: parseInt(productId),
             Quantity: quantity,
-            Price: price
+            Price: amt
         });
     }
 
     console.log("Total Amount:", totalAmount);
+    console.log("Total Amount:", amt);
     console.log("Order Items:", orderItems);
 
     // Call backend to create Razorpay order
