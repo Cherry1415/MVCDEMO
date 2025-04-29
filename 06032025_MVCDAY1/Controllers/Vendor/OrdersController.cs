@@ -45,5 +45,11 @@ namespace _06032025_MVCDAY1.Controllers.Vendor
             return Json(new { status = 200, message = "Stock updated successfully" });
         }
 
+        public JsonResult GetLowStockNotifications(int threshold)
+        {
+            var lowStockList = _repository.GetShortageItems(threshold);
+            return Json(lowStockList);
+        }
+
     }
 }

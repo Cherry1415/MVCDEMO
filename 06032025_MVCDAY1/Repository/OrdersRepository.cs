@@ -1,4 +1,5 @@
 ﻿using _06032025_MVCDAY1.Models;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
 
 namespace _06032025_MVCDAY1.Repository
@@ -63,8 +64,35 @@ namespace _06032025_MVCDAY1.Repository
                 return stocks;
             }
         }
+        public IEnumerable<VendorStock> GetShortageItems(int threshold)
+        {
 
-        public void UpdateVendorStock(VendorStock vs)
+            List<VendorStock> alertList = new List<VendorStock>();
+
+            using (SqlConnection conn = new SqlConnection(_constring))
+            {
+                SqlCommand cmd = new SqlCommand("vendor.sp_GetLowStockAlertsByThreshold", conn);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@threshold", threshold);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    alertList.Add(new VendorStock
+                    {
+                        stock_id = Convert.ToInt32(reader["stock_id"]),
+                        product_id = Convert.ToInt32(reader["product_id"]),
+                        quantity_available =Convert.ToInt32 (reader["quantity_available"]),
+                        product_name = reader["product_name"].ToString()
+
+                    });
+                }
+            }
+
+            return alertList;
+        }
+public void UpdateVendorStock(VendorStock vs)
         {
             using (SqlConnection con = new SqlConnection(_constring))
             {
