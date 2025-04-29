@@ -1,143 +1,90 @@
-﻿@model _06032025_MVCDAY1.Models.User;
+﻿@model _06032025_MVCDAY1.Models.User
 @{
+    int? role = Context.Session.GetInt32("Temp_Role") ?? 2;
+    string roleLabel = "Customer Login";
+    string emailPlaceholder = "Enter email or phone";
+
+    if (role == 3)
+    {
+        roleLabel = "Business (Vendor) Login";
+        emailPlaceholder = "Vendor Email";
+    }
+    else if (role == 4)
+    {
+        roleLabel = "Supplier Login";
+        emailPlaceholder = "Supplier Email";
+    }
+
     Layout = null;
 }
-@* <div>
-    @using (Html.BeginForm("LogInPage", "Login", FormMethod.Post))
-    {
-        @Html.TextBox("mail");
-        <input type="submit" value="submit"/>
-    }
-</div> *@
-@* <div class="container">
-            <div class="login-container">
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+<link href="~/css/site.css" rel="stylesheet"/>
+@* <link href="~/css/Login.css" rel="stylesheet"/> *@
 
-                <h4 class="text-center">Sign-In</h4>
-        <form action="/Login/LogInPage" method="post">
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email or mobile phone number</label>
-                        <input type="email" class="form-control" id="email" name="umail" required>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-lg p-4" style="width: 400px; border-radius: 10px;">
+        <h3 class="text-center mb-4" style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, sans-serif;">DealBazar- @roleLabel</h3>
 
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Sign-In</button>
-                    <div class="form-check mt-2">
-                        <input class="form-check-input" type="checkbox" id="keepSignedIn">
-                        <label class="form-check-label" for="keepSignedIn">Keep me signed in</label>
-                    </div>
-                    <p class="help-link"><a href="#">Forgot password?</a></p>
-                </form>
-                <hr>
-                <p class="register-link">New to DealBazar? <a href="#">Create your DealBazar account</a></p>
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        <form method="post" asp-action="SignIn">
+            <div class="mb-3">
+                <label asp-for="email" class="form-label">Email or Mobile</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    <input type="text" asp-for="email" class="form-control" placeholder="@emailPlaceholder" required />
+                </div>
+                <span asp-validation-for="email" class="text-danger"></span>
             </div>
-        </div> *@
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f7f7f7;
-        display: flex;
-        justify-content: center;
-        align-items: top;
-        height: 100vh;
-        margin: 0;
-    }
 
-    .login-container {
-        text-align: center;
-    }
+            <div class="mb-3">
+                <label asp-for="password" class="form-label">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input type="password" asp-for="password" class="form-control" placeholder="Enter your password" required />
+                </div>
+                <span asp-validation-for="password" class="text-danger"></span>
+            </div>
+            <label>
+                <input type="checkbox" name="RememberMe" /> Remember Me
+            </label>
 
-    .logo {
-        width: 120px;
-        margin-bottom: 15px;
-    }
+            <button type="submit" class="btn btn-primary w-100">Continue</button>
 
-    .login-box {
-        background: white;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: 320px;
-    }
+            <div class="text-center mt-3">
+                <small>
+                    By continuing, you agree to DealBazar’s
+                    <a href="#" class="text-decoration-none">Conditions of Use</a> and
+                    <a href="#" class="text-decoration-none">Privacy Notice</a>.
+                </small>
+            </div>
 
-    h2 {
-        font-size: 18px;
-        margin-bottom: 10px;
-    }
+            <div class="text-center mt-3">
+                <a href="#" class="text-decoration-none">Forgot Password?</a>
+            </div>
 
-    .heading {
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        font-size: 40px;
-    }
+            <div class="text-center mt-2">
+                <p>Don't have an account? <a href="#" class="text-decoration-none">Sign Up</a></p>
+            </div>
+            <div class="d-flex justify-content-between mt-3">
+                @if (role != 2)
+                {
+                    <a href="@Url.Action("SignIn", "User", new { role = 2 })" class="text-decoration-none">Work As Customer?</a>
+                }
+                @if (role != 3)
+                {
+                    <a href="@Url.Action("SignIn", "User", new { role = 3 })" class="text-decoration-none">Work As Business?</a>
+                }
+                @if (role != 4)
+                {
+                    <a href="@Url.Action("SignIn", "User", new { role = 4 })" class="text-decoration-none">Work As Supplier?</a>
+                }
+            </div>
 
-    label {
-        display: block;
-        font-size: 14px;
-        text-align: left;
-        margin: 10px 0 5px;
-    }
-
-    input {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #a6a6a6;
-        border-radius: 3px;
-        font-size: 14px;
-    }
-
-    .continue-btn {
-        width: 100%;
-        background-color: aqua;
-        border: none;
-        padding: 10px;
-        font-size: 16px;
-        border-radius: 3px;
-        margin-top: 15px;
-        cursor: pointer;
-    }
-
-        .continue-btn:hover {
-            background-color: #e6b800;
-        }
-
-    .terms, .business {
-        font-size: 12px;
-        text-align: left;
-        margin-top: 15px;
-        color: #555;
-    }
-
-        .terms a, .business a {
-            color: #0066c0;
-            text-decoration: none;
-        }
-
-            .terms a:hover, .business a:hover {
-                text-decoration: underline;
-            }
-</style>
-<div class="login-container">
-    <h3 class="heading">DealBazar</h3>
-    @* <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo" class="logo"> *@
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger">@TempData["Error"]</div>
-        @* <div class="alert alert-danger">@ViewBag.ErrorMessage</div> *@
-    }
-    <form asp-action="SignIn" method="post">
-        <div class="login-box">
-            <h2>Sign in account</h2>
-            <label asp-for="email">Enter mobile number or email</label>
-            <input type="text" id="email" asp-for="email" placeholder="">
-            <label asp-for="password">Enter Password</label>
-            <input type="password" id="password" asp-for="password" placeholder="">
-            <button class="continue-btn" type="submit">Continue</button>
-            <p class="terms">By continuing, you agree to DealBazar's <br /> <a href="#">Conditions of Use</a> and <a href="#">Privacy Notice</a>.</p>
-            <hr />
-            <p class="business">Buying for work?</p>
-        </div>
-    </form>
-    
+        </form>
+    </div>
 </div>

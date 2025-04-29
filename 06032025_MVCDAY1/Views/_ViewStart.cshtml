@@ -1,3 +1,16 @@
 ﻿@{
-    Layout = "_HomeLayout";
+    var role = Context.Session.GetString("Role_ID");
+
+    if (role == "3")
+    {
+        Layout = "~/Views/Shared/_UserLayout.cshtml";
+    }
+    else if (role == "4")
+    {
+        Layout = "~/Views/Shared/_MyLayout1.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    }
 }
