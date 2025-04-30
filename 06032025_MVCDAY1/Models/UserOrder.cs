@@ -21,6 +21,8 @@
         public string Status { get; set; }          // e.g., "Pending", "Paid", "Failed"
         public DateTime CreatedDate { get; set; }
 
-        
+        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>(); // List of purchased items
+
+
     }
 }

@@ -18,7 +18,7 @@ namespace _06032025_MVCDAY1.Controllers
 
         {
 
-            string json = Request.Cookies["UserData"];
+          /*  string json = Request.Cookies["UserData"];
             Console.WriteLine("Cookie Data: " + json);
             if (json != null)
             {
@@ -39,7 +39,7 @@ namespace _06032025_MVCDAY1.Controllers
             {
                 // Cookie nahi mili, to redirect to login
                 return RedirectToAction("SignIn", "User");
-            }
+            }*/
 
             return View();
         }

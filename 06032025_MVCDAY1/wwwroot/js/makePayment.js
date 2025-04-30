@@ -24,18 +24,19 @@
         var productId = $("#productIdInput").val();
         var quantity = parseInt($("#quantityInput").val());
         var price = parseFloat(amt);
+        console.log("Total Amount before:", totalAmount);
 
-       // totalAmount = price;
-        //totalAmount = amt * quantity;
-
+        // totalAmount = price;
+        totalAmount += price * quantity;
+        console.log("Total Amount after:", totalAmount);
         orderItems.push({
             ProductId: parseInt(productId),
             Quantity: quantity,
-            Price: amt
+            Price: price
         });
     }
 
-    console.log("Total Amount:", totalAmount);
+    //console.log("Total Amount:", totalAmount);
     console.log("Total Amount:", amt);
     console.log("Order Items:", orderItems);
 
