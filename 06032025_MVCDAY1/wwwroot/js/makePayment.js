@@ -26,9 +26,9 @@
         var price = parseFloat(amt);
         console.log("Total Amount before:", totalAmount);
 
-        // totalAmount = price;
-        totalAmount += price * quantity;
-        console.log("Total Amount after:", totalAmount);
+        //totalAmount = price;
+        totalAmount = price * quantity;
+
         orderItems.push({
             ProductId: parseInt(productId),
             Quantity: quantity,

@@ -280,18 +280,11 @@
                                     <h5 class="card-title" id="product_name">@product.product_name</h5>
                                     <p class="card-text" id="price">₹ @product.price</p>
                                     <div class="d-flex gap-2 align-items-center">
-                                        <button class="btn btn-primary buyNowBtn"
-                                                data-name="@product.product_name"
-                                                data-price="₹@product.price"
-                                                data-image="@product.ProductImages.FirstOrDefault()?.imgName">
-                                            Buy Now
-                                        </button>
-
-                                        <form method="post" asp-controller="Cart" asp-action="AddToCart" class="m-0">
+                                        <form method="post" asp-controller="Cart" asp-action="AddToCart">
                                             <input type="hidden" name="productId" value="@product.product_id" />
                                             <input type="hidden" name="quantity" value="1" />
                                             <input type="hidden" name="price" value="@product.price" />
-                                            <button type="submit" class="btn btn-primary cart-btn">Add To Cart</button>
+                                            <button type="submit" class="btn btn-outline-info edit-btn">Add To Cart</button>
                                         </form>
                                     </div>
                                 </div>
