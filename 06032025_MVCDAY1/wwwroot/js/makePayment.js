@@ -25,8 +25,8 @@
         var quantity = parseInt($("#quantityInput").val());
         var price = parseFloat(amt);
 
-       // totalAmount = price;
-        //totalAmount = amt * quantity;
+        //totalAmount = price;
+        totalAmount = price * quantity;
 
         orderItems.push({
             ProductId: parseInt(productId),
