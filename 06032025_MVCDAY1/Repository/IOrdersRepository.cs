@@ -5,6 +5,7 @@ namespace _06032025_MVCDAY1.Repository
     public interface IOrdersRepository
     {
         IEnumerable<VendorStock> manageInventoty(int vendorId);
+        UserOrder GetUserOrders(int userId);
         VendorStock GetVendorStockById(int id);
         IEnumerable<VendorStock> GetShortageItems(int threshold);
         void UpdateVendorStock(VendorStock vs);

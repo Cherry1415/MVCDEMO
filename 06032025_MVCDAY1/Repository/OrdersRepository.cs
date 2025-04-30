@@ -92,7 +92,7 @@ namespace _06032025_MVCDAY1.Repository
 
             return alertList;
         }
-public void UpdateVendorStock(VendorStock vs)
+        public void UpdateVendorStock(VendorStock vs)
         {
             using (SqlConnection con = new SqlConnection(_constring))
             {
@@ -177,6 +177,8 @@ public void UpdateVendorStock(VendorStock vs)
                 command.ExecuteNonQuery();
             }
         }
+
+
         public void ClearCart(int userId)
         {
             using (SqlConnection conn = new SqlConnection(_constring))
@@ -190,5 +192,77 @@ public void UpdateVendorStock(VendorStock vs)
                 }
             }
         }
+
+        public UserOrder GetUserOrders(int userId)
+        {
+            UserOrder userorders = null;
+            using( SqlConnection con = new SqlConnection(_constring))
+            {
+                SqlCommand cmd = new SqlCommand("vendor.sp_getOrderByUser", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@userId", userId);
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+               
+                while (rdr.Read())
+                {
+                    userorders = new UserOrder
+                    {
+                        Id = Convert.ToInt32(rdr["order_id"]),
+                        UserId = Convert.ToInt32(rdr["user_id"]),
+                        RazorpayOrderId = rdr["RazorPayOrderId"].ToString(),
+                        TotalAmount = Convert.ToDecimal(rdr["TotalAmount"]),
+                        Status = rdr["status"].ToString(),
+                        CreatedDate = Convert.ToDateTime(rdr["order_date"]),
+                        OrderItems = new List<OrderItem>()
+                    };
+                    userorders.OrderItems.Add(new OrderItem
+                    {
+                        Id = Convert.ToInt32(rdr["order_item_id"]),
+                        ProductId = Convert.ToInt32(rdr["product_id"]),
+                        Quantity = Convert.ToInt32(rdr["quantity"]),
+                        Price = Convert.ToDecimal(rdr["price"]),
+                       product_name = rdr["product_name"].ToString()
+                    });
+                    
+                }
+            }
+
+            return userorders;
+        }
     }
 }
+/*
+  using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (product == null)
+                        {
+                            product = new Product
+                            {
+                                product_id = Convert.ToInt32(reader["product_id"]),
+                                product_name = reader["product_name"].ToString(),
+                                brand_id = Convert.ToInt32(reader["brand_id"]),
+                                category_id = Convert.ToInt32(reader["category_id"]),
+                                sub_category_id = Convert.ToInt32(reader["subcategory_id"]),
+                                price = Convert.ToDecimal(reader["price"]),
+                                Prod_Attributes = new List<Prod_Attributes>(),
+                                ProductImages = new List<ProductImage>()
+                            };
+
+                            // Add only once
+                            product.Prod_Attributes.Add(new Prod_Attributes
+                            {
+                                size = reader["size"].ToString(),
+                                color = reader["color"].ToString(),
+                                material = reader["material"].ToString(),
+                                gender = reader["gender"].ToString(),
+                                processor = reader["processor"].ToString(),
+                                display = reader["display"].ToString(),
+                                capacity = reader["capacity"].ToString(),
+                                weight = reader["weight"].ToString()
+                            });
+                        }
+
+ */
