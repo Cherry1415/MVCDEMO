@@ -12,7 +12,7 @@ namespace _06032025_MVCDAY1.Repository
         User getSessionData(string email);
 
         //customer cart
-
+        void AddToCart(int productId, int quantity, decimal price, int userId);
         void AddItemToCart(int userId, int productId, int quantity);
         void RemoveCartItem(int cartId);
         int GetCartItemCount(int userId);
@@ -20,6 +20,11 @@ namespace _06032025_MVCDAY1.Repository
         List<CartItemViewModel> GetCartItemsByUserId(int userId);
         CartItemViewModel GetCartItemById(int cartId, int userId);
         void UpdateCartItemQuantity(int cartId, int quantity);
+
+        //customer Addresses 
+
+        List<AddressViewModel> GetAddressesByUserId(int userId);
+        void AddAddress(int userId, AddressViewModel model);
 
         //Customer WishList
 

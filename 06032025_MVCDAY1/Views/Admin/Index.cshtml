@@ -1,0 +1,89 @@
+﻿@model _06032025_MVCDAY1.Models.DashboardViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewBag.Title = "Dashboard";
+}
+
+<h2>Dashboard</h2>
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card card-custom text-center p-3">
+            <h5>All Orders</h5>
+            <h2>@Model.TotalOrders</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-custom text-center p-3">
+            <h5>Pending</h5>
+            <h2>@Model.PendingCount</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-custom text-center p-3">
+            <h5>Rejected</h5>
+            <h2>@Model.RejectCount</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-custom text-center p-3">
+            <h5>Delivered</h5>
+            <h2>@Model.DeliveredCount</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-custom text-center p-3">
+            <h5>Completed</h5>
+            <h2>@Model.CompletedCount</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-custom p-3">
+            <h5>Orders Status</h5>
+            <canvas id="orderStatusChart" height="100" width="100"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-custom p-3">
+            <h5>Top 5 Selling Products</h5>
+            <canvas id="topProductsChart" height="100" width="100"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const statusData = {
+        labels: ["Pending", "Delivered", "Completed", "Rejected"],
+        datasets: [{
+            label: "Orders",
+            data: [@Model.PendingCount, @Model.DeliveredCount, @Model.CompletedCount, @Model.RejectCount],
+            backgroundColor: ["#f1c40f", "#3498db", "#2ecc71", "#e74c3c"]
+        }]
+    };
+
+    const topProducts = {
+        labels: @Html.Raw("[\"" + string.Join("\",\"", Model.TopProducts.Select(p => p.Name)) + "\"]"),
+        datasets: [{
+            label: "Sales",
+            data: [@string.Join(",", Model.TopProducts.Select(p => p.Count))],
+            backgroundColor: ["#e74c3c", "#2980b9", "#9b59b6", "#f39c12", "#27ae60"]
+        }]
+    };
+
+    new Chart(document.getElementById("orderStatusChart"), {
+        type: 'pie',
+        data: statusData
+    });
+
+    new Chart(document.getElementById("topProductsChart"), {
+        type: 'doughnut',
+        data: topProducts
+    });
+</script>
+
+
+

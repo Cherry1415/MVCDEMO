@@ -1,0 +1,158 @@
+﻿@model List<_06032025_MVCDAY1.Models.Product>
+
+@{
+    int userid = Convert.ToInt32(Context.Session.GetString("user_id"));
+
+}
+<script>
+    function toggleWishlistIcon(button) {
+        var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to add items to your wishlist.");
+            return false; // Stop further execution
+        }
+        const icon = button.querySelector('.heart-icon');
+        icon.classList.toggle('filled');
+        icon.classList.toggle('empty');
+        // allow the form to submit silently
+    }
+</script>
+<script>
+    function toggleWishlist(button, productId) {
+        var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to add items to your wishlist.");
+            return false; // Stop further execution
+        }
+
+        var heartIcon = button.querySelector(".heart-icon");
+
+        // Send request via hidden iframe
+        var form = button.closest("form");
+        form.submit();
+
+        // Toggle the icon color immediately
+        var currentColor = heartIcon.style.fill;
+        heartIcon.style.fill = (currentColor === "red") ? "white" : "red";
+
+        // Save wishlist state in sessionStorage (to persist color on page reload)
+        let wishlist = JSON.parse(sessionStorage.getItem("wishlist")) || [];
+        if (heartIcon.style.fill === "red") {
+            if (!wishlist.includes(productId)) wishlist.push(productId);
+        } else {
+            wishlist = wishlist.filter(id => id !== productId);
+        }
+        sessionStorage.setItem("wishlist", JSON.stringify(wishlist));
+
+        return false; // Prevent default form submission
+    }
+
+    // Restore wishlist colors on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        let wishlist = JSON.parse(sessionStorage.getItem("wishlist")) || [];
+        document.querySelectorAll(".heart-icon").forEach(icon => {
+            let productId = parseInt(icon.closest("button").querySelector("input[name='productId']").value);
+            if (wishlist.includes(productId)) {
+                icon.style.fill = "red";
+            }
+        });
+    });
+</script>
+<style>
+    .heart-icon.filled {
+        fill: red;
+    }
+
+    .heart-icon.empty {
+        fill: white;
+    }
+</style>
+@if (Model != null && Model.Any())
+{
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-3 col-sm-6 col-12 py-3">
+                <div class="card product-card">
+                    @* <input type="text" name="productId" value="@product.product_id" /> *@
+                    <div id="imgdiv">
+                        @*  @{
+                                        var wishlistString = Context.Session.GetString("Wishlist");
+                                        var wishlistIds = !string.IsNullOrEmpty(wishlistString) ? wishlistString.Split(',').Select(int.Parse).ToList() : new List<int>();
+                                        bool isInWishlist = wishlistIds.Contains(product.product_id);
+                                    }  *@
+                        <form action="@Url.Action("AddToWishlist", "User")" method="post" target="wishlistFrame" class="wishlist-form">
+                            <input type="hidden" name="productId" value="@product.product_id" />
+                            <input type="hidden" asp-for="@userid" />
+
+                            <button type="submit" class="wishlist-label" style="background:none;border:none;padding:0;" onclick="toggleWishlistIcon(this);">
+                                @* <input type="checkbox" class="wishlist-checkbox" onclick="toggleWishlist(this)" > *@
+
+                                <svg class="heart-icon @(product.IsInWishlist ? "filled" : "empty")" viewBox="0 0 24 24"
+                                @* style="fill: @(product.IsInWishlist ? "red" : "white");"   *@ >
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                                </svg>
+                            </button>
+                        </form>
+                        <!-- Hidden iframe to handle form submission without page refresh -->
+                        <iframe name="wishlistFrame" style="display:none;"></iframe>
+
+                        @* @if (product.ProductImages != null && product.ProductImages.Any())
+                                    {
+                                        foreach (var image in product.ProductImages)
+                                        {
+                                            <img src="~/uploads/@image.imgName" width="100" class="me-2" />
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p>No Images</p>
+                                    } *@
+
+
+                        <a asp-area="" asp-controller="Product" asp-action="DetailProduct" asp-route-id="@product.product_id">
+                            <img src="~/uploads/@product.ProductImages.FirstOrDefault()?.imgName" width="100" height="100"
+                                 class="product-img"
+                                 id="image"
+                                 data-name="@product.product_name"
+                                 data-price="@product.price"
+                                 data-description="a portable, handheld device that allows users to make and receive calls, send and receive messages, and access the internet via a wireless connection. "
+                            @* onclick="showQuickView(this)*@
+                                                >
+                        </a>
+                        @*<button class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" data-bs-toggle="modal" data-bs-target="#quickViewModal">Quick View</button>*@
+                        @*  <div class="fav-icon" onclick="toggleFavorite(this)">
+
+                                         <a href="#" class="quick-view-btn">Quick View</a> 
+                                    </div> *@
+                        <a href="#" class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" onclick="showQuickView(this)" align="center">Quick View</a>
+                    </div>
+                    <div class="card-body" class="wishlist-item" id="wishlist-item1">
+                        <h5 class="card-title" id="product_name">@product.product_name</h5>
+                        <p class="card-text" id="price">₹ @product.price</p>
+                        <div class="d-flex gap-2 align-items-center">
+
+
+                            <form method="post" asp-controller="Cart" asp-action="AddToCart">
+                                <input type="hidden" name="productId" value="@product.product_id" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <input type="hidden" name="price" value="@product.price" />
+                                <button type="submit" class="btn btn-outline-info edit-btn">Add To Cart</button>
+                            </form>
+                        </div>
+                        @* <a asp-area="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-warning text-center w-100">
+        No products found matching your search.
+    </div>
+}

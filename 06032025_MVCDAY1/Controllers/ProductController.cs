@@ -2,6 +2,7 @@
 using _06032025_MVCDAY1.Repository;
 using Microsoft.AspNetCore.Mvc;
 //using Razorpay.Api;
+//using Razorpay.Api;
 
 namespace _06032025_MVCDAY1.Controllers
 {
@@ -21,23 +22,64 @@ namespace _06032025_MVCDAY1.Controllers
         {
             return View();
         }
-        public IActionResult Product()
+        public IActionResult SearchProduct(string query)
+        {
+            List<Product> matchedProducts;
+            int uid = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                // Show all products if query is empty
+                matchedProducts = _Prodrepository.VendorGetProducts().ToList();
+            }
+            else
+            {
+                string lowerQuery = query.ToLower();
+
+                // Filter products based on query
+                matchedProducts = _Prodrepository.VendorGetProducts()
+                    .Where(p => p.product_name.Contains(query, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+            List<int> wishlistid = _repository.GetUserWishlist(uid).Select(w => w.product_id)
+                                 .ToList();
+            foreach (var product in matchedProducts)
+            {
+                
+                product.IsInWishlist = wishlistid.Contains(product.product_id);
+            }
+            return PartialView("_ProductCardsPartial", matchedProducts);
+        }
+        public IActionResult SearchVendorProduct(string query)
+        {
+            List<Product> matchProducts;
+            
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                // Show all products if query is empty
+                matchProducts = _Prodrepository.VendorGetProducts().ToList();
+            }
+            else
+            {
+                // Filter products based on query
+                matchProducts = _Prodrepository.VendorGetProducts()
+                    .Where(p => p.product_name.Contains(query, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+            
+            return PartialView("_VendorProductPartial", matchProducts);
+        }
+        public IActionResult Product(string categoryname, string subcategoryname)
         {
             int uid = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
 
-           var products = _Prodrepository.GetProducts();
+            int catid = _Prodrepository.GetCategoryIdByName(categoryname);
+            int subcateid = _Prodrepository.GetSubCategoryIdByName(subcategoryname);
+
+           var products = _Prodrepository.GetProducts(catid,subcateid);
 
             List<int> wishlistid = _repository.GetUserWishlist(uid).Select(w => w.product_id)
                                   .ToList();
-            //if(uid == 0)
-            //{
-            //   products = _repository.GetAllProducts();
-            //}
-            //else
-            //{
-            //    products = _repository.GetUserWishlist(uid);
-            //}
-            //return View(products);
+            
             foreach (var product in products)
             {
                 product.ProductImages = _repository.GetImagesByProductId(product.product_id);
@@ -141,7 +183,7 @@ namespace _06032025_MVCDAY1.Controllers
 
         public IActionResult GetProduct()
         {
-            var allproduct = _Prodrepository.GetProducts();
+            var allproduct = _Prodrepository.VendorGetProducts();
             return View(allproduct);
         }
 

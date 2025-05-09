@@ -17,84 +17,37 @@
 </head>
 
 <body>
-    @* <div>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
-            <a class="navbar-brand" aria-current="page" asp-area="" asp-controller="DashBoard" asp-action="HomeDashBoard">DealBazar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <form class="d-flex w-50" role="search">
-                    <input class="form-control me-2 " type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100 justify-content-end align-items-end">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" asp-area="" asp-controller="Product" asp-action="orders">Orders</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" asp-area="" asp-controller="UserBuy" asp-action="BuyProduct">Buy Product</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" asp-area="" asp-controller="Register" asp-action="Index">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" asp-area="" asp-controller="UserBuy" asp-action="WishList">Your List</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" a><i class='fas fa-cart-arrow-down' style='font-size:40px'></i>Cart</a>
-                    </li>
-
-                     <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" >
-                                Dropdown
-                            </a>
-                            <ul class="dropdown">
-                                <li><a class="dropdown-content" href="#">Action</a></li>
-                                <li><a class="dropdown-content" href="#">Another action</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            </ul>
-                        </li>
-
-                </ul>
-
-            </div>
-    </div>
-    </nav>
-    </div> *@
+    
     <header id="headercolor">
         <nav class="navbar">
             <div class="container-fluid">
                 
                 <span class="navbar-brand mb-0 h1"><a class="navbar-brand" aria-current="page" asp-area="" asp-controller="DashBoard" asp-action="HomeDashBoard">DealBazar</a></span>
-                <form class="d-flex w-50" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-
+                <div class="container">
+                <div class="row justify-content-center align-items-center">
+                <div class="col-12 col-sm-8 col-md-6 col-lg-5">
+                <form class="d-flex" role="search" id="searchForm" style="gap:10px;">
+                    <div style="position: relative; display: inline-block;">
+                        <input type="search" id="searchInput" class="form-control" placeholder="Search product..." autocomplete="off">
+                        <div id="suggestionBox" class="dropdown-menu show" style="display:none;"></div>
+                    </div>
+                    <button id="searchButton" class="btn btn-outline-success">Search</button>
                 </form>
+                </div>
+                </div>
+                </div>
+                
+                
                 <div>
                     <a href="@Url.Action("ProductWishList","User")"><i class='fas fa-heart' style='font-size:20px;color:red;'></i></a>
                     <a href="@Url.Action("SignIn","User")">
                         <i class="fa fa-fw fa-user" style='font-size:20px'></i>
                     </a>
-                    @* <a href="@Url.Action("Index","Cart")" class="position-relative">
-                        <i class='fas fa-cart-arrow-down' style='font-size:20px'></i></a>
-                    <span id="cart-count" class="position-absolute top-20 start-100 translate-middle badge rounded-pill bg-danger">
-                        0
-                    </span> *@
+                   
                     <a href="@Url.Action("Index", "Cart")" class="cart-icon position-relative">
                         <i class="fas fa-shopping-cart fa-lg"></i>
                         <span id="cart-count" class="cart-badge">0</span>
                     </a>
-
-                    @* <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartSidebar" aria-controls="cartSidebar" asp-area="" asp-controller="Cart" asp-action="Index">
-                        <i class="fas fa-cart-arrow-down" style="font-size:20px"></i>
-                    </button> *@
-                
-                   
-                    @* <i class='fas fa-shopping-cart' style='font-size:16px'></i> *@
-
                 </div>
 
             </div>
@@ -108,14 +61,7 @@
                 <!-- ====== NAVBAR (New) ====== -->
                 <div class="navbar">
                     <label for="menu-toggle" class="open-btn">☰</label>
-                    @* <div class="logo">My Website</div> *@
-                    @* <div class="nav-links">
-                <a href="#">Home</a>
-                <a href="#">About</a>
-                <a href="#">Contact</a>
-            </div> *@
-
-
+                   
                 </div>
 
                 <!-- ====== SIDEBAR MENU ====== -->
@@ -140,7 +86,7 @@
 
                     <div class="menu">
                         <h4>Trending</h4>
-                        <a href="#">Best Sellers</a>
+                        <a href="@Url.Action("SelectAddress","User")">Best Sellers</a>
 
                         <hr />
 
@@ -153,16 +99,16 @@
                             <hr />
 
                             <h5>Mobile,Tablets,Watches And More</h5>
-                            <a href="@Url.Action("Product","Product")">All Mobile Phones</a>
-                            <a href="@Url.Action("Inventory","Product")">Power Banks</a>
-                            <a href="#">Tablets</a>
-                            <a href="#">Covers</a>
+                            <a href="@Url.Action("Product","Product",new {categoryname = "Electronics",subcategoryname = "mobile"})">All Mobile Phones</a>
+                            <a href="@Url.Action("Product","Product",new {categoryname = "Electronics",subcategoryname = "powerbank"})">Power Banks</a>
+                            <a href="@Url.Action("Product","Product",new {categoryname = "Electronics",subcategoryname = "tablet"})">Tablets</a>
+                            <a href="@Url.Action("Product","Product",new {categoryname = "Electronics",subcategoryname = "cover"})">Covers</a>
                             <hr />
                             <h5>Computor Components</h5>
-                            <a href="#">Laptops</a>
-                            <a href="#">Drives & Storages</a>
-                            <a href="#">Mouse,KeyBoard etc.</a>
-                            <a href="#">Printers</a>
+                            <a href="@Url.Action("Product","Product",new {categoryname = "Electronics",subcategoryname = "laptop"})">Laptops</a>
+                            <a href="@Url.Action("Product","Product",new {categoryname = "Electronics",subcategoryname = "drives"})">Drives & Storages</a>
+                            <a href="@Url.Action("Product","Product",new {categoryname = "Electronics",subcategoryname = "keyboard"})">Mouse,KeyBoard etc.</a>
+                            <a href="@Url.Action("Product","Product",new {categoryname = "Electronics",subcategoryname = "printer"})">Printers</a>
 
                         </div>
 
@@ -173,7 +119,7 @@
                             <hr />
 
                             <h5>Tv,Audio And Cameras</h5>
-                            <a href="#">Televisions</a>
+                            <a href="@Url.Action("Product","Product",new {categoryname = "Electronics", subcategoryname = "TV"})">Televisions</a>
                             <a href="@Url.Action("ElectronicProduct","Product")">Headphones</a>
                             <a href="#">Speakers</a>
                             <a href="#">Cameras</a>
@@ -312,13 +258,16 @@
                         </li>
                         
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" asp-area="" asp-controller="Product" asp-action="Product">Mobile Phones</a>
+                            <a class="nav-link active" aria-current="page" href="@Url.Action("Product","Product",new {categoryname = "Electronics",subcategoryname = "mobile"})">Mobile Phones</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" asp-area="" asp-controller="UserBuy" asp-action="ManProduct">Men Cloths</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" aria-current="page" asp-area="" asp-controller="Product" asp-action="ElectronicProduct">HeadPhones</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
                         </li>
                        
                     </ul>
@@ -420,5 +369,71 @@
         });
     }
 </script>
+<script>
+    let previousSearches = [];
+
+    $(document).ready(function () {
+        // Show suggestions as user types
+        $('#searchInput').on('input', function () {
+            let query = $(this).val().toLowerCase();
+            let matched = [];
+
+            if (query) {
+                matched = previousSearches.filter(p => p.toLowerCase().startsWith(query));
+            }
+
+            let suggestionBox = $('#suggestionBox');
+            suggestionBox.empty();
+
+            if (matched.length > 0) {
+                matched.forEach(item => {
+                    suggestionBox.append(`<a class="dropdown-item">${item}</a>`);
+                });
+                suggestionBox.show();
+            } else {
+                suggestionBox.hide();
+            }
+        });
+
+        // Fill input on click
+        $('#suggestionBox').on('click', '.dropdown-item', function () {
+            $('#searchInput').val($(this).text());
+            $('#suggestionBox').hide();
+            $('#searchForm').submit(); // optional: auto-submit
+        });
+
+        // Submit search form
+        $('#searchForm').submit(function (e) {
+            e.preventDefault();
+
+            let searchTerm = $('#searchInput').val().trim();
+            if (searchTerm && !previousSearches.includes(searchTerm)) {
+                previousSearches.push(searchTerm);
+            }
+
+            $.ajax({
+                url: '@Url.Action("SearchProduct", "Product")',
+                type: 'GET',
+                data: { query: searchTerm },
+                success: function (result) {
+                    $('#productResults').html(result);
+                },
+                error: function () {
+                    alert("Search failed. Please try again.");
+                }
+            });
+
+            $('#suggestionBox').hide();
+        });
+
+        // Hide suggestion box on blur
+        $('#searchInput').blur(function () {
+            setTimeout(() => { $('#suggestionBox').hide(); }, 200); // delay to allow click
+        });
+    });
+</script>
+
+
+ 
 
 

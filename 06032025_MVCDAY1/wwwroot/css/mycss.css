@@ -163,9 +163,22 @@
     }*/
 /* CSS form  CART*/
 
+
+#suggestionBox {
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    z-index: 9999;
+}
+
+.dropdown-item {
+    cursor: pointer;
+}
+
+
+
 .cart-icon {
     color: #232f3e;
- 
     text-decoration: none;
 }
 

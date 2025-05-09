@@ -10,6 +10,8 @@
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
 
+        public string category_name { get; set; }
+
 
     }
 }

@@ -6,6 +6,10 @@ namespace _06032025_MVCDAY1.Models
     {
         public int product_id { get; set; }
         public string product_name { get; set; }
+        public string category_name { get; set; }
+
+        public string brand_name { get; set; }
+        public string subcat_name { get; set; }
         public int brand_id { get; set; }
         public int category_id { get; set; }
         public int vendor_id { get; set; }
@@ -18,5 +22,6 @@ namespace _06032025_MVCDAY1.Models
 
         [NotMapped]
         public bool IsInWishlist { get; set; }
+      //  public List<AddressViewModel> addressViewModels { get; set; } = new List<AddressViewModel>();
     }
 }

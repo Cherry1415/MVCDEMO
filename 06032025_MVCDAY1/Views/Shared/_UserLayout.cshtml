@@ -7,6 +7,7 @@
 
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/EcomStyles.css" />
     <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
@@ -62,11 +63,12 @@
         <nav class="navbar">
             <div class="container-fluid">
                 <span class="navbar-brand mb-0 h1">DealBazar</span>
-                <form class="d-flex w-50" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                    
+                <form class="d-flex w-50" role="search" id="searchForm">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="searchInput" autocomplete="off">
+                    <div id="suggestionBox" class="dropdown-menu show" style="display:none;"></div>
+                    <button class="btn btn-outline-success" id="searchButton">Search</button>
                 </form>
+               
                 <div class="d-flex">
 <div>
                         <i class="fa fa-fw fa-user" style='font-size:16px'></i>
@@ -217,3 +219,67 @@
      </footer>-->
 </body>
 </html>
+
+<script>
+    let previousSearches = [];
+
+    $(document).ready(function () {
+        // Show suggestions as user types
+        $('#searchInput').on('input', function () {
+            let query = $(this).val().toLowerCase();
+            let matched = [];
+
+            if (query) {
+                matched = previousSearches.filter(p => p.toLowerCase().startsWith(query));
+            }
+
+            let suggestionBox = $('#suggestionBox');
+            suggestionBox.empty();
+
+            if (matched.length > 0) {
+                matched.forEach(item => {
+                    suggestionBox.append(`<a class="dropdown-item">${item}</a>`);
+                });
+                suggestionBox.show();
+            } else {
+                suggestionBox.hide();
+            }
+        });
+
+        // Fill input on click
+        $('#suggestionBox').on('click','.dropdown-item', function () {
+            $('#searchInput').val($(this).text());
+            $('#suggestionBox').hide();
+            $('#searchForm').submit(); // optional: auto-submit
+        });
+
+        // Submit search form
+        $('#searchForm').submit(function (e) {
+            e.preventDefault();
+
+            let searchTerm = $('#searchInput').val().trim();
+            if (searchTerm && !previousSearches.includes(searchTerm)) {
+                previousSearches.push(searchTerm);
+            }
+
+            $.ajax({
+                url: '@Url.Action("SearchVendorProduct", "Product")',
+                type: 'GET',
+                data: { query: searchTerm },
+                success: function (result) {
+                    $('#productResults').html(result);
+                },
+                error: function () {
+                    alert("Search failed. Please try again.");
+                }
+            });
+
+            $('#suggestionBox').hide();
+        });
+
+        // Hide suggestion box on blur
+        $('#searchInput').blur(function () {
+            setTimeout(() => { $('#suggestionBox').hide(); }, 200); // delay to allow click
+        });
+    });
+</script>

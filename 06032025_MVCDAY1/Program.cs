@@ -18,7 +18,7 @@ namespace _06032025_MVCDAY1
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
             builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
-            builder.Services.AddScoped(typeof(IAdminRepository<>), typeof(AdminRepository<>));
+            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 
 
             var RazorpayConfig = new RazorPayKeys();

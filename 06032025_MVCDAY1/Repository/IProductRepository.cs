@@ -4,7 +4,8 @@ namespace _06032025_MVCDAY1.Repository
 {
     public interface IProductRepository
     {
-        IEnumerable<Product> GetProducts();
+        IEnumerable<Product> GetProducts(int catid,int subcateid);
+        IEnumerable<Product> VendorGetProducts();
         Product GetProductById(int id);
         void NewProduct(Product product, List<ProductImage> images, List<Prod_Attributes> attributes, List<VendorStock> vstock);
         void UpdateProduct(Product product, List<ProductImage> images, List<Prod_Attributes> attributes);
@@ -12,6 +13,11 @@ namespace _06032025_MVCDAY1.Repository
         IEnumerable<Subcategory> GetSubcategories();
         IEnumerable<Brands> GetBrands();
 
+        int GetCategoryIdByName(string catname);
+        int GetSubCategoryIdByName(string subcatname);
+
+        //user homescreen
+        List<CategoryWithProductsViewModel> GetHomePageCategoriesWithProducts();
         // IEnumerable<Category> GetCategories();
         //Products UpdateProduct(Products product);
         //Products DeleteProduct(int id);

@@ -31,6 +31,23 @@ namespace _06032025_MVCDAY1.Controllers
             return View(cartItems);
         }
         [HttpPost]
+        public ActionResult AddToCartAjax(int productId, int quantity, decimal price)
+        {
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            if (userId == 0)
+            {
+                return RedirectToAction("SignIn", "User");
+            }
+            // Your logic to add to cart DB here (e.g. insert into CartItem table)
+            // For example:
+            _cartrepository.AddToCart(productId, quantity, price, userId);
+
+            // Get updated cart list (e.g., from DB)
+            var cartItems = _cartrepository.GetCartItemsByUserId(userId);
+
+            return PartialView("_CartSidebarPartial", cartItems);
+        }
+        [HttpPost]
         public IActionResult AddToCart(int productId, int quantity)
         {
             int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));

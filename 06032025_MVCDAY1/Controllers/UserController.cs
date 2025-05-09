@@ -139,7 +139,7 @@ namespace _06032025_MVCDAY1.Controllers
             //  int uid = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
             if (userid == 0)
             {
-                TempData["Error"] = "Please log in First to add Wishlist!!";
+                TempData["Error"] = "Please log in First to add Wishlist!!!!";
                 return RedirectToAction("SignIn", "User");
             }
             bool isInwishlist = _repo.IsInWishlist(productId, userid);
@@ -147,6 +147,7 @@ namespace _06032025_MVCDAY1.Controllers
             if (isInwishlist)
             {
                 _repo.RemoveFromWishlist(userid, productId);
+                return Json(new { success = true, action = "removed" });
             }
             else
             {
@@ -182,41 +183,29 @@ namespace _06032025_MVCDAY1.Controllers
             return Content("");
         }
 
-        
+        //customer addresses
 
+        public IActionResult SelectAddress()
+        {
 
-        //public List<int> GetUserWishlistIds(int userId)
-        //{
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            var addresses = _repo.GetAddressesByUserId(userId);
+            return Json(addresses);
+        }
 
-        //    return _repo.GetUserWishlist(userId).Select(p => p.product_id).ToList();
+        [HttpPost]
+        public IActionResult AddAddress(AddressViewModel model)
+        {
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            _repo.AddAddress(userId, model);
+            return RedirectToAction("SelectAddress");
+        }
 
-        //}
-        //public ActionResult AddToCart(int id)
-        //{
-        //    var product = _repo.ProductById(id);
-        //  //  if (product == null) return HttpNotFound();
-
-        //    List<Cart> cart = Session["Cart"] as List<CartItem> ?? new List<CartItem>();
-        //    bool isIncart = _repo.IsInWishlist(productId, userid);
-        //    var existingItem = cart.FirstOrDefault(x => x.ProductId == id);
-        //    if (existingItem != null)
-        //    {
-        //        existingItem.Quantity++;
-        //    }
-        //    else
-        //    {
-        //        cart.Add(new CartItem
-        //        {
-        //            ProductId = product.ProductId,
-        //            ProductName = product.Name,
-        //            ImageUrl = product.ImageUrl,
-        //            Price = product.Price,
-        //            Quantity = 1
-        //        });
-        //    }
-
-        //    Session["Cart"] = cart;
-        //    return RedirectToAction("Index", "Cart");
-        //}
+        [HttpPost]
+        public IActionResult SelectAddress(int AddressId)
+        {
+            HttpContext.Session.SetInt32("selected_address", 1);
+            return View(); // or wherever next
+        }
     }
 }

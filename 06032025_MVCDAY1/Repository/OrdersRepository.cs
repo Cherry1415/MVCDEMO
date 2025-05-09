@@ -104,8 +104,9 @@ namespace _06032025_MVCDAY1.Repository
                 cmd.ExecuteNonQuery();
             }
         }
-        public UserOrder CreateOrder(int userId, decimal totalAmount, string razorpayOrderId, List<OrderItem> items)
+        public UserOrder CreateOrder(int userId,decimal totalAmount, string razorpayOrderId, List<OrderItem> items)
         {
+
             using (var connection = new SqlConnection(_constring))
             {
                 connection.Open();
@@ -116,11 +117,12 @@ namespace _06032025_MVCDAY1.Repository
                     //if (items == null || !items.Any())
                     //    throw new Exception("No order items provided.");
 
-                    string orderQuery = "INSERT INTO customer.Orders (user_id, TotalAmount, RazorPayOrderId, status, order_date) " +
-                                        "VALUES (@UserId, @TotalAmount, @RazorpayOrderId, 'Pending', GETDATE()); SELECT SCOPE_IDENTITY();";
+                    string orderQuery = "INSERT INTO customer.Orders (user_id,TotalAmount, RazorPayOrderId, status, order_date) " +
+                                        "VALUES (@UserId,@TotalAmount, @RazorpayOrderId, 'Pending', GETDATE()); SELECT SCOPE_IDENTITY();";
 
                     var orderCmd = new SqlCommand(orderQuery, connection, transaction);
                     orderCmd.Parameters.AddWithValue("@UserId", userId);
+                    //orderCmd.Parameters.AddWithValue("@AddressId", addressId);
                     orderCmd.Parameters.AddWithValue("@TotalAmount", totalAmount);
                     orderCmd.Parameters.AddWithValue("@RazorpayOrderId", razorpayOrderId);
 

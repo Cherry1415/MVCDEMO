@@ -17,13 +17,12 @@
     int userid = Convert.ToInt32(Context.Session.GetString("user_id"));
     
 }
-
 <script>
     function toggleWishlistIcon(button) {
         var isLoggedIn = '@Context.Session.GetString("email")' !== '';
 
         if (!isLoggedIn) {
-            alert("Please log in to add items to your wishlist.");
+            alert("Please log in to add items to your wishlist.!!");
             return false; // Stop further execution
         }
         const icon = button.querySelector('.heart-icon');
@@ -113,6 +112,38 @@
     }
 </script>
 
+<script>
+    $(document).ready(function () {
+        $('.add-to-cart-btn').click(function (e) {
+            e.preventDefault();
+
+            var productId = $(this).data('product-id');
+            var price = $(this).data('price');
+
+            $.ajax({
+                url: '/Cart/AddToCartAjax',
+                type: 'POST',
+                data: {
+                    productId: productId,
+                    quantity: 1,
+                    price: price
+                },
+                success: function (html) {
+                    // Replace sidebar
+                    $('#cartSidebarContainer').html(html);
+
+                    // Show Bootstrap offcanvas (important)
+                    var offcanvasEl = document.getElementById('cartSidebar');
+                    var bsOffcanvas = new bootstrap.Offcanvas(offcanvasEl);
+                    bsOffcanvas.show();
+                },
+                error: function () {
+                    alert('Failed to add product to cart.');
+                }
+            });
+        });
+    });
+</script>
 
 <style>
     .modal-content {
@@ -210,7 +241,7 @@
             } */
 </style>
 
-
+<div id="cartSidebarContainer"></div>
 <div class="container-fluid d-inline-block">
 
     <div>
@@ -234,13 +265,13 @@
         </div>
         <div>
             <div class="container mt-5">
-
+                <div id="productResults">
                 <div class="row"> 
                     @foreach (var product in Model)
                     {
                         <div class="col-md-3 col-sm-6 col-12 py-3">
                             <div class="card product-card">
-                                <input type="text" name="productId" value="@product.product_id" />
+                                @* <input type="text" name="productId" value="@product.product_id" /> *@
                                 <div id="imgdiv">
                                     @*  @{
                                         var wishlistString = Context.Session.GetString("Wishlist");
@@ -251,7 +282,7 @@
                                         <input type="hidden" name="productId" value="@product.product_id" />
                                         <input type="hidden" asp-for="@userid" />
 
-                                        <button type="submit" class="wishlist-label" style="background:none;border:none;padding:0;" onclick="toggleWishlistIcon(this);">
+                                        <button type="submit" class="wishlist-label"  style="background:none;border:none;padding:0;" onclick="toggleWishlistIcon(this);">
                                               @* <input type="checkbox" class="wishlist-checkbox" onclick="toggleWishlist(this)" > *@
 
                                             <svg class="heart-icon @(product.IsInWishlist ? "filled" : "empty")" viewBox="0 0 24 24"
@@ -297,14 +328,13 @@
                                     <h5 class="card-title" id="product_name">@product.product_name</h5>
                                     <p class="card-text" id="price">₹ @product.price</p>
                                     <div class="d-flex gap-2 align-items-center">
-                                       
-                                   
-                                    <form method="post" asp-controller="Cart" asp-action="AddToCart">
-                                        <input type="hidden" name="productId" value="@product.product_id" />
-                                        <input type="hidden" name="quantity" value="1" />
-                                        <input type="hidden" name="price" value="@product.price" />
-                                            <button type="submit" class="btn btn-outline-info edit-btn">Add To Cart</button>
-                                    </form>
+
+
+                                            <button class="btn btn-outline-info edit-btn add-to-cart-btn"
+                                                    data-product-id="@product.product_id"
+                                                    data-price="@product.price">
+                                                Add To Cart
+                                            </button>
                                     </div>
                                     @* <a asp-area="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
                                 </div>
@@ -312,6 +342,7 @@
                             </div>
                         </div>
                     }
+                </div>
                 </div>
             </div>
         </div>

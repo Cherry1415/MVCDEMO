@@ -1,0 +1,76 @@
+﻿@model List<AddressViewModel>
+<script src="~/js/makePayment.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<div class="container mt-4">
+    <h4>Select Delivery Address</h4>
+    <div class="row">
+
+        <!-- Always show "Add Address" card -->
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 text-center border-primary" style="cursor:pointer;" data-bs-toggle="offcanvas" data-bs-target="#addAddressCanvas">
+                <div class="card-body">
+                    <h5 class="card-title">➕ Add New Address</h5>
+                    <p class="card-text text-muted">Click to add a new address</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- If existing addresses, loop and show cards -->
+        @if (Model != null && Model.Any())
+        {
+            foreach (var address in Model)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 border-secondary">
+                        <div class="card-body">
+                            <h6 class="card-title">@address.Name</h6>
+                            <p class="card-text">
+                                @address.Street,<br />
+                                @address.City - @address.ZipCode<br />
+                                Phone: @address.Phone
+                            </p>
+                            <form method="post">
+                                <input type="hidden" name="AddressId" value="@address.address_id" />
+                                <a class="btn btn-primary" onclick="makePayment()">Deliver to this address</a>
+                                @* <button type="submit" class="btn btn-sm btn-success w-100" onclick="makePayment()">Deliver to this address</button> *@
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<!-- Side Canvas for Add Address -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="addAddressCanvas" aria-labelledby="addAddressCanvasLabel">
+    <div class="offcanvas-header">
+        <h5 id="addAddressCanvasLabel">Add New Address</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form method="post" asp-action="AddAddress">
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input class="form-control" name="Name" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Street</label>
+                <input class="form-control" name="Street" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">City</label>
+                <input class="form-control" name="City" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Zip Code</label>
+                <input class="form-control" name="ZipCode" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input class="form-control" name="Phone" required />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Save Address</button>
+        </form>
+    </div>
+</div>

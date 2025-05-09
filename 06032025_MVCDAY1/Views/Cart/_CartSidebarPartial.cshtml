@@ -1,0 +1,125 @@
+﻿@model List<CartItemViewModel>
+
+<div class="offcanvas offcanvas-end show" tabindex="-1" id="cartSidebar" aria-labelledby="cartSidebarLabel" style="width: 400px;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="cartSidebarLabel">CART</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+
+    <div class="offcanvas-body d-flex flex-column">
+
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <div class="d-flex mb-3 border-bottom pb-2 align-items-center">
+                    <div class="cart-item" data-product-id="@item.product_id">
+                        <strong>@item.product_name</strong><br />
+                        <img src="@Url.Content("~/uploads/" + item.imgName)" width="100" />
+                        @* <img src="~/uploads/@item.imgName" alt="Product" width="60" class="me-3" /> *@
+                        <div class="flex-grow-1">
+                            
+                            <span class="cart-item-price">@item.price</span>
+                            <div class="d-flex align-items-center mt-1">
+                                <form method="post" asp-action="UpdateQuantity" asp-controller="Cart" class="d-flex">
+                                    <input type="hidden" name="cartId" value="@item.cart_item_id" />
+                                    <input type="hidden" name="operation" value="decrease" />
+                                    <button type="submit" class="btn btn-outline-secondary btn-sm px-2">-</button>
+                                </form>
+                                <span class="mx-2 cart-item-quantity">@item.quantity</span>
+                                <form method="post" asp-action="UpdateQuantity" asp-controller="Cart" class="d-flex">
+                                    <input type="hidden" name="cartId" value="@item.cart_item_id" />
+                                    <input type="hidden" name="operation" value="increase" />
+                                    <button type="submit" class="btn btn-outline-secondary btn-sm px-2">+</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <form method="post" asp-action="Remove" asp-controller="Cart">
+                        <input type="hidden" name="cartId" value="@item.cart_item_id" />
+                        <button type="submit" class="btn btn-sm ms-2">🗑</button>
+                    </form>
+
+                </div>
+            }
+
+            <!-- Offer Toggle -->
+            <div class="bg-light p-2 my-3 border rounded" id="offerToggle" style="cursor:pointer;">
+                <strong>🎁 Coupons</strong>
+                <p class="text-danger mb-0">Click to see offers</p>
+            </div>
+
+            <!-- Offer List (hidden by default) -->
+            <div id="offerList" style="display:none;">
+                <div class="form-check">
+                    <input class="form-check-input offer-option" type="radio" name="offer" value="0" id="offer0">
+                    <label class="form-check-label" for="offer0">No Offer</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input offer-option" type="radio" name="offer" value="2000" id="offer1">
+                    <label class="form-check-label" for="offer1">₹2000 OFF on orders above ₹5000</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input offer-option" type="radio" name="offer" value="10000" id="offer2">
+                    <label class="form-check-label" for="offer2">₹10000 OFF on orders above ₹10000</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input offer-option" type="radio" name="offer" value="20000" id="offer3">
+                    <label class="form-check-label" for="offer3">₹20000 OFF on orders above ₹20000</label>
+                </div>
+            </div>
+
+            <!-- 🟢 Price Summary -->
+            @* <div class="border-top pt-2">
+                <div class="d-flex justify-content-between">
+                    <span>Total</span>
+                    <strong>₹@Model.Sum(x => x.TotalPrice)</strong>
+                </div>
+            </div> *@
+        }
+        else
+        {
+            <p class="text-center">Your cart is empty.</p>
+        }
+
+        <!-- 🔵 Bottom Fixed Grand Total + Proceed -->
+        @if (Model != null && Model.Any())
+        {
+            <div class="mt-auto border-top pt-3">
+                <div class="d-flex justify-content-between mt-2 border-top pt-2">
+                    <strong>GrandTotal</strong>
+                    <strong class="cart-grand-total">₹@Model.Sum(x => x.TotalPrice)</strong>
+                    <span class="cart-total-original d-none" data-original="@Model.Sum(x => x.TotalPrice)"></span>
+                </div>
+                <a class="btn btn-danger btn-lg w-100" onclick="makePayment()">Proceed</a>
+            </div>
+        }
+    </div>
+</div>
+<script>
+    let discount = 0;
+
+    // Toggle offer list
+    document.getElementById("offerToggle").addEventListener("click", function () {
+        let list = document.getElementById("offerList");
+        list.style.display = list.style.display === "none" ? "block" : "none";
+    });
+
+    // On selecting offer
+    document.querySelectorAll(".offer-option").forEach(function (input) {
+        input.addEventListener("change", function () {
+            discount = parseInt(this.value);
+            updateGrandTotal();
+        });
+    });
+
+    function updateGrandTotal() {
+        const totalElement = document.querySelector(".cart-total-original");
+        const finalTotalElement = document.querySelector(".cart-grand-total");
+
+        let original = parseInt(totalElement.dataset.original);
+        let newTotal = Math.max(original - discount, 0); // don't go below 0
+
+        finalTotalElement.textContent = "₹" + newTotal;
+    }
+</script>

@@ -19,6 +19,7 @@
             });
         });
     } else {
+
         // SINGLE ITEM (Buy Now Page)
         var amt = $("#amountInput").val();
         var productId = $("#productIdInput").val();

@@ -31,11 +31,11 @@
                 <td>@Html.DisplayFor(modelItem => item.phone)</td>
                 <td>@Html.DisplayFor(modelItem => item.capacity)</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.warehouse_id" class="btn btn-warning btn-sm">Edit</a>
-                    <a asp-controller="WareHouse" asp-action="WareHouseDetails" asp-route-id="@item.warehouse_id" class="btn btn-info btn-sm">
+                    <a asp-action="Edit" asp-controller="Supplier" asp-route-id="@item.warehouse_id" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-controller="Supplier" asp-action="WareHouseDetails" asp-route-id="@item.warehouse_id" class="btn btn-info btn-sm">
                         Details
                     </a>
-                    <a asp-action="Delete" asp-route-id="@item.warehouse_id" class="btn btn-danger btn-sm"
+                    <a asp-action="Delete" asp-controller="Supplier" asp-route-id="@item.warehouse_id" class="btn btn-danger btn-sm"
                        onclick="return confirm('Are you sure you want to delete this warehouse?');">
                         Delete
                     </a>

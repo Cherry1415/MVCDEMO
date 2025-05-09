@@ -18,9 +18,10 @@
             {
                 <div class="d-flex mb-3 border-bottom pb-2 align-items-center">
                     <div class="cart-item" data-product-id="@item.product_id">
-                    <img src="@item.imgName" alt="Product" width="60" class="me-3" />
-                    <div class="flex-grow-1">
                         <strong>@item.product_name</strong><br />
+                        <img src="@Url.Content("~/uploads/" + item.imgName)" width="100" />
+                    <div class="flex-grow-1">
+                        
                             <span class="cart-item-price">@item.price</span>
                         <div class="d-flex align-items-center mt-1">
                             <form method="post" asp-action="UpdateQuantity" asp-controller="Cart" class="d-flex">

@@ -1,0 +1,103 @@
+﻿@model _06032025_MVCDAY1.Models.AdminOrderViewModel
+@{
+    ViewBag.Title = "Orders";
+    Layout = "_AdminLayout";
+}
+<h2 class="text-white mb-4">Orders</h2>
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-5 fw-bold">@ViewData["PageName"]</h1>
+    </div>
+
+    <div class="card border-0 shadow">
+        <div class="card-header bg-light">
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+                <button class="btn btn-outline-primary active" data-status="All">All</button>
+                <button class="btn btn-outline-secondary" data-status="Pending">Pending</button>
+                <button class="btn btn-outline-info" data-status="Paid">Paid</button>
+                <button class="btn btn-outline-success" data-status="Delivered">Delivered</button>
+                <button class="btn btn-outline-danger" data-status="Rejected">Rejected</button>
+                
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle text-center">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Order Id</th>
+                            <th>Status</th>
+                            <th>CustomerName</th>
+                            <th>Order Date</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody id="orderTableBody">
+                        <!-- Dynamic rows inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        loadOrders("All");
+
+        $(".btn-group .btn, .card-header .btn").click(function () {
+            $(".card-header .btn").removeClass("active");
+            $(this).addClass("active");
+
+            const status = $(this).data("status");
+            loadOrders(status); 
+        });
+
+            function loadOrders(status) {
+        $.ajax({
+            url: '/Admin/filterorder',
+            type: 'GET',
+            data: { status: status },
+            success: function (data) {
+                let rows = "";
+
+                data.forEach(order => {
+                    rows += `
+                        <tr>
+                            <td>${order.orderId}</td>
+                            <td>${badge(order.status)}</td>
+                            <td>${order.customerName}</td>
+                            <td>${formatDate(order.orderDate)}</td>
+                        </tr>`;
+                });
+
+                $("#orderTableBody").html(rows);
+            },
+            error: function () {
+                alert("Error loading orders.");
+            }
+        });
+    }
+
+
+        function formatDate(dateString) {
+            if (!dateString) return "--";
+            const date = new Date(dateString);
+            return date.toLocaleDateString();
+        }
+
+        function badge(status) {
+            let color = "secondary";
+            switch (status) {
+                case "Pending": color = "secondary"; break;
+                case "Paid": color = "info"; break;
+                case "delivered": color = "success"; break;
+                case "rejected": color = "danger"; break;
+            }
+            return `<span class="badge bg-${color}">${status}</span>`;
+        }
+    });
+</script>

@@ -188,6 +188,24 @@ namespace _06032025_MVCDAY1.Repository
         }
 
         //customer Cart
+        public void AddToCart(int productId, int quantity, decimal price, int userId)
+        {
+            using (SqlConnection conn = new SqlConnection(_constring))
+            {
+                using (SqlCommand cmd = new SqlCommand("InsertOrUpdateCart", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+                    cmd.Parameters.AddWithValue("@ProductId", productId);
+                    cmd.Parameters.AddWithValue("@Quantity", quantity);
+                    cmd.Parameters.AddWithValue("@Price", price); // Optional if price is needed
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
         public void AddItemToCart(int userId, int productId, int quantity)
         {
             using (SqlConnection conn = new SqlConnection(_constring))
@@ -337,6 +355,53 @@ namespace _06032025_MVCDAY1.Repository
             }
         }
 
-        
+        //customer Addresses methods
+
+        public List<AddressViewModel> GetAddressesByUserId(int userId)
+        {
+            var list = new List<AddressViewModel>();
+            using (SqlConnection conn = new SqlConnection(_constring))
+            {
+                string query = "SELECT * FROM customer.Addresses WHERE user_id = @UserId";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@UserId", userId);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    list.Add(new AddressViewModel
+                    {
+                        address_id = Convert.ToInt32(reader["address_id"]),
+                        user_id = Convert.ToInt32(reader["user_id"]),
+                        Name = reader["Name"].ToString(),
+                        Street = reader["Street"].ToString(),
+                        City = reader["City"].ToString(),
+                        ZipCode = reader["ZipCode"].ToString(),
+                        Phone = reader["Phone"].ToString()
+                    });
+                }
+            }
+            return list;
+        }
+
+        public void AddAddress(int userId, AddressViewModel model)
+        {
+            using (SqlConnection conn = new SqlConnection(_constring))
+            {
+                string query = @"INSERT INTO customer.Addresses (user_id, Name, Street, City, ZipCode, Phone) 
+                             VALUES (@UserId, @Name, @Street, @City, @ZipCode, @Phone)";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@UserId", userId);
+                cmd.Parameters.AddWithValue("@Name", model.Name);
+                cmd.Parameters.AddWithValue("@Street", model.Street);
+                cmd.Parameters.AddWithValue("@City", model.City);
+                cmd.Parameters.AddWithValue("@ZipCode", model.ZipCode);
+                cmd.Parameters.AddWithValue("@Phone", model.Phone);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
 }

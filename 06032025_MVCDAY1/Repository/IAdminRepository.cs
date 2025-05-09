@@ -1,11 +1,42 @@
-﻿namespace _06032025_MVCDAY1.Repository
+﻿using _06032025_MVCDAY1.Models;
+
+namespace _06032025_MVCDAY1.Repository
 {
-    public interface IAdminRepository<T> where T : class
+    public interface IAdminRepository
     {
-        IEnumerable<T> GetAllData();
-        T GetDataById(int id);
-        void Add(T entity);
-        void Update(T entity);
+
+        //AuditLogs
+        void Log(AdminAuditLog log);
+        List<AdminAuditLog> GetAllLogs();
+
+        //dashboard method
+        DashboardViewModel GetDashboardData();
+
+        //all order show status wise
+        List<AdminOrderViewModel> GetAllOrders(string status);
+
+        //all product show
+        List<AdminProductViewModel> GetAllProducts();
+
+        //allcategory 
+        List<Category> GetAll();
+        //category by id
+        Category GetById(int id);
+
+        //add category
+        void Add(Category category);
+
+        //update category
+        void Update(Category category);
+
+        //delete category
         void Delete(int id);
+
+        //all subcategory
+
+        List<Subcategory> GetAllSubCategory();
+        Subcategory subcategoryGetById(int id);
+        void Savesubcategory(Subcategory subcategory);
+        void Deletesubcategory(int id);
     }
 }

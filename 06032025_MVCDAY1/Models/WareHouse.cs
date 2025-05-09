@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace _06032025_MVCDAY1.Models
 {
-    [Table("Warehouse", Schema = "Supplier")]
+   // [Table("Warehouse", Schema = "Supplier")]
     public class WareHouse
     {
         [Key]
