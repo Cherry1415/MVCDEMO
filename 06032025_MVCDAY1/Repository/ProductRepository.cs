@@ -244,6 +244,81 @@ namespace _06032025_MVCDAY1.Repository
             }
             return products;
         }
+
+        public IEnumerable<Product> PendingApproval()
+        {
+            List<Product> products = new List<Product>();
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                SqlCommand sqlCommand = new SqlCommand("vendor.sp_pendingApproval", con);
+                sqlCommand.CommandType = CommandType.StoredProcedure;
+
+                con.Open();
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    int product_id = Convert.ToInt32(reader["product_id"]);
+
+                    // Try to find the existing product in the list
+                    Product product = products.Find(p => p.product_id == product_id);
+
+                    // If not found, create and add new product
+                    if (product == null)
+                    {
+                        product = new Product
+                        {
+                            product_id = Convert.ToInt32(reader["product_id"]),
+                            product_name = reader["product_name"].ToString(),
+                            brand_id = Convert.ToInt32(reader["brand_id"]),
+                            category_id = Convert.ToInt32(reader["category_id"]),
+                            sub_category_id = Convert.ToInt32(reader["subcategory_id"]),
+                            vendor_id = Convert.ToInt32(reader["vendor_id"]),
+                            price = Convert.ToDecimal(reader["price"]),
+                           
+                            ProductImages = new List<ProductImage>(),
+                            Prod_Attributes = new List<Prod_Attributes>()
+                        };
+
+                        products.Add(product);
+                    }
+
+                    // Add image if available
+                    if (reader["prod_img_id"] != DBNull.Value)
+                    {
+                        ProductImage img = new ProductImage
+                        {
+                            prod_img_id = Convert.ToInt32(reader["prod_img_id"]),
+                            imgName = reader["imgName"].ToString(),
+                            imgType = reader["imgType"].ToString(),
+                            product_id = Convert.ToInt32(reader["product_id"])
+                        };
+
+                        product.ProductImages.Add(img);
+                    }
+                    if (reader["product_desc_id"] != DBNull.Value)
+                    {
+                        Prod_Attributes prodA = new Prod_Attributes
+                        {
+                            product_desc_id = Convert.ToInt32(reader["product_desc_id"]),
+                            product_id = Convert.ToInt32(reader["product_id"]),
+                            size = reader["size"].ToString(),
+                            color = reader["product_id"].ToString(),
+                            material = reader["material"].ToString(),
+                            weight = reader["weight"].ToString(),
+                            gender = reader["gender"].ToString(),
+                            capacity = reader["capacity"].ToString(),
+                            display = reader["display"].ToString(),
+                            processor = reader["processor"].ToString(),
+
+                        };
+
+                        product.Prod_Attributes.Add(prodA);
+                    }
+                }
+            }
+            return products;
+        }
         public int GetCategoryIdByName(string catname)
         {
             using (SqlConnection con = new SqlConnection(_constring))
@@ -529,6 +604,38 @@ namespace _06032025_MVCDAY1.Repository
             return list;
         }
 
-        
+        public List<ProductReview> GetAllReviewsbyvendor(int vendor_id)
+        {
+            var ratings = new List<ProductReview>();
+
+            using (SqlConnection conn = new SqlConnection(_constring))
+            using (SqlCommand cmd = new SqlCommand("customer.sp_getallreviewsbyvendor", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@vendorid", vendor_id);
+                conn.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ratings.Add(new ProductReview
+                        {
+                            Id = (int)reader["review_id"],
+                            username = reader["Customer_Name"].ToString(),
+                            product_name = reader["product_name"].ToString(),
+                            
+                            CreatedDate = Convert.ToDateTime(reader["CreateDate"]),
+                            Rating = (int)reader["rating"],
+                            Review = reader["review"]?.ToString()
+                        });
+                    }
+                }
+            }
+
+            return ratings;
+        }
+
+
     }
 }

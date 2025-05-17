@@ -1,24 +1,36 @@
-﻿@model List<CartItemViewModel>
+﻿@model Tuple<List<CartItemViewModel>, List<AddressViewModel>>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+    .address-card.selected {
+        border: 2px solid #28a745; /* green border */
+        background-color: #e9fbe9; /* light green bg */
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+</style>
+
+<!-- Combined Cart & Address Offcanvas -->
 <div class="offcanvas offcanvas-end show" tabindex="-1" id="cartSidebar" aria-labelledby="cartSidebarLabel" style="width: 400px;">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="cartSidebarLabel">CART</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <h5 class="offcanvas-title" id="cartSidebarLabel">🛒 Cart</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
     </div>
 
     <div class="offcanvas-body d-flex flex-column">
 
-        @if (Model != null && Model.Any())
+        <!-- Cart Section -->
+        @if (Model.Item1 != null && Model.Item1.Any())
         {
-            foreach (var item in Model)
+            foreach (var item in Model.Item1)
             {
                 <div class="d-flex mb-3 border-bottom pb-2 align-items-center">
                     <div class="cart-item" data-product-id="@item.product_id">
                         <strong>@item.product_name</strong><br />
                         <img src="@Url.Content("~/uploads/" + item.imgName)" width="100" />
-                        @* <img src="~/uploads/@item.imgName" alt="Product" width="60" class="me-3" /> *@
                         <div class="flex-grow-1">
-                            
                             <span class="cart-item-price">@item.price</span>
                             <div class="d-flex align-items-center mt-1">
                                 <form method="post" asp-action="UpdateQuantity" asp-controller="Cart" class="d-flex">
@@ -39,73 +51,101 @@
                         <input type="hidden" name="cartId" value="@item.cart_item_id" />
                         <button type="submit" class="btn btn-sm ms-2">🗑</button>
                     </form>
-
                 </div>
             }
 
-            <!-- Offer Toggle -->
+            <!-- Coupon Toggle -->
             <div class="bg-light p-2 my-3 border rounded" id="offerToggle" style="cursor:pointer;">
                 <strong>🎁 Coupons</strong>
                 <p class="text-danger mb-0">Click to see offers</p>
             </div>
 
-            <!-- Offer List (hidden by default) -->
             <div id="offerList" style="display:none;">
-                <div class="form-check">
-                    <input class="form-check-input offer-option" type="radio" name="offer" value="0" id="offer0">
-                    <label class="form-check-label" for="offer0">No Offer</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input offer-option" type="radio" name="offer" value="2000" id="offer1">
-                    <label class="form-check-label" for="offer1">₹2000 OFF on orders above ₹5000</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input offer-option" type="radio" name="offer" value="10000" id="offer2">
-                    <label class="form-check-label" for="offer2">₹10000 OFF on orders above ₹10000</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input offer-option" type="radio" name="offer" value="20000" id="offer3">
-                    <label class="form-check-label" for="offer3">₹20000 OFF on orders above ₹20000</label>
-                </div>
+                <div class="form-check"><input class="form-check-input offer-option" type="radio" name="offer" value="0" id="offer0"><label for="offer0">No Offer</label></div>
+                <div class="form-check"><input class="form-check-input offer-option" type="radio" name="offer" value="2000" id="offer1"><label for="offer1">₹2000 OFF on orders above ₹5000</label></div>
+                <div class="form-check"><input class="form-check-input offer-option" type="radio" name="offer" value="10000" id="offer2"><label for="offer2">₹10000 OFF on orders above ₹10000</label></div>
+                <div class="form-check"><input class="form-check-input offer-option" type="radio" name="offer" value="20000" id="offer3"><label for="offer3">₹20000 OFF on orders above ₹20000</label></div>
             </div>
 
-            <!-- 🟢 Price Summary -->
-            @* <div class="border-top pt-2">
-                <div class="d-flex justify-content-between">
-                    <span>Total</span>
-                    <strong>₹@Model.Sum(x => x.TotalPrice)</strong>
+            <!-- Grand Total & Proceed -->
+            <div class="mt-auto border-top pt-3">
+                <div class="d-flex justify-content-between mt-2 border-top pt-2">
+                    <strong>GrandTotal</strong>
+                    <strong class="cart-grand-total">₹@Model.Item1.Sum(x => x.TotalPrice)</strong>
+                    <span class="cart-total-original d-none" data-original="@Model.Item1.Sum(x => x.TotalPrice)"></span>
                 </div>
-            </div> *@
+            </div>
         }
         else
         {
             <p class="text-center">Your cart is empty.</p>
         }
 
-        <!-- 🔵 Bottom Fixed Grand Total + Proceed -->
-        @if (Model != null && Model.Any())
+        <!-- Address Selection -->
+        @if (Model.Item1 != null && Model.Item1.Any())
         {
-            <div class="mt-auto border-top pt-3">
-                <div class="d-flex justify-content-between mt-2 border-top pt-2">
-                    <strong>GrandTotal</strong>
-                    <strong class="cart-grand-total">₹@Model.Sum(x => x.TotalPrice)</strong>
-                    <span class="cart-total-original d-none" data-original="@Model.Sum(x => x.TotalPrice)"></span>
+            <h5 class="mt-4">📦 Delivery Address</h5>
+            <div class="mb-3">
+                <div class="card h-100 text-center border-primary" style="cursor:pointer;" data-bs-toggle="offcanvas" data-bs-target="#addAddressCanvas">
+                    <div class="card-body">
+                        <h6 class="card-title">➕ Add New Address</h6>
+                        <p class="card-text text-muted">Click to add a new address</p>
+                    </div>
                 </div>
-                <a class="btn btn-danger btn-lg w-100" onclick="makePayment()">Proceed</a>
             </div>
+
+            @if (Model.Item2 != null && Model.Item2.Any())
+            {
+                foreach (var address in Model.Item2)
+                {
+                    <div class="card mb-2 border-secondary address-card">
+                        <div class="card-body p-2">
+                            <h6 class="card-title">@address.Name</h6>
+                            <p class="card-text small">
+                                @address.Street, @address.City - @address.ZipCode<br />
+                                Phone: @address.Phone
+                            </p>
+                            <button type="button" class="btn btn-sm btn-success w-100 select-address-btn" data-address-id="@address.address_id">
+                                Deliver to this address
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+
+            <button id="proceedBtn" class="btn btn-danger">Proceed to Payment</button>
+            @* <a class="btn btn-danger btn-lg w-100 mt-3" onclick="makePayment()">Proceed</a> *@
         }
     </div>
 </div>
+
+<!-- Add Address Canvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="addAddressCanvas" aria-labelledby="addAddressCanvasLabel">
+    <div class="offcanvas-header">
+        <h5 id="addAddressCanvasLabel">Add New Address</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form method="post" asp-action="AddAddress">
+            <div class="mb-3"><label>Name</label><input class="form-control" name="Name" required /></div>
+            <div class="mb-3"><label>Street</label><input class="form-control" name="Street" required /></div>
+            <div class="mb-3"><label>City</label><input class="form-control" name="City" required /></div>
+            <div class="mb-3"><label>Zip Code</label><input class="form-control" name="ZipCode" required /></div>
+            <div class="mb-3"><label>Phone</label><input class="form-control" name="Phone" required /></div>
+            <button type="submit" class="btn btn-primary w-100">Save Address</button>
+        </form>
+    </div>
+</div>
+
+<!-- Coupon Script -->
 <script>
     let discount = 0;
 
-    // Toggle offer list
     document.getElementById("offerToggle").addEventListener("click", function () {
         let list = document.getElementById("offerList");
         list.style.display = list.style.display === "none" ? "block" : "none";
     });
 
-    // On selecting offer
     document.querySelectorAll(".offer-option").forEach(function (input) {
         input.addEventListener("change", function () {
             discount = parseInt(this.value);
@@ -118,8 +158,41 @@
         const finalTotalElement = document.querySelector(".cart-grand-total");
 
         let original = parseInt(totalElement.dataset.original);
-        let newTotal = Math.max(original - discount, 0); // don't go below 0
-
+        let newTotal = Math.max(original - discount, 0);
         finalTotalElement.textContent = "₹" + newTotal;
     }
 </script>
+
+<script>
+    let selectedAddressId = null;
+
+    document.querySelectorAll(".select-address-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            selectedAddressId = this.dataset.addressId;
+
+            // Remove all highlights
+            document.querySelectorAll(".select-address-btn").forEach(b => b.classList.remove("btn-primary"));
+            document.querySelectorAll(".address-card").forEach(c => c.classList.remove("selected"));
+
+            // Add highlight to selected
+            this.classList.add("btn-primary");
+            const card = this.closest(".address-card");
+            if (card) {
+                card.classList.add("selected");
+            }
+
+            console.log("Selected Address ID:", selectedAddressId);
+        });
+    });
+
+    document.getElementById("proceedBtn").addEventListener("click", function () {
+        if (!selectedAddressId || isNaN(parseInt(selectedAddressId))) {
+            alert("Please select an address before continuing.");
+            return;
+        }
+
+        makePayment(parseInt(selectedAddressId));
+    });
+</script>
+
+<script src="~/js/makePayment.js"></script> 

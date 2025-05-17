@@ -15,7 +15,8 @@
 
 @{
     int userid = Convert.ToInt32(Context.Session.GetString("user_id"));
-    
+   
+
 }
 <script>
     function toggleWishlistIcon(button) {
@@ -102,11 +103,13 @@
         var name = product.find('.product-img').data('name');
         var price = product.find('.product-img').data('price');
         var description = product.find('.product-img').data('description');
+        var prodid=product.find('.product-img').data('productid');
 
         $("#modalProductImage").attr("src", imgSrc);
         $("#modalProductName").text(name);
         $("#modalProductPrice").text(price);
         $("#modalProductDescription").text(description);
+        $("#modalProductID").text(prodid);
 
         $("#quickViewModal").modal("show");
     }
@@ -114,7 +117,14 @@
 
 <script>
     $(document).ready(function () {
+
         $('.add-to-cart-btn').click(function (e) {
+            var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to add items to your wishlist.");
+            return false; // Stop further execution
+        }
             e.preventDefault();
 
             var productId = $(this).data('product-id');
@@ -271,22 +281,18 @@
                     {
                         <div class="col-md-3 col-sm-6 col-12 py-3">
                             <div class="card product-card">
-                                @* <input type="text" name="productId" value="@product.product_id" /> *@
+                                
                                 <div id="imgdiv">
-                                    @*  @{
-                                        var wishlistString = Context.Session.GetString("Wishlist");
-                                        var wishlistIds = !string.IsNullOrEmpty(wishlistString) ? wishlistString.Split(',').Select(int.Parse).ToList() : new List<int>();
-                                        bool isInWishlist = wishlistIds.Contains(product.product_id);
-                                    }  *@
+                                    
                                     <form action="@Url.Action("AddToWishlist", "User")" method="post" target="wishlistFrame" class="wishlist-form">
                                         <input type="hidden" name="productId" value="@product.product_id" />
                                         <input type="hidden" asp-for="@userid" />
 
                                         <button type="submit" class="wishlist-label"  style="background:none;border:none;padding:0;" onclick="toggleWishlistIcon(this);">
-                                              @* <input type="checkbox" class="wishlist-checkbox" onclick="toggleWishlist(this)" > *@
+                                         
 
                                             <svg class="heart-icon @(product.IsInWishlist ? "filled" : "empty")" viewBox="0 0 24 24"
-                                                   @* style="fill: @(product.IsInWishlist ? "red" : "white");"   *@ >
+                                                   >
                                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
                                             </svg>
                                         </button> 
@@ -294,34 +300,21 @@
                                     <!-- Hidden iframe to handle form submission without page refresh -->
                                     <iframe name="wishlistFrame" style="display:none;"></iframe>
 
-                                    @* @if (product.ProductImages != null && product.ProductImages.Any())
-                                    {
-                                        foreach (var image in product.ProductImages)
-                                        {
-                                            <img src="~/uploads/@image.imgName" width="100" class="me-2" />
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <p>No Images</p>
-                                    } *@
+                                    
 
 
                                     <a asp-area="" asp-controller="Product" asp-action="DetailProduct" asp-route-id="@product.product_id">
                                         <img src="~/uploads/@product.ProductImages.FirstOrDefault()?.imgName" width="100" height="100"
                                              class="product-img"
                                              id="image"
+                                             data-productid="@product.product_id"
                                              data-name="@product.product_name"
                                              data-price="@product.price"
                                              data-description="a portable, handheld device that allows users to make and receive calls, send and receive messages, and access the internet via a wireless connection. "
-                                        @* onclick="showQuickView(this)*@
+                                        
                                         > 
                                     </a>
-                                     @*<button class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" data-bs-toggle="modal" data-bs-target="#quickViewModal">Quick View</button>*@
-                                   @*  <div class="fav-icon" onclick="toggleFavorite(this)">
-
-                                         <a href="#" class="quick-view-btn">Quick View</a> 
-                                    </div> *@
+                                   
                                     <a href="#" class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" onclick="showQuickView(this)" align="center">Quick View</a>
                                 </div>
                                 <div class="card-body" class="wishlist-item" id="wishlist-item1">
@@ -352,7 +345,6 @@
 </div>
 
 <!-- Quick View Modal -->
-<!-- Quick View Modal -->
 
 <div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -367,6 +359,7 @@
                         <img id="modalProductImage" src="" class="img-fluid" alt="Product Image">
                     </div>
                     <div class="col-md-6">
+                      
                         <h4 id="modalProductName"></h4>
                         <p id="modalProductDescription"></p>
                         <p class="price">
@@ -374,7 +367,7 @@
                            
                            
                         </p>
-                        <a href="#" class="btn btn-success">Buy Now</a>
+                        <a href="@Url.Action("DetailProduct","Product")" class="btn btn-success">Buy Now</a>
                     </div>
                 </div>
             </div>

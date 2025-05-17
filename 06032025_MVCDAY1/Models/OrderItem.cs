@@ -7,5 +7,6 @@
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public string product_name { get; set; }
+        public string ImgName { get; set; }
     }
 }

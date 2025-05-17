@@ -51,7 +51,7 @@ namespace _06032025_MVCDAY1.Repository
                     logs.Add(new AdminAuditLog
                     {
                         Id = (int)reader["Id"],
-                        UserName = reader["UserName"].ToString(),
+                        userid = (int)reader["user_id"],
                         Action = reader["Action"].ToString(),
                         TableName = reader["TableName"].ToString(),
                         RecordId = (int)reader["RecordId"],
@@ -392,6 +392,111 @@ namespace _06032025_MVCDAY1.Repository
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
-        }   
+        }
+
+        public List<Product> GetVendorProductApproval()
+        {
+            List<Product> products = new List<Product>();
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand sqlCommand = new SqlCommand("vendor.sp_GetVendorProductForApproval", con);
+                sqlCommand.CommandType = CommandType.StoredProcedure;
+
+                con.Open();
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    int product_id = Convert.ToInt32(reader["product_id"]);
+
+                    // Try to find the existing product in the list
+                    Product product = products.Find(p => p.product_id == product_id);
+
+                    // If not found, create and add new product
+                    if (product == null)
+                    {
+                        product = new Product
+                        {
+                            product_id = Convert.ToInt32(reader["product_id"]),
+                            product_name = reader["product_name"].ToString(),
+                            category_name = reader["Category_name"].ToString(),
+                            brand_name = reader["Brand_name"].ToString(),
+                            subcat_name = reader["SubCategory_name"].ToString(),
+                            brand_id = Convert.ToInt32(reader["brand_id"]),
+                            category_id = Convert.ToInt32(reader["category_id"]),
+                            sub_category_id = Convert.ToInt32(reader["subcategory_id"]),
+                            vendor_id = Convert.ToInt32(reader["vendor_id"]),
+                            price = Convert.ToDecimal(reader["price"]),
+                            ProductImages = new List<ProductImage>(),
+                            Prod_Attributes = new List<Prod_Attributes>()
+                        };
+
+                        products.Add(product);
+                    }
+
+                    // Add image if available
+                    if (reader["prod_img_id"] != DBNull.Value)
+                    {
+                        ProductImage img = new ProductImage
+                        {
+                           // prod_img_id = Convert.ToInt32(reader["prod_img_id"]),
+                            imgName = reader["imgName"].ToString(),
+                           // imgType = reader["imgType"].ToString(),
+                            product_id = Convert.ToInt32(reader["product_id"])
+                        };
+
+                        product.ProductImages.Add(img);
+                    }
+                    if (reader["product_desc_id"] != DBNull.Value)
+                    {
+                        Prod_Attributes prodA = new Prod_Attributes
+                        {
+                          //  product_desc_id = Convert.ToInt32(reader["product_desc_id"]),
+                            product_id = Convert.ToInt32(reader["product_id"]),
+                            size = reader["size"].ToString(),
+                            color = reader["product_id"].ToString(),
+                            material = reader["material"].ToString(),
+                            weight = reader["weight"].ToString(),
+                            gender = reader["gender"].ToString(),
+                            capacity = reader["capacity"].ToString(),
+                            display = reader["display"].ToString(),
+                            processor = reader["processor"].ToString(),
+
+                        };
+
+                        product.Prod_Attributes.Add(prodA);
+                    }
+                }
+            }
+            return products;
+        }
+
+        public void ApproveProduct(int productId)
+        {
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("vendor.sp_UpdateApproval", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@productid", productId);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+
+        public void RejectProduct(int productId)
+        {
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("vendor.sp_RejectProductToDelete", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@productid", productId);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
     }
 }

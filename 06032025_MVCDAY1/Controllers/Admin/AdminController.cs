@@ -112,5 +112,23 @@ namespace _06032025_MVCDAY1.Controllers.Admin
             _Repo.Deletesubcategory(id);
             return Json(new { success = true });
         }
+
+        public IActionResult ProductApproval()
+        {
+            var products = _Repo.GetVendorProductApproval();
+            return View(products);
+        }
+
+        public ActionResult ApproveProduct(int id)
+        {
+            _Repo.ApproveProduct(id);
+            return RedirectToAction("ProductApproval");
+        }
+
+        public IActionResult RejectProduct(int id)
+        {
+            _Repo.RejectProduct(id);
+            return RedirectToAction("ProductApproval");
+        }
     }
 }

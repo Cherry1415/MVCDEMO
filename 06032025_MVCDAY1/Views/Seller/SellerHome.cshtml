@@ -3,8 +3,13 @@
 *@
 @{
 }
+@{
+    int userid = Convert.ToInt32(Context.Session.GetString("user_id"));
+
+}
 <link rel="stylesheet" href="~/css/EcomStyles.css" asp-append-version="true" />
 <div class="mt-1">
+    <h1>@userid</h1>
     <div class="container-fluid box1" id="divLog">
 
         <div class="container-fluid " id="divLogOuter">

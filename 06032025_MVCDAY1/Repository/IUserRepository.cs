@@ -5,7 +5,16 @@ namespace _06032025_MVCDAY1.Repository
 {
     public interface IUserRepository
     {
+
+        //registration proccess
+
+        void SaveOTP(string email, string otp);
+        bool ValidateOTP(string email, string otp);
+
+        void updatepassword(string Newpassword,string email);
         bool Register(User user);
+
+        IEnumerable<Role> GetRoles();
         bool Login(string email, string password);
 
         //For fetching username with session
@@ -44,6 +53,8 @@ namespace _06032025_MVCDAY1.Repository
 
         //supplier contanctus
 
-       
+        //product review
+        void SubmitReview(ProductReview review);
+
     }
 }

@@ -1,0 +1,68 @@
+﻿@model _06032025_MVCDAY1.Models.User
+@{
+    
+    Layout = null;
+}
+
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+<link href="~/css/site.css" rel="stylesheet" />
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="card shadow-lg p-4" style="width: 450px; border-radius: 10px;">
+        <h3 class="text-center mb-4" style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, sans-serif;">
+            DealBazar 
+        </h3>
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        <form method="post" asp-action="Register">
+            <div class="row mb-3">
+                <div class="col">
+                    <label asp-for="first_name" class="form-label">First Name</label>
+                    <input asp-for="first_name" class="form-control" placeholder="First Name" required />
+                    <span asp-validation-for="first_name" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <label asp-for="last_name" class="form-label">Last Name</label>
+                    <input asp-for="last_name" class="form-control" placeholder="Last Name" required />
+                    <span asp-validation-for="last_name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Role Type</label>
+                <select asp-for="Role_ID" class="form-control" asp-items="@(new SelectList(ViewBag.roles, "Role_ID", "Type"))">
+                    <option value="">-- Select Role--</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="phone" class="form-label">Phone</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                    <input asp-for="phone" class="form-control" placeholder="Phone Number" required />
+                </div>
+                <span asp-validation-for="phone" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="password" class="form-label">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input type="password" asp-for="password" class="form-control" placeholder="Create Password" required />
+                </div>
+                <span asp-validation-for="password" class="text-danger"></span>
+            </div>
+
+            
+
+            <button type="submit" class="btn btn-success w-100">Register</button>
+
+           
+
+            
+        </form>
+    </div>
+</div>

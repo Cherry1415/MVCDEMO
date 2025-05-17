@@ -1,10 +1,14 @@
-﻿function makePayment() {
+﻿
+// Step 2: When user clicks Proceed to Payment
+function makePayment(addressid) {
+    
+    console.log("Proceeding with Address ID:", addressid);
+
     var orderItems = [];
     var totalAmount = 0;
-
-    // Check if cart items exist (for multiple items)
+    var isFromCart = false; // <-- Default
     if ($(".cart-item").length > 0) {
-        // MULTIPLE ITEMS (From Cart)
+        isFromCart = true; // <-- It's a cart purchase
         $(".cart-item").each(function () {
             var productId = $(this).data('product-id');
             var quantity = parseInt($(this).find('.cart-item-quantity').text());
@@ -19,15 +23,11 @@
             });
         });
     } else {
-
-        // SINGLE ITEM (Buy Now Page)
         var amt = $("#amountInput").val();
         var productId = $("#productIdInput").val();
         var quantity = parseInt($("#quantityInput").val());
         var price = parseFloat(amt);
-        console.log("Total Amount before:", totalAmount);
 
-        //totalAmount = price;
         totalAmount = price * quantity;
 
         orderItems.push({
@@ -37,17 +37,14 @@
         });
     }
 
-    //console.log("Total Amount:", totalAmount);
-    console.log("Total Amount:", amt);
-    console.log("Order Items:", orderItems);
-
-    // Call backend to create Razorpay order
+    // Step 1: Initiate Razorpay Order
     fetch('/Payment/InitiateOrder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             Amount: totalAmount,
-            orderItems: orderItems
+            orderItems: orderItems,
+            AddressId: addressid
         })
     })
         .then(response => response.json())
@@ -61,15 +58,15 @@
                     "description": "Order Payment",
                     "order_id": data.orderId,
                     "handler": function (response) {
-                        console.log("Payment Response:", response);
-
                         var paymentData = {
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_signature: response.razorpay_signature,
-                            amount: totalAmount
+                            amount: totalAmount,
+                            addressId: addressid,
+                            isFromCart: isFromCart // <-- THIS LINE ADDED
                         };
-
+                        console.log(paymentData);
                         fetch('/Payment/Success', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -87,7 +84,7 @@
                     },
                     "prefill": {
                         "name": "Test User",
-                        "email": "test@example.com",
+                        "email": "test@example.com", 
                         "contact": "9909817574"
                     }
                 };

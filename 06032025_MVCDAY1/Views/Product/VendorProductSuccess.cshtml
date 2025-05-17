@@ -1,0 +1,66 @@
+﻿@model _06032025_MVCDAY1.Models.Product
+@{
+    Layout = "_UserLayout";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    .confirmation-card {
+        max-width: 600px;
+        margin: 60px auto;
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+        .confirmation-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: contain;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 20px 20px 0 0;
+        }
+
+    .confirmation-body {
+        padding: 25px;
+        text-align: center;
+    }
+
+        .confirmation-body h3 {
+            font-weight: 700;
+            color: #198754;
+            margin-bottom: 10px;
+        }
+
+        .confirmation-body p {
+            margin: 6px 0;
+            color: #444;
+        }
+
+    .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+        padding: 8px 15px;
+        border-radius: 10px;
+        display: inline-block;
+        font-weight: 600;
+        margin-top: 12px;
+    }
+</style>
+
+<div class="confirmation-card">
+    <img src="~/uploads/@(Model.ProductImages.FirstOrDefault()?.imgName ?? "no-image.png")" alt="Product Image" />
+
+    <div class="confirmation-body">
+        <h3><i class="bi bi-check-circle-fill"></i> Product Submitted!</h3>
+        <p><strong>Name:</strong> @Model.product_name</p>
+        <p><strong>Price:</strong> ₹@Model.price.ToString("N2")</p>
+        <p><strong>Brand:</strong> @Model.brand_name</p>
+        <p class="status-pending">
+            <i class="bi bi-clock-history"></i> Pending Admin Approval
+        </p>
+    </div>
+</div>

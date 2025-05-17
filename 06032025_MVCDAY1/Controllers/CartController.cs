@@ -22,13 +22,15 @@ namespace _06032025_MVCDAY1.Controllers
 
             products = _cartrepository.GetUserWishlist(userId);
             var cartItems = _cartrepository.GetCartItemsByUserId(userId);
+            var addresses = _cartrepository.GetAddressesByUserId(userId);
             foreach (var product in products)
             {
                 product.ProductImages = _cartrepository.GetImagesByProductId(product.product_id);
             }
+            var model= Tuple.Create(cartItems, addresses);
             //ViewBag.CartItemCount = _cartrepository.GetCartItemCount(userId);
             //TempData["CartItemCount"] = _cartrepository.GetCartItemCount(userId);
-            return View(cartItems);
+            return View(model);
         }
         [HttpPost]
         public ActionResult AddToCartAjax(int productId, int quantity, decimal price)
@@ -36,16 +38,22 @@ namespace _06032025_MVCDAY1.Controllers
             int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
             if (userId == 0)
             {
-                return RedirectToAction("SignIn", "User");
+                TempData["Error"] = "Please log in First to add Cart Item!!";
             }
-            // Your logic to add to cart DB here (e.g. insert into CartItem table)
-            // For example:
-            _cartrepository.AddToCart(productId, quantity, price, userId);
+            
+                // Your logic to add to cart DB here (e.g. insert into CartItem table)
+                // For example:
+                _cartrepository.AddToCart(productId, quantity, price, userId);
 
             // Get updated cart list (e.g., from DB)
             var cartItems = _cartrepository.GetCartItemsByUserId(userId);
 
-            return PartialView("_CartSidebarPartial", cartItems);
+            var addresses = _cartrepository.GetAddressesByUserId(userId); // 💡 NEW
+
+            // 3. Return both in a Tuple to partial view
+            var model = Tuple.Create(cartItems, addresses);
+
+            return PartialView("_CartSidebarPartial", model);
         }
         [HttpPost]
         public IActionResult AddToCart(int productId, int quantity)

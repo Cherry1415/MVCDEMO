@@ -1,4 +1,5 @@
 ﻿using _06032025_MVCDAY1.Models;
+using _06032025_MVCDAY1.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Razorpay.Api;
 
@@ -6,7 +7,14 @@ namespace _06032025_MVCDAY1.Controllers.Vendor
 {
     public class VendorController : Controller
     {
+        private readonly IProductRepository _Prodrepository;
         private static List<Products> product = new List<Products>();
+
+        public VendorController(IProductRepository repository)
+        {
+            _Prodrepository = repository;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -103,7 +111,18 @@ namespace _06032025_MVCDAY1.Controllers.Vendor
 
         public IActionResult review()
         {
-            return View();
+            var vendorid = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            var ratings = _Prodrepository.GetAllReviewsbyvendor(vendorid);
+            return View(ratings);
+        }
+
+        //customer review
+
+        public IActionResult Reviews()
+        {
+            var vendorid = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            var ratings = _Prodrepository.GetAllReviewsbyvendor(vendorid);
+            return View(ratings);
         }
     }
 }

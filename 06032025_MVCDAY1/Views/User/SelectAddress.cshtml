@@ -1,6 +1,6 @@
 ﻿@model List<AddressViewModel>
-<script src="~/js/makePayment.js"></script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <div class="container mt-4">
     <h4>Select Delivery Address</h4>
     <div class="row">
@@ -29,10 +29,9 @@
                                 @address.City - @address.ZipCode<br />
                                 Phone: @address.Phone
                             </p>
-                            <form method="post">
+                            <form method="post" asp-action="SelectAddress">
                                 <input type="hidden" name="AddressId" value="@address.address_id" />
-                                <a class="btn btn-primary" onclick="makePayment()">Deliver to this address</a>
-                                @* <button type="submit" class="btn btn-sm btn-success w-100" onclick="makePayment()">Deliver to this address</button> *@
+                                <button type="submit" class="btn btn-sm btn-success w-100">Deliver to this address</button>
                             </form>
                         </div>
                     </div>

@@ -245,6 +245,34 @@
     </form>
 </div>
 
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="successModalLabel">Success</h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Product added successfully. Wait for approval.
+            </div>
+            <div class="modal-footer">
+                <a href="@Url.Action("GetProduct")" class="btn btn-primary">OK</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var isProductAdded = '@TempData["ProductAdded"]';
+        if (isProductAdded === 'true') {
+            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        }
+    });
+</script>
+
 <script>
     function previewImages(event) {
         const files = event.target.files;

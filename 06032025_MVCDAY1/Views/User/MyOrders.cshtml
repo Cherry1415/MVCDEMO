@@ -1,0 +1,187 @@
+﻿@model List<UserOrder>
+
+<div class="container mt-4 mb-5" style="max-width: 900px;">
+    <h3 class="mb-4 text-center">📦 Your Orders</h3>
+
+    <!-- Filter Section -->
+    <div class="d-flex justify-content-between mb-4">
+        <div>
+            <select id="statusFilter" class="form-select form-select-sm w-auto">
+                <option value="">All Status</option>
+                <option value="delivered">Delivered</option>
+                <option value="Pending">Pending</option>
+                <option value="rejected">Rejected</option>
+                <option value="Paid">Paid</option>
+            </select>
+        </div>
+
+        <div>
+            <select id="dateFilter" class="form-select form-select-sm w-auto">
+                <option value="">All Orders</option>
+                <option value="30">Last 30 Days</option>
+                <option value="180">Last 6 Months</option>
+                <option value="365">Last 1 Year</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Orders List -->
+    @foreach (var order in Model)
+    {
+        <div class="card mb-4 shadow-sm border">
+            <div class="card-header d-flex justify-content-between align-items-center bg-light">
+                <div>
+                    <strong>Order Placed:</strong> @order.CreatedDate.ToString("dd MMM yyyy")<br />
+                    <strong>Total:</strong> ₹@order.TotalAmount
+                </div>
+                <div class="text-end">
+                    <strong>Order ID:</strong> @order.Id<br />
+                    <span class="badge bg-primary">@order.Status</span>
+                </div>
+            </div>
+
+            @foreach (var item in order.OrderItems)
+            {
+                <div class="card-body d-flex align-items-start border-top">
+                    <img src="~/uploads/@item.ImgName"
+                    class="img-thumbnail me-3"
+                    style="width: 100px; height: 100px; object-fit: cover;" />
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">@item.product_name</h6>
+                        <p class="mb-1">Qty: @item.Quantity × ₹@item.Price</p>
+                        <strong class="text-success">₹@(item.Quantity * item.Price)</strong>
+                    </div>
+                    <div class="text-end">
+                        <button class="btn btn-outline-primary btn-sm mb-2">Buy Again</button><br />
+                        <button class="btn btn-outline-secondary btn-sm mb-2">View Details</button>
+                        @if (order.Status == "delivered")
+                        {
+                            <button class="btn btn-outline-primary btn-sm mb-2" data-bs-toggle="modal" data-bs-target="#reviewModal"
+                                    data-product-id="@item.ProductId" data-product-name="@item.product_name">
+                                Rate this product
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+<!-- Modal for Review -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalLabel">Rate Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reviewForm">
+                    <input type="hidden" id="productId" />
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">Rating</label>
+                        <select id="rating" class="form-select">
+                            <option value="1">1 - Poor</option>
+                            <option value="2">2 - Fair</option>
+                            <option value="3">3 - Good</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="5">5 - Excellent</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reviewText" class="form-label">Review</label>
+                        <textarea class="form-control" id="reviewText" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Pass product ID to modal
+    $('#reviewModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var productId = button.data('product-id');
+        var productName = button.data('product-name');
+
+        var modal = $(this);
+        modal.find('.modal-title').text('Rate ' + productName);
+        modal.find('#productId').val(productId);
+    });
+
+    // Submit Review
+    $('#reviewForm').submit(function (e) {
+        e.preventDefault();
+
+        var productId = $('#productId').val();
+        var rating = $('#rating').val();
+        var reviewText = $('#reviewText').val();
+
+        $.ajax({
+            url: '@Url.Action("SubmitReview", "User")',
+            type: 'POST',
+            data: {
+                productId: productId,
+                rating: rating,
+                review: reviewText
+            },
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    $('#reviewModal').modal('hide');
+                } else {
+                    alert("Error while submitting review");
+                }
+            }
+        });
+    });
+</script>
+
+<script>
+    // Filter by status and date range
+    document.getElementById('statusFilter').addEventListener('change', function () {
+        filterOrders();
+    });
+
+    document.getElementById('dateFilter').addEventListener('change', function () {
+        filterOrders();
+    });
+
+    function filterOrders() {
+        const status = document.getElementById('statusFilter').value;
+        const dateRange = document.getElementById('dateFilter').value;
+
+        const orders = document.querySelectorAll('.card');
+
+        orders.forEach(function (order) {
+            const orderStatus = order.querySelector('.badge').textContent.trim();
+            const orderDate = new Date(order.querySelector('.card-header span').textContent.trim());
+
+            let showOrder = true;
+
+            // Filter by status
+            if (status && orderStatus !== status) {
+                showOrder = false;
+            }
+
+            // Filter by date range (30 days, 6 months, 1 year)
+            if (showOrder && dateRange) {
+                const currentDate = new Date();
+                const dateThreshold = new Date(currentDate.setDate(currentDate.getDate() - dateRange));
+
+                if (orderDate < dateThreshold) {
+                    showOrder = false;
+                }
+            }
+
+            // Show or hide the order card
+            if (showOrder) {
+                order.style.display = 'block';
+            } else {
+                order.style.display = 'none';
+            }
+        });
+    }
+</script>

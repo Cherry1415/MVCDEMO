@@ -23,5 +23,7 @@ namespace _06032025_MVCDAY1.Models
         [NotMapped]
         public bool IsInWishlist { get; set; }
       //  public List<AddressViewModel> addressViewModels { get; set; } = new List<AddressViewModel>();
+
+        public bool IsApproved { get; set; }
     }
 }

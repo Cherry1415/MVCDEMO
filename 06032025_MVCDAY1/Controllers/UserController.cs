@@ -1,17 +1,24 @@
 ﻿using _06032025_MVCDAY1.Models;
 using _06032025_MVCDAY1.Repository;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol.Core.Types;
+using System.Net.Mail;
+using System.Net;
+using System.Reflection;
 using System.Text.Json;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace _06032025_MVCDAY1.Controllers
 {
     public class UserController : Controller
     {
         private readonly IUserRepository _repo;
+        private readonly IOrdersRepository _orderrepo;
 
-        public UserController(IUserRepository repository)
+        public UserController(IUserRepository repository, IOrdersRepository orderrepo)
         {
             _repo = repository;
+            _orderrepo = orderrepo;
         }
 
         public IActionResult Index()
@@ -25,23 +32,154 @@ namespace _06032025_MVCDAY1.Controllers
             return View();
         }
 
+        public IActionResult EmailVerify()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult EmailVerify(OTPModel model)
+        {
+            if (string.IsNullOrEmpty(model.Email))
+                return Json(new { success = false, message = "Email is required." });
+
+            string otp = GenerateOTP();
+            HttpContext.Session.SetString("UserEmail", model.Email);
+            _repo.SaveOTP(model.Email, otp);
+            SendEmail(model.Email, otp);
+
+            return Json(new { success = true, message = "OTP sent to your email.",email=model.Email});
+        }
+        private string GenerateOTP()
+        {
+            return new Random().Next(100000, 999999).ToString();
+        }
+
+        private void SendEmail(string toEmail, string otp)
+        {
+            var fromEmail = "chigipatel8887@gmail.com";
+            var fromPassword = "cxyrdbgmsbedgjlo";
+
+            var message = new MailMessage(fromEmail, toEmail)
+            {
+                Subject = "Your OTP Code",
+                Body = $"<h3>Your OTP is: {otp}</h3><p>Valid for 1 minute only.</p>",
+                IsBodyHtml = true
+            };
+
+            var smtp = new SmtpClient("smtp.gmail.com", 587)
+            {
+                Credentials = new NetworkCredential(fromEmail, fromPassword),
+                EnableSsl = true
+            };
+
+            smtp.Send(message);
+        }
+        public IActionResult VerifyOTP()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult VerifyOTP(string otp, string email)
+        {
+            if (string.IsNullOrEmpty(email))
+                email = HttpContext.Session.GetString("UserEmail");
+
+            if (_repo.ValidateOTP(email, otp))
+            {
+                return Json(new { success = true, message = "OTP verified successfully.", redirectUrl = Url.Action("Register", "User") });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Invalid or expired OTP." });
+            }
+        }
+
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ForgotPassword(ForgotPasswordModel model)
+        {
+            if (model.Password != model.ConfirmPassword)
+            {
+                TempData["Error"] = "Passwords do not match.";
+                return View(model);
+            }
+
+            string useremail = HttpContext.Session.GetString("User_Email");
+            if (string.IsNullOrEmpty(useremail))
+            {
+                TempData["Error"] = "Email session expired. Please verify again.";
+                return RedirectToAction("EmailVerifyForPass");
+            }
+            _repo.updatepassword(model.ConfirmPassword,useremail);
+            return RedirectToAction("SignIn");
+        }
+        public IActionResult EmailVerifyForPass()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult EmailVerifyForPass(OTPModel model)
+        {
+            
+            if (string.IsNullOrEmpty(model.Email))
+                return Json(new { success = false, message = "Email is required." });
+
+            string otp = GenerateOTP();
+            HttpContext.Session.SetString("User_Email", model.Email);
+            _repo.SaveOTP(model.Email, otp);
+            SendEmail(model.Email, otp);
+
+            return Json(new { success = true, message = "OTP sent to your email.", email = model.Email });
+        }
+        public IActionResult VerifyOTPForPass()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult VerifyOTPForPass(string otp, string email)
+        {
+            if (string.IsNullOrEmpty(email))
+                email = HttpContext.Session.GetString("UserEmail");
+
+            if (_repo.ValidateOTP(email, otp))
+            {
+                return Json(new { success = true, message = "OTP verified successfully.", redirectUrl = Url.Action("ForgotPassword", "User") });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Invalid or expired OTP." });
+            }
+        }
         public IActionResult Register()
         {
 
-            return View(new User());
+            ViewBag.roles = _repo.GetRoles();
+            return View();
         }
         [HttpPost]
         public IActionResult Register(User user)
         {
-            // if(ModelState.IsValid)
-            //{
+            var email= HttpContext.Session.GetString("UserEmail");
+            user.email = email;
             bool res = _repo.Register(user);
             if (res)
             {
-                return RedirectToAction("LogInPage", "Login");
+                TempData["Success"] = "Registration successful!";
+                return RedirectToAction("SignIn");
             }
-
-            // }
+            else
+            {
+                TempData["Error"] = "Registration failed!";
+            }
+            ViewBag.roles = _repo.GetRoles();
             return View(user);
         }
         [HttpGet]
@@ -190,7 +328,7 @@ namespace _06032025_MVCDAY1.Controllers
 
             int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
             var addresses = _repo.GetAddressesByUserId(userId);
-            return Json(addresses);
+            return View(addresses);
         }
 
         [HttpPost]
@@ -204,8 +342,34 @@ namespace _06032025_MVCDAY1.Controllers
         [HttpPost]
         public IActionResult SelectAddress(int AddressId)
         {
-            HttpContext.Session.SetInt32("selected_address", 1);
+            HttpContext.Session.SetInt32("selected_address", AddressId);
             return View(); // or wherever next
+        }
+
+        public IActionResult MyOrders()
+        {
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            var orders = _orderrepo.GetUserOrdersWithItemsAndImages(userId);
+            return View(orders);
+        }
+
+        //product reviews
+        [HttpPost]
+        public IActionResult SubmitReview(int productId, int rating, string review)
+        {
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            var newReview = new ProductReview
+            {
+                ProductId = productId,
+                UserId = userId,
+                Rating = rating,
+                Review = review,
+                CreatedDate = DateTime.Now
+            };
+
+            _repo.SubmitReview(newReview);
+
+            return Json(new { success = true, message = "Review submitted successfully!" });
         }
     }
 }

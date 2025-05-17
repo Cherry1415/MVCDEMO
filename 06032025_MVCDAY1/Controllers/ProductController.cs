@@ -113,13 +113,21 @@ namespace _06032025_MVCDAY1.Controllers
             return View();
         }
 
-        
+
         public IActionResult DetailProduct(int id)
         {
-            var products = _Prodrepository.GetProductById(id);
-           
-            return View(new List<Product> { products });
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            var product = _Prodrepository.GetProductById(id); // single product
+            var addresses = _repository.GetAddressesByUserId(userId); // list
+
+            // ✅ Wrap product in a List to match expected model
+            var productList = new List<Product> { product };
+
+            var model = Tuple.Create(productList.AsEnumerable(), addresses);
+
+            return View(model);
         }
+
         public IActionResult ProductFAQ()
         {
             return View();
@@ -178,9 +186,11 @@ namespace _06032025_MVCDAY1.Controllers
             ViewBag.Categories = _Prodrepository.GetCategories();
             ViewBag.Subcategories = _Prodrepository.GetSubcategories();
             ViewBag.Brands = _Prodrepository.GetBrands();
-            return RedirectToAction("GetProduct");
+            TempData["ProductAdded"] = "true";
+            return RedirectToAction("NewProduct");
         }
 
+        
         public IActionResult GetProduct()
         {
             var allproduct = _Prodrepository.VendorGetProducts();
@@ -236,6 +246,12 @@ namespace _06032025_MVCDAY1.Controllers
 
             return RedirectToAction("GetProduct");
 
+        }
+
+        public IActionResult PendingApprovals()
+        {
+            var products = _Prodrepository.PendingApproval();
+            return View(products);
         }
 
     }

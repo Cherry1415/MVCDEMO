@@ -42,7 +42,7 @@ namespace _06032025_MVCDAY1.Controllers
         public IActionResult InitiateOrder([FromBody] PaymentInitiateModel m)
         {
             int uid = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
-            int addressId = Convert.ToInt32(HttpContext.Session.GetInt32("selected_address"));
+            
             try
             {
                 int finalAmount = m.Amount * 100;
@@ -60,7 +60,7 @@ namespace _06032025_MVCDAY1.Controllers
                 string razorpayOrderId = order["id"].ToString();
                 Console.WriteLine($"Order has {m.orderItems?.Count ?? 0} items.");
                 // Make sure you validate and create order
-                var createdOrder = _orderRepository.CreateOrder(uid,m.Amount, razorpayOrderId,m.orderItems);
+                var createdOrder = _orderRepository.CreateOrder(uid,m.Amount, razorpayOrderId,m.orderItems,m.AddressId);
 
                 return Json(new {  orderId = razorpayOrderId });
             }
@@ -91,7 +91,11 @@ namespace _06032025_MVCDAY1.Controllers
 
                     // Update Order Status
                     _orderRepository.UpdateOrderStatus(paymentResponse.razorpay_order_id, "Paid");
-                    _orderRepository.ClearCart(uid);
+                    // ✅ Clear cart ONLY if the order came from the cart
+                    if (paymentResponse.isFromCart)
+                    {
+                        _orderRepository.ClearCart(uid);
+                    }
 
                     return Json(new { success = true });       
                 }

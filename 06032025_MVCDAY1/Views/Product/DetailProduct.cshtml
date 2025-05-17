@@ -3,8 +3,10 @@
 *@
 @{
 }
-@model IEnumerable<_06032025_MVCDAY1.Models.Product>
-<script src="~/js/makePayment.js"></script>
+@model Tuple<IEnumerable<_06032025_MVCDAY1.Models.Product>,List<_06032025_MVCDAY1.Models.AddressViewModel>>
+
+
+@* <script src="~/js/makePayment.js"></script> *@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
     /* .modal-content {
@@ -16,6 +18,12 @@
     /*     position: relative; */
     /* } */
 
+    .address-card.selected {
+        border: 2px solid #28a745; /* green border */
+        background-color: #e9fbe9; /* light green bg */
+        border-radius: 8px;
+        transition: 0.3s;
+    }
     .col-8.modal-body {
     position: relative;
     top: 20px; /* Adjust this value as needed */
@@ -309,43 +317,176 @@
 
 
 </style>
+
+
+
+@if (Model?.Item1 != null)
+{
+    <div class="container">
+        @foreach (var product in Model.Item1)
+        {
+            <div class="row">
+
+                <div class="col-md-6">
+                    <input type="hidden" asp-for="@product.product_id"/>
+                    <img id="mainImage" class="main-image" src="~/uploads/@product.ProductImages?.FirstOrDefault()?.imgName" alt="Main Product Image">
+                    <div class="thumbnail-images d-flex mt-2">
+                        @if(product.ProductImages != null && product.ProductImages.Any())
+                        {
+                            @foreach(var img in product.ProductImages)
+                            {
+                                <img src="~/uploads/@img.imgName" onclick="changeImage(this)">
+                            }
+                        }
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="row align-content-center justify-content-center align-items-center">
+                        <div class="d-flex justify-content-center align-items-center ">
+                            <h3>Products Details</h3>
+                        </div>
+                    </div>
+                    <h2 class="fw-bold">@product.product_name</h2>
+                    <h5 class="fw-bold">₹@product.price</h5>
+
+                    <div class="quantity-container mt-3">
+                        <label for="quantity" class="form-label fw-semibold" >Quantity</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <button class="circle-btn" type="button" onclick="decreaseQty()">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="text" class="form-control text-center" id="quantity" value="1" readonly style="width: 60px;">
+                            <button class="circle-btn" type="button" onclick="increaseQty()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="btn-cart">Add to Cart</button>
+                    <button class="btn-buy buyNowBtn" data-name="@product.product_name" data-productid="@product.product_id" data-price="@product.price">
+                        Buy it now
+                    </button>
+
+                    <div class="mt-4">
+                        <h5><strong>About the product</strong></h5>
+                        <div style="max-height: 300px; overflow-y: auto; overflow-x:auto; border: 1px solid #ccc; padding: 10px;">
+                            <p class="text-success">You are eligible for free shipping.</p>
+                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                            @* Repeat info removed for brevity *@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No Product Found!</p>
+}
+
+<hr />
+
+<div class="d-flex justify-content-center align-content-center">
+    <h2>FAQs</h2>
+</div>
+@{
+    Html.RenderPartial("~/Views/Product/ProductFAQ.cshtml");
+}
+
 <div class="modal fade" id="buyNowModal" tabindex="-1" aria-labelledby="buyNowModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-
+    <div class="modal-dialog modal-lg">
+        <!-- Made it larger for address layout -->
         <div class="modal-content">
-            @* <form method="post" asp-action="InitiateOrder"> *@
-            <div class="modal-header">
 
+            <div class="modal-header">
                 <h5 class="modal-title" id="buyNowModalLabel">Confirm Your Purchase</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body text-center">
-                <img id="productImage" src="" width="200" height="200" class="mb-3" alt="Product Image">
-                <h5 id="productName"></h5>
-                <p class="text-success">You are eligible for free shipping.</p>
 
-                <p>Amount: <strong id="amount"></strong></p>
-                <input type="hidden" id="amountInput"/>
-                <input type="hidden" id="productIdInput" />
-                <p>Quantity: <span id="quantityDisplay"></span></p>
-                <p>Total Amount: <strong id="amountInput"></strong></p>
-                <input type="hidden" id="quantityInput" />
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Product Info Section -->
+                    <div class="col-md-5 text-center border-end">
+                        <img id="productImage" src="" width="200" height="200" class="mb-3" alt="Product Image">
+                        <h5 id="productName"></h5>
+                        <p class="text-success">You are eligible for free shipping.</p>
 
+                        <p>Amount: <strong id="amount"></strong></p>
+                        <p>Quantity: <span id="quantityDisplay"></span></p>
+                        <p>Total Amount: <strong id="amountInput"></strong></p>
 
-                <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                <h3>Delivery addresses</h3>
-                @foreach(var address in Model)
-                {
-                    
-                }
+                        <input type="hidden" id="amountInputHidden" />
+                        <input type="hidden" id="productIdInput" />
+                        <input type="hidden" id="quantityInput" />
+
+                        <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
+                    </div>
+
+                    <!-- Address Selection Section -->
+                    <div class="col-md-7">
+                        <h5>📦 Delivery Address</h5>
+
+                        <!-- Add New Address Card -->
+                        <div class="mb-3">
+                            <div class="card h-100 text-center border-primary" style="cursor:pointer;" data-bs-toggle="offcanvas" data-bs-target="#addAddressCanvas">
+                                <div class="card-body">
+                                    <h6 class="card-title">➕ Add New Address</h6>
+                                    <p class="card-text text-muted">Click to add a new address</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (Model.Item2 != null && Model.Item2.Any())
+                        {
+                            foreach (var address in Model.Item2)
+                            {
+                                <div class="card mb-2 border-secondary address-card">
+                                    <div class="card-body p-2">
+                                        <h6 class="card-title">@address.Name</h6>
+                                        <p class="card-text small">
+                                            @address.Street, @address.City - @address.ZipCode<br />
+                                            Phone: @address.Phone
+                                        </p>
+                                        <button type="button" class="btn btn-sm btn-success w-100 select-address-btn" data-address-id="@address.address_id">
+                                            Deliver to this address
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted">No saved addresses found. Please add a new address.</p>
+                        }
+                    </div>
+                </div>
             </div>
+
             <div class="modal-footer">
                 <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                @* <a class="btn btn-primary" asp-area="" asp-controller="Payment" asp-action="InitiateOrder">Proceed to Checkout</a> *@
-                <a class="btn btn-primary" onclick="makePayment()">Proceed to Checkout</a>
+                <a class="btn btn-primary" id="proceedBtn">Proceed to Checkout</a>
             </div>
-            @* </form> *@
+
         </div>
+    </div>
+</div>
+<!-- Add Address Canvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="addAddressCanvas" aria-labelledby="addAddressCanvasLabel">
+    <div class="offcanvas-header">
+        <h5 id="addAddressCanvasLabel">Add New Address</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form method="post" asp-action="AddAddress">
+            <div class="mb-3"><label>Name</label><input class="form-control" name="Name" required /></div>
+            <div class="mb-3"><label>Street</label><input class="form-control" name="Street" required /></div>
+            <div class="mb-3"><label>City</label><input class="form-control" name="City" required /></div>
+            <div class="mb-3"><label>Zip Code</label><input class="form-control" name="ZipCode" required /></div>
+            <div class="mb-3"><label>Phone</label><input class="form-control" name="Phone" required /></div>
+            <button type="submit" class="btn btn-primary w-100">Save Address</button>
+        </form>
     </div>
 </div>
 <script>
@@ -363,7 +504,7 @@
             let productId = $(this).data("productid");
             let quantity = parseInt($("#quantity").val());
             let totalAmount = price ;
-             
+
 
             $("#productIdInput").val(productId);
             $("#productName").text(name);
@@ -377,122 +518,6 @@
         });
     });
 </script>
-@if(Model!=null)
-{
-    <div class="container">
-
-       
-        @foreach (var product in Model)
-        {
-            <div class="row">
-
-                <div class="col-md-6">
-
-                    <input type="hidden" asp-for="@product.product_id"/>
-                    <img id="mainImage" class="main-image" src="~/uploads/@product.ProductImages?.FirstOrDefault()?.imgName" alt="Main Product Image">
-                    <div class="thumbnail-images d-flex mt-2">
-                        @if(product.ProductImages !=null && product.ProductImages.Any())
-                        {
-                            @foreach(var img in product.ProductImages)
-                            {
-                                <img src="~/uploads/@img.imgName" onclick="changeImage(this)">
-                            }
-                        }
-
-
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="row align-content-center justify-content-center align-items-center">
-                        <div class="d-flex justify-content-center align-items-center ">
-                            <h3>Products Details</h3>
-                        </div>
-                    </div>
-                    <h2 class="fw-bold">@product.product_name</h2>
-                    <h5 class="fw-bold">₹@product.price</h5>
-                    @* <div class="quantity-container">
-                        <label for="quantity">Quantity</label>
-                        <div class="quantity-controls">
-                            <button type="button" class="qty-btn align-items-center" onclick="decreaseQty()">−</button>
-                            <input type="text" id="quantity" value="1" readonly>
-                            <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
-                        </div>
-                    </div> *@
-                    <div class="quantity-container mt-3">
-                        <label for="quantity" class="form-label fw-semibold" >Quantity</label>
-                        <div class="d-flex align-items-center gap-2">
-                            <button class="circle-btn" type="button" onclick="decreaseQty()">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <input type="text" class="form-control text-center" id="quantity" value="1" readonly style="width: 60px;">
-                            <button class="circle-btn" type="button" onclick="increaseQty()">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <button class="btn-cart">Add to Cart</button>
-                    <button class="btn-buy buyNowBtn" data-name="@product.product_name" data-productid="@product.product_id"
-                            data-price="@product.price">
-                        Buy it now
-                    </button>
-
-                    @*  <div class="emi-section">
-                    EMI with VMI - Pay 1/3rd now, Rest in EMIs | 0% Interest | Powered by <strong>Snapmint</strong>
-                </div> *@
-
-                    <div class="mt-4">
-                        <h5><strong>About the product</strong></h5>
-                        <div style="max-height: 300px;
-                             overflow-y: auto;
-                             overflow-x:auto;
-                             border: 1px solid #ccc;
-                             padding: 10px;">
-                            <p class="text-success">You are eligible for free shipping.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                            <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-                        </div>
-
-                        @* <h5><strong>Specifications</strong></h5>
-                    <ul>
-                        <li><strong>Saree Color:</strong> Maroon</li>
-                        <li><strong>Fabric:</strong> Silk</li>
-                    </ul> *@
-                    </div>
-                </div>
-            </div>
-
-        }
-        
-    </div>
-}
-
-else
-{
-    <p>No Product Found!</p>
-}
-<hr />
-<div class="d-flex justify-content-center align-content-center">
-    <h2>FAQs</h2>
-</div>
-@{
-    Html.RenderPartial("~/Views/Product/ProductFAQ.cshtml");
-}
 
 <script>
     function changeImage(element) {
@@ -514,3 +539,37 @@ else
       }
     }
 </script>
+
+<script>
+    let selectedAddressId = null;
+
+    document.querySelectorAll(".select-address-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            selectedAddressId = this.dataset.addressId;
+
+            // Remove all highlights
+            document.querySelectorAll(".select-address-btn").forEach(b => b.classList.remove("btn-primary"));
+            document.querySelectorAll(".address-card").forEach(c => c.classList.remove("selected"));
+
+            // Add highlight to selected
+            this.classList.add("btn-primary");
+            const card = this.closest(".address-card");
+            if (card) {
+                card.classList.add("selected");
+            }
+
+            console.log("Selected Address ID:", selectedAddressId);
+        });
+    });
+
+    document.getElementById("proceedBtn").addEventListener("click", function () {
+        if (!selectedAddressId || isNaN(parseInt(selectedAddressId))) {
+            alert("Please select an address before continuing.");
+            return;
+        }
+
+        makePayment(parseInt(selectedAddressId));
+    });
+</script>
+
+<script src="~/js/makePayment.js"></script> 

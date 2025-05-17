@@ -2,6 +2,7 @@
 using _06032025_MVCDAY1.Models;
 using Humanizer;
 using Microsoft.Data.SqlClient;
+
 //using Razorpay.Api;
 using System.Data;
 
@@ -57,14 +58,90 @@ namespace _06032025_MVCDAY1.Repository
                 return cnt > 0;
             }
         }
-        
 
+        public IEnumerable<Role> GetRoles()
+        {
+            var role = new List<Role>();
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT Role_ID,Type FROM admin.roles WHERE Type!='admin'", con);
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    role.Add(new Role
+                    {
+                        Role_ID = Convert.ToInt32(rdr["Role_ID"]),
+                        Type = rdr["Type"].ToString()
+                    });
+                }
+            }
+            return role;
+        }
+        public void SaveOTP(string email, string otp)
+        {
+            using (SqlConnection conn = new SqlConnection(_constring))
+            {
+                conn.Open();
+                string query = "INSERT INTO tbl_email_otp (email, otp_code) VALUES (@Email, @OTP)";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Email", email);
+                cmd.Parameters.AddWithValue("@OTP", otp);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public bool ValidateOTP(string email, string otp)
+        {
+            using (SqlConnection conn = new SqlConnection(_constring))
+            {
+                conn.Open();
+                string query = @"SELECT created_at FROM tbl_email_otp
+                  WHERE email = @Email AND otp_code = @OTP AND is_verified = 0
+                  ORDER BY created_at DESC";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Email", email);
+                cmd.Parameters.AddWithValue("@OTP", otp);
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    DateTime createdAt = Convert.ToDateTime(reader["created_at"]);
+                    if ((DateTime.Now - createdAt).TotalSeconds <= 120)
+                    {
+                        reader.Close();
+
+                        string update = "UPDATE tbl_email_otp SET is_verified = 1 WHERE email = @Email AND otp_code = @OTP";
+                        SqlCommand updateCmd = new SqlCommand(update, conn);
+                        updateCmd.Parameters.AddWithValue("@Email", email);
+                        updateCmd.Parameters.AddWithValue("@OTP", otp);
+                        updateCmd.ExecuteNonQuery();
+
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public void updatepassword(string NewPassword,string email)
+        {
+            using (SqlConnection conn = new SqlConnection(_constring))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("UPDATE  customer.registeruser SET password = @password WHERE email = @email", conn);
+                cmd.Parameters.AddWithValue("@password",NewPassword);
+                cmd.Parameters.AddWithValue("@email", email);
+                cmd.ExecuteNonQuery();
+            }
+        }
         public bool Register(User user)
         {
             using (SqlConnection conn=new SqlConnection(_constring))
             {
                 SqlCommand  cmd= new SqlCommand("customer.sp_registeruser", conn);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@fname", user.first_name);
                 cmd.Parameters.AddWithValue("@lname", user.last_name);
                 cmd.Parameters.AddWithValue("@email",user.email);
@@ -403,5 +480,26 @@ namespace _06032025_MVCDAY1.Repository
                 cmd.ExecuteNonQuery();
             }
         }
+
+        public void SubmitReview(ProductReview review)
+        {
+            using (SqlConnection conn = new SqlConnection(_constring))
+            {
+                string query = @"INSERT INTO customer.Reviews 
+                             (product_id, user_id, rating, review)
+                             VALUES (@ProductId, @UserId, @Rating, @Review)";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@ProductId", review.ProductId);
+                cmd.Parameters.AddWithValue("@UserId", review.UserId);
+                cmd.Parameters.AddWithValue("@Rating", review.Rating);
+                cmd.Parameters.AddWithValue("@Review", review.Review);
+               
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+     
     }
 }

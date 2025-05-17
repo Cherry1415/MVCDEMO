@@ -38,5 +38,9 @@ namespace _06032025_MVCDAY1.Repository
         Subcategory subcategoryGetById(int id);
         void Savesubcategory(Subcategory subcategory);
         void Deletesubcategory(int id);
+
+        List<Product> GetVendorProductApproval();
+        void ApproveProduct(int productId);
+        void RejectProduct(int productId);
     }
 }

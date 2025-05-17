@@ -6,5 +6,7 @@
         public string razorpay_order_id { get; set; }
         public string razorpay_signature { get; set; }
         public decimal amount { get; set; }
+        public bool isFromCart { get; set; }
+
     }
 }

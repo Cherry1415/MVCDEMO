@@ -104,7 +104,7 @@ namespace _06032025_MVCDAY1.Repository
                 cmd.ExecuteNonQuery();
             }
         }
-        public UserOrder CreateOrder(int userId,decimal totalAmount, string razorpayOrderId, List<OrderItem> items)
+        public UserOrder CreateOrder(int userId,decimal totalAmount, string razorpayOrderId, List<OrderItem> items,int addressid)
         {
 
             using (var connection = new SqlConnection(_constring))
@@ -117,15 +117,15 @@ namespace _06032025_MVCDAY1.Repository
                     //if (items == null || !items.Any())
                     //    throw new Exception("No order items provided.");
 
-                    string orderQuery = "INSERT INTO customer.Orders (user_id,TotalAmount, RazorPayOrderId, status, order_date) " +
-                                        "VALUES (@UserId,@TotalAmount, @RazorpayOrderId, 'Pending', GETDATE()); SELECT SCOPE_IDENTITY();";
+                    string orderQuery = "INSERT INTO customer.Orders (user_id,TotalAmount, RazorPayOrderId, status, order_date,address_id,require_date) " +
+                                        "VALUES (@UserId,@TotalAmount, @RazorpayOrderId, 'Pending', GETDATE(),@addressid,DATEADD(DAY, 3, GETDATE())); SELECT SCOPE_IDENTITY();";
 
                     var orderCmd = new SqlCommand(orderQuery, connection, transaction);
                     orderCmd.Parameters.AddWithValue("@UserId", userId);
                     //orderCmd.Parameters.AddWithValue("@AddressId", addressId);
                     orderCmd.Parameters.AddWithValue("@TotalAmount", totalAmount);
                     orderCmd.Parameters.AddWithValue("@RazorpayOrderId", razorpayOrderId);
-
+                    orderCmd.Parameters.AddWithValue("@addressid", addressid);
                     int orderId = Convert.ToInt32(orderCmd.ExecuteScalar());
 
                     foreach (var item in items)
@@ -178,6 +178,75 @@ namespace _06032025_MVCDAY1.Repository
                 connection.Open();
                 command.ExecuteNonQuery();
             }
+        }
+
+        public List<UserOrder> GetUserOrdersWithItemsAndImages(int userId)
+        {
+            var orders = new List<UserOrder>();
+
+            using (SqlConnection conn = new SqlConnection(_constring))
+            {
+                conn.Open();
+
+                string query = @"
+                    SELECT DISTINCT 
+                     o.order_id AS OrderId,
+                    o.TotalAmount,
+                    o.Status,
+                    o.order_date,
+                    o.address_id,
+                    oi.product_id,
+                    oi.Quantity,
+                    oi.Price,
+                    p.product_name,
+                    pi.imgName
+                    FROM customer.Orders o
+                    INNER JOIN customer.Order_Items oi ON o.order_id = oi.order_id
+                    INNER JOIN vendor.Products p ON oi.product_id = p.product_id
+                    OUTER APPLY (
+                        SELECT TOP 1 imgName
+                        FROM vendor.prodImages 
+                        WHERE product_id = p.product_id
+                        ORDER BY prod_img_id ASC
+                    ) pi
+                    WHERE o.user_id = @UserId";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@UserId", userId);
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        int orderId = Convert.ToInt32(reader["OrderId"]);
+                        var order = orders.FirstOrDefault(o => o.Id == orderId);
+                        if (order == null)
+                        {
+                            order = new UserOrder
+                            {
+                                Id = orderId,
+                                TotalAmount = Convert.ToDecimal(reader["TotalAmount"]),
+                                Status = reader["status"].ToString(),
+                                CreatedDate = Convert.ToDateTime(reader["order_date"]),
+                                addressid = reader["address_id"].ToString(),
+                                OrderItems = new List<OrderItem>()
+                            };
+                            orders.Add(order);
+                        }
+
+                        order.OrderItems.Add(new OrderItem
+                        {
+                            ProductId = Convert.ToInt32(reader["product_id"]),
+                            Quantity = Convert.ToInt32(reader["quantity"]),
+                            Price = Convert.ToDecimal(reader["price"]),
+                            product_name = reader["product_name"].ToString(),
+                            ImgName = reader["imgName"]?.ToString() // 👈 Add this property to OrderItem model
+                        });
+                    }
+                }
+            }
+
+            return orders;
         }
 
 

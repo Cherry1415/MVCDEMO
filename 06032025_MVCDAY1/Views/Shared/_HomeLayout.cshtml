@@ -44,7 +44,7 @@
                         <i class="fa fa-fw fa-user" style='font-size:20px'></i>
                     </a>
                    
-                    <a href="@Url.Action("Index", "Cart")" class="cart-icon position-relative">
+                    <a href="@Url.Action("Index","Cart")" class="cart-icon position-relative">
                         <i class="fas fa-shopping-cart fa-lg"></i>
                         <span id="cart-count" class="cart-badge">0</span>
                     </a>
@@ -87,6 +87,9 @@
                     <div class="menu">
                         <h4>Trending</h4>
                         <a href="@Url.Action("SelectAddress","User")">Best Sellers</a>
+
+                        <hr />
+                        <a href="@Url.Action("MyOrders","User")">My Orders</a>
 
                         <hr />
 
