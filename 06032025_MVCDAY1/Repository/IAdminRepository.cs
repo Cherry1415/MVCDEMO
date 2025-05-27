@@ -42,5 +42,17 @@ namespace _06032025_MVCDAY1.Repository
         List<Product> GetVendorProductApproval();
         void ApproveProduct(int productId);
         void RejectProduct(int productId);
+
+        //Payments methods
+        List<WeekSalesViewModel> GetWeeklySales(int month, int year);
+        AdminPayoutSummary GetPayoutSummary(int month, int year);
+        List<AdminPaymentViewModel> GetAllPaymentsWithOrders();
+
+        List<OrderItem> GetOrderItemsByOrderId(int orderId);
+
+        List<UserOrder> GetFilteredOrders(DateTime? fromDate, DateTime? toDate, string orderStatus);
+
+
+        
     }
 }

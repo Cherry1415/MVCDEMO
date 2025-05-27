@@ -56,5 +56,14 @@ namespace _06032025_MVCDAY1.Repository
         //product review
         void SubmitReview(ProductReview review);
 
+        //methods for user bill
+
+        UserOrder GetOrderById(int orderId);
+        List<OrderItem> GetOrderItemsByOrderId(int orderId);
+
+        User GetUserById(int userId);
+
+        AddressViewModel GetAddressById(int addressId);
+
     }
 }

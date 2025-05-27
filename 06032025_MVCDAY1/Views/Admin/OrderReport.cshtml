@@ -1,0 +1,101 @@
+﻿@model _06032025_MVCDAY1.Models.OrderReportViewModel
+@{
+    Layout = "_AdminLayout";
+    var isStatusSelected = !string.IsNullOrEmpty(Model.OrderStatus);
+    var totalAmount = isStatusSelected ? Model.Orders.Sum(x => x.TotalAmount) : 0;
+}
+
+<form method="get" class="row mb-4" id="filterForm">
+    <div class="col-md-3">
+        <label>From Date</label>
+        <input type="date" name="fromDate" class="form-control"
+               value="@Model.FromDate?.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="col-md-3">
+        <label>To Date</label>
+        <input type="date" name="toDate" class="form-control"
+               value="@Model.ToDate?.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="col-md-3">
+        <label>Status</label>
+        <select name="orderStatus" class="form-select">
+            <option value="" selected="@(string.IsNullOrEmpty(Model.OrderStatus) ? "selected" : null)">All Status</option>
+            <option value="delivered" selected="@(Model.OrderStatus == "delivered" ? "selected" : null)">Delivered</option>
+            <option value="Pending" selected="@(Model.OrderStatus == "Pending" ? "selected" : null)">Pending</option>
+            <option value="rejected" selected="@(Model.OrderStatus == "rejected" ? "selected" : null)">Rejected</option>
+            <option value="Paid" selected="@(Model.OrderStatus == "Paid" ? "selected" : null)">Paid</option>
+        </select>
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+<div class="mb-3 text-right">
+    <button id="btnExportExcel" class="btn btn-success">
+        <i class="fas fa-file-excel mr-1"></i> Export to Excel
+    </button>
+    <button id="btnExportPDF" class="btn btn-danger">
+        <i class="fas fa-file-pdf mr-1"></i> Export to PDF
+    </button>
+</div>
+
+@if (Model.Orders.Any())
+{
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>User ID</th>
+                <th>Order Date</th>
+                <th>Status</th>
+                <th>Total Amount</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model.Orders)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.UserId</td>
+                    <td>@order.CreatedDate.ToString("dd-MM-yyyy")</td>
+                    <td>@order.Status</td>
+                    <td>₹@order.TotalAmount.ToString("F2")</td>
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (isStatusSelected)
+    {
+        <div class="alert alert-success text-end fw-bold">
+            Grand Total for "<span class="text-capitalize">@Model.OrderStatus</span>": ₹@totalAmount.ToString("F2")
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-warning">No orders found for selected filter.</div>
+}
+
+<script>
+    $('#btnExportExcel').click(function () {
+        const fromDate = $('input[name="fromDate"]').val();
+        const toDate = $('input[name="toDate"]').val();
+        const orderStatus = $('select[name="orderStatus"]').val();
+
+        const url = `@Url.Action("ExportToExcel", "Admin")?fromDate=${fromDate}&toDate=${toDate}&orderStatus=${orderStatus}`;
+        window.location.href = url;
+    });
+
+    $('#btnExportPDF').click(function () {
+        const fromDate = $('input[name="fromDate"]').val();
+        const toDate = $('input[name="toDate"]').val();
+        const orderStatus = $('select[name="orderStatus"]').val();
+
+        const url = `@Url.Action("ExportToPDF", "Admin")?fromDate=${fromDate}&toDate=${toDate}&orderStatus=${orderStatus}`;
+        window.location.href = url;
+    });
+</script>

@@ -15,7 +15,7 @@ namespace _06032025_MVCDAY1.Controllers
         private readonly RazorPayKeys _razorPayKeys;
         private readonly ILogger<PaymentController> _logger;
 
-        public PaymentController(ILogger<PaymentController> logger,RazorPayKeys razorPayKeys,IOrdersRepository repository,IPaymentRepository paymentRepository)
+        public PaymentController(ILogger<PaymentController> logger, RazorPayKeys razorPayKeys, IOrdersRepository repository, IPaymentRepository paymentRepository)
         {
             _logger = logger;
             _razorPayKeys = razorPayKeys;
@@ -37,18 +37,18 @@ namespace _06032025_MVCDAY1.Controllers
         {
             return View();
         }
-        
+
         [HttpPost]
         public IActionResult InitiateOrder([FromBody] PaymentInitiateModel m)
         {
             int uid = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
-            
+
             try
             {
                 int finalAmount = m.Amount * 100;
 
                 RazorpayClient client = new RazorpayClient(_razorPayKeys.KeyID, _razorPayKeys.KeySecret);
-                Dictionary<string,object> options = new Dictionary<string, object>
+                Dictionary<string, object> options = new Dictionary<string, object>
         {
             { "amount", finalAmount },
             { "currency", "INR" },
@@ -60,14 +60,14 @@ namespace _06032025_MVCDAY1.Controllers
                 string razorpayOrderId = order["id"].ToString();
                 Console.WriteLine($"Order has {m.orderItems?.Count ?? 0} items.");
                 // Make sure you validate and create order
-                var createdOrder = _orderRepository.CreateOrder(uid,m.Amount, razorpayOrderId,m.orderItems,m.AddressId);
+                var createdOrder = _orderRepository.CreateOrder(uid, m.Amount, razorpayOrderId, m.orderItems, m.AddressId);
 
-                return Json(new {  orderId = razorpayOrderId });
+                return Json(new { orderId = razorpayOrderId });
             }
             catch (Exception ex)
             {
                 // Log the exception if needed (e.g., to file or database)
-                return Json(new { error= ex.Message });
+                return Json(new { error = ex.Message });
             }
         }
 
@@ -91,13 +91,16 @@ namespace _06032025_MVCDAY1.Controllers
 
                     // Update Order Status
                     _orderRepository.UpdateOrderStatus(paymentResponse.razorpay_order_id, "Paid");
+
+                    
+
                     // ✅ Clear cart ONLY if the order came from the cart
                     if (paymentResponse.isFromCart)
                     {
                         _orderRepository.ClearCart(uid);
                     }
 
-                    return Json(new { success = true });       
+                    return Json(new { success = true });
                 }
 
                 return Json(new { success = false, message = "Payment verification failed" });
@@ -106,7 +109,7 @@ namespace _06032025_MVCDAY1.Controllers
             {
                 return Json(new { success = false, error = ex.Message });
             }
-            
+
         }
         private string GetSHA256Signature(string text, string key)
         {
@@ -125,6 +128,8 @@ namespace _06032025_MVCDAY1.Controllers
         {
             return View();
         }
+        
+
 
     }
 }

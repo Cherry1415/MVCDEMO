@@ -1,0 +1,29 @@
+﻿@model List<_06032025_MVCDAY1.Models.OrderItem>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Product Image</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.product_name</td>
+                <td> <img src="~/uploads/@item.ImgName" class="img-fluid rounded me-2" style="max-width:100px;" /></td>
+                <td>@item.Quantity</td>
+                <td>₹@item.Price</td>
+                <td>₹@(item.Price * item.Quantity)</td>
+                
+            </tr>
+        }
+    </tbody>
+</table>
+
+

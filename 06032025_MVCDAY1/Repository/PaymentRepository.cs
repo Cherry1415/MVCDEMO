@@ -28,5 +28,6 @@ namespace _06032025_MVCDAY1.Repository
                 command.ExecuteNonQuery();
             }
         }
+        
     }
 }

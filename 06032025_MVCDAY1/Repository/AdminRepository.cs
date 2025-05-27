@@ -498,5 +498,182 @@ namespace _06032025_MVCDAY1.Repository
                 con.Close();
             }
         }
+
+        public List<AdminPaymentViewModel> GetAllPaymentsWithOrders()
+        {
+            List<AdminPaymentViewModel> list = new List<AdminPaymentViewModel>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                string query = @"SELECT 
+                            p.pay_id AS PaymentId,
+                            p.amount,
+                            p.payment_status,
+                            
+                            p.PaidOn,
+                            o.order_id AS OrderId,
+                            o.user_id AS UserId,
+                            o.TotalAmount,
+                            o.RazorPayOrderId
+                         FROM customer.Payment p
+                         INNER JOIN customer.Orders o ON p.RazorpayOrderId = o.RazorPayOrderId
+                         ORDER BY p.PaymentId";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                conn.Open();
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    AdminPaymentViewModel model = new AdminPaymentViewModel
+                    {
+                        PaymentId = Convert.ToInt32(reader["PaymentId"]),
+                        Amount = Convert.ToDecimal(reader["amount"]),
+                        PaymentStatus = reader["payment_status"].ToString(),
+                        
+                        PaidOn = Convert.ToDateTime(reader["PaidOn"]),
+                        OrderId = Convert.ToInt32(reader["OrderId"]),
+                        UserId = Convert.ToInt32(reader["UserId"]),
+                        TotalAmount = Convert.ToDecimal(reader["TotalAmount"]),
+                        RazorpayOrderId = reader["RazorPayOrderId"].ToString()
+                    };
+
+                    list.Add(model);
+                }
+            }
+
+            return list;
+        }
+
+        public List<OrderItem> GetOrderItemsByOrderId(int orderId)
+        {
+            List<OrderItem> items = new List<OrderItem>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                string query = @"SELECT 
+                            oi.item_id,
+                            oi.product_id,
+                            oi.quantity,
+                            oi.price,
+                            p.product_name,
+                            pi.imgName
+                         FROM customer.Order_Items oi
+                         INNER JOIN vendor.Products p ON oi.product_id = p.product_id
+						 OUTER APPLY (
+                            SELECT TOP 1 imgName,prod_img_id
+                            FROM vendor.prodImages 
+                            WHERE product_id = p.product_id
+                            ORDER BY prod_img_id ASC
+                            ) pi
+                         WHERE oi.order_id = @OrderId";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@OrderId", orderId);
+                conn.Open();
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    OrderItem item = new OrderItem
+                    {
+                        Id = Convert.ToInt32(reader["item_id"]),
+                        ProductId = Convert.ToInt32(reader["product_id"]),
+                        Quantity = Convert.ToInt32(reader["quantity"]),
+                        Price = Convert.ToDecimal(reader["price"]),
+                        product_name = reader["product_name"].ToString(),
+                        ImgName = reader["imgName"].ToString()
+                    };
+
+                    items.Add(item);
+                }
+            }
+
+            return items;
+        }
+
+        public List<UserOrder> GetFilteredOrders(DateTime? fromDate, DateTime? toDate, string orderStatus)
+        {
+            List<UserOrder> orders = new List<UserOrder>();
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(@"
+            SELECT order_id, user_id, order_date, status, RazorPayOrderId, TotalAmount, require_date, 
+                    PaymentId
+            FROM customer.Orders
+            WHERE (@fromDate IS NULL OR order_date >= @fromDate)
+              AND (@toDate IS NULL OR order_date <= @toDate)
+              AND (@orderStatus IS NULL OR status = @orderStatus)", conn);
+
+                cmd.Parameters.AddWithValue("@fromDate", (object)fromDate ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@toDate", (object)toDate ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@orderStatus", string.IsNullOrEmpty(orderStatus) ? DBNull.Value : (object)orderStatus);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    orders.Add(new UserOrder
+                    {
+                        Id = reader["order_id"] != DBNull.Value ? Convert.ToInt32(reader["order_id"]) : 0,
+                        UserId = reader["user_id"] != DBNull.Value ? Convert.ToInt32(reader["user_id"]) : 0,
+                        CreatedDate = reader["order_date"] != DBNull.Value ? Convert.ToDateTime(reader["order_date"]) : DateTime.MinValue,
+                        Status = reader["status"] != DBNull.Value ? reader["status"].ToString() : string.Empty,
+                        RazorpayOrderId = reader["RazorPayOrderId"] != DBNull.Value ? reader["RazorPayOrderId"].ToString() : string.Empty,
+                        TotalAmount = reader["TotalAmount"] != DBNull.Value ? Convert.ToDecimal(reader["TotalAmount"]) : 0,
+                        require_date = reader["require_date"] != DBNull.Value ? (DateTime?)reader["require_date"] : null,
+                        // Uncomment and apply same logic for below fields if needed:
+                        // OrderStatus = reader["order_status"] != DBNull.Value ? reader["order_status"].ToString() : string.Empty,
+                        // CancelReason = reader["cancelreason"] != DBNull.Value ? reader["cancelreason"].ToString() : string.Empty,
+                        PaymentId = reader["PaymentId"] != DBNull.Value ? reader["PaymentId"].ToString() : string.Empty
+                    });
+                }
+            }
+            return orders;
+        }
+
+        public List<WeekSalesViewModel> GetWeeklySales(int month, int year)
+        {
+
+            List<WeekSalesViewModel> result = new List<WeekSalesViewModel>();
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("sp_GetWeeklySalesByMonth", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Month", month);
+                cmd.Parameters.AddWithValue("@Year", year);
+
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    result.Add(new WeekSalesViewModel
+                    {
+                        WeekNumber = Convert.ToInt32(rdr["WeekNumber"]),
+                        TotalSales = Convert.ToDecimal(rdr["TotalSales"])
+                    });
+                }
+            }
+            return result;
+        }
+
+        public AdminPayoutSummary GetPayoutSummary(int month, int year)
+        {
+            var weeklyData = GetWeeklySales(month, year); // your method
+
+            decimal totalSales = weeklyData.Sum(w => w.TotalSales);
+            decimal payout = totalSales * 0.8m;     // e.g., 70% payout
+            decimal pending = totalSales - payout;
+
+            return new AdminPayoutSummary
+            {
+                MonthName = new DateTime(year, month, 1).ToString("MMMM"),
+                Weekly = weeklyData,
+                TotalSales = totalSales,
+                Payout = payout,
+                Pending = pending
+            };
+        }
     }
 }

@@ -7,6 +7,8 @@ using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using iTextSharp.text.pdf;
+using iTextSharp.text;
 
 namespace _06032025_MVCDAY1.Controllers
 {
@@ -371,5 +373,116 @@ namespace _06032025_MVCDAY1.Controllers
 
             return Json(new { success = true, message = "Review submitted successfully!" });
         }
+        public IActionResult GenerateBill(int orderId)
+        {
+            var order = _repo.GetOrderById(orderId);
+            var items = _repo.GetOrderItemsByOrderId(orderId);
+            var user = _repo.GetUserById(order.UserId);
+            var address = _repo.GetAddressById(order.ordered_addressid);
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                Document doc = new Document(PageSize.A4, 40, 40, 60, 50);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                writer.CloseStream = true; // Let it close the stream
+                doc.Open();
+
+                // --- Header ---
+                var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20, BaseColor.BLACK);
+                var subFont = FontFactory.GetFont(FontFactory.HELVETICA, 12, BaseColor.DARK_GRAY);
+
+                Paragraph header = new Paragraph("🧾 DealBazar Billing Invoice", titleFont);
+                header.Alignment = Element.ALIGN_CENTER;
+                doc.Add(header);
+
+                Paragraph date = new Paragraph("Date: " + order.CreatedDate.ToString("dd MMM yyyy"), subFont);
+                date.Alignment = Element.ALIGN_CENTER;
+                doc.Add(date);
+                doc.Add(new Paragraph("\n"));
+
+                // --- Customer Info ---
+                var infoFont = FontFactory.GetFont(FontFactory.HELVETICA, 12);
+                var boldFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
+
+                PdfPTable userTable = new PdfPTable(2);
+                userTable.WidthPercentage = 100;
+                userTable.SetWidths(new float[] { 30f, 70f });
+
+                userTable.AddCell(new PdfPCell(new Phrase("Customer Name:", boldFont)) { Border = 0 });
+                userTable.AddCell(new PdfPCell(new Phrase($"{user.User_name}", infoFont)) { Border = 0 });
+
+                userTable.AddCell(new PdfPCell(new Phrase("Email:", boldFont)) { Border = 0 });
+                userTable.AddCell(new PdfPCell(new Phrase(user.email, infoFont)) { Border = 0 });
+
+                userTable.AddCell(new PdfPCell(new Phrase("Phone:", boldFont)) { Border = 0 });
+                userTable.AddCell(new PdfPCell(new Phrase(user.phone, infoFont)) { Border = 0 });
+
+                userTable.AddCell(new PdfPCell(new Phrase("Delivery Address:", boldFont)) { Border = 0 });
+                userTable.AddCell(new PdfPCell(new Phrase($"{address.Name}, {address.Street}, {address.City}, {address.ZipCode}", infoFont)) { Border = 0 });
+
+                userTable.SpacingAfter = 20;
+                doc.Add(userTable);
+
+                // --- Product Table ---
+                PdfPTable table = new PdfPTable(4);
+                table.WidthPercentage = 100;
+                table.SetWidths(new float[] { 50f, 15f, 15f, 20f });
+
+                var tableHeader = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.WHITE);
+                BaseColor headerBg = new BaseColor(44, 62, 80);
+
+                void AddHeaderCell(string text) =>
+                    table.AddCell(new PdfPCell(new Phrase(text, tableHeader)) { BackgroundColor = headerBg, HorizontalAlignment = Element.ALIGN_CENTER });
+
+                AddHeaderCell("Product");
+                AddHeaderCell("Qty");
+                AddHeaderCell("Price");
+                AddHeaderCell("Total");
+
+                decimal grandTotal = 0;
+                var rowFont = FontFactory.GetFont(FontFactory.HELVETICA, 11);
+
+                foreach (var item in items)
+                {
+                    decimal total = item.Price * item.Quantity;
+                    grandTotal += total;
+
+                    table.AddCell(new PdfPCell(new Phrase(item.product_name, rowFont)));
+                    table.AddCell(new PdfPCell(new Phrase(item.Quantity.ToString(), rowFont)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                    table.AddCell(new PdfPCell(new Phrase("₹" + item.Price.ToString("0.00"), rowFont)) { HorizontalAlignment = Element.ALIGN_RIGHT });
+                    table.AddCell(new PdfPCell(new Phrase("₹" + total.ToString("0.00"), rowFont)) { HorizontalAlignment = Element.ALIGN_RIGHT });
+                }
+
+                doc.Add(table);
+
+                doc.Add(new Paragraph("\n"));
+
+                // --- Total Amount ---
+                var totalFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 14);
+                Paragraph totalAmount = new Paragraph($"Total Amount: ₹{grandTotal:0.00}", totalFont)
+                {
+                    Alignment = Element.ALIGN_RIGHT
+                };
+                doc.Add(totalAmount);
+
+                doc.Add(new Paragraph("\n"));
+
+                // --- Footer ---
+                var footerFont = FontFactory.GetFont(FontFactory.HELVETICA_OBLIQUE, 10, BaseColor.GRAY);
+                Paragraph thanks = new Paragraph("Thank you for shopping with DealBazar!", footerFont);
+                thanks.Alignment = Element.ALIGN_CENTER;
+                doc.Add(thanks);
+
+                doc.Close();
+
+                // 📌 FIX: Copy to new stream and return (prevent ObjectDisposedException)
+                byte[] pdfBytes = stream.ToArray();
+                return File(new MemoryStream(pdfBytes), "application/pdf", $"Bill_Order_{orderId}.pdf");
+            }
+        }
+
+
+
+
     }
 }

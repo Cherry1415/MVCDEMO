@@ -4,20 +4,20 @@
     Layout = "_AdminLayout";
 }
 <h2 class="text-white mb-4">Orders</h2>
-<div class="container mt-5">
+
+<div class="container-fluid mt-4 px-3 px-md-5">
     <div class="text-center mb-4">
-        <h1 class="display-5 fw-bold">@ViewData["PageName"]</h1>
+        <h1 class="display-6 fw-bold">@ViewData["PageName"]</h1>
     </div>
 
-    <div class="card border-0 shadow">
-        <div class="card-header bg-light">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light text-center">
             <div class="d-flex flex-wrap justify-content-center gap-2">
                 <button class="btn btn-outline-primary active" data-status="All">All</button>
                 <button class="btn btn-outline-secondary" data-status="Pending">Pending</button>
                 <button class="btn btn-outline-info" data-status="Paid">Paid</button>
                 <button class="btn btn-outline-success" data-status="Delivered">Delivered</button>
                 <button class="btn btn-outline-danger" data-status="Rejected">Rejected</button>
-                
             </div>
         </div>
 
@@ -28,9 +28,8 @@
                         <tr>
                             <th>Order Id</th>
                             <th>Status</th>
-                            <th>CustomerName</th>
+                            <th>Customer Name</th>
                             <th>Order Date</th>
-                            
                         </tr>
                     </thead>
                     <tbody id="orderTableBody">
@@ -39,8 +38,6 @@
                 </table>
             </div>
         </div>
-
-
     </div>
 </div>
 
@@ -48,40 +45,37 @@
     $(document).ready(function () {
         loadOrders("All");
 
-        $(".btn-group .btn, .card-header .btn").click(function () {
+        $(".card-header .btn").click(function () {
             $(".card-header .btn").removeClass("active");
             $(this).addClass("active");
 
             const status = $(this).data("status");
-            loadOrders(status); 
+            loadOrders(status);
         });
 
-            function loadOrders(status) {
-        $.ajax({
-            url: '/Admin/filterorder',
-            type: 'GET',
-            data: { status: status },
-            success: function (data) {
-                let rows = "";
-
-                data.forEach(order => {
-                    rows += `
-                        <tr>
-                            <td>${order.orderId}</td>
-                            <td>${badge(order.status)}</td>
-                            <td>${order.customerName}</td>
-                            <td>${formatDate(order.orderDate)}</td>
-                        </tr>`;
-                });
-
-                $("#orderTableBody").html(rows);
-            },
-            error: function () {
-                alert("Error loading orders.");
-            }
-        });
-    }
-
+        function loadOrders(status) {
+            $.ajax({
+                url: '/Admin/filterorder',
+                type: 'GET',
+                data: { status: status },
+                success: function (data) {
+                    let rows = "";
+                    data.forEach(order => {
+                        rows += `
+                            <tr>
+                                <td>${order.orderId}</td>
+                                <td>${badge(order.status)}</td>
+                                <td>${order.customerName}</td>
+                                <td>${formatDate(order.orderDate)}</td>
+                            </tr>`;
+                    });
+                    $("#orderTableBody").html(rows);
+                },
+                error: function () {
+                    alert("Error loading orders.");
+                }
+            });
+        }
 
         function formatDate(dateString) {
             if (!dateString) return "--";
@@ -91,9 +85,9 @@
 
         function badge(status) {
             let color = "secondary";
-            switch (status) {
-                case "Pending": color = "secondary"; break;
-                case "Paid": color = "info"; break;
+            switch (status.toLowerCase()) {
+                case "pending": color = "secondary"; break;
+                case "paid": color = "info"; break;
                 case "delivered": color = "success"; break;
                 case "rejected": color = "danger"; break;
             }

@@ -3,6 +3,10 @@
     public class SupplierDashboard
     {
         public int TotalOrders { get; set; }
+
+        public int DeliveredOrders { get; set; }
+        public int PendingOrders { get; set; }
+        public int TodaysDeliveries { get; set; }
         public int VendorCount { get; set; }
         public int WarehouseCount { get; set; }
     }

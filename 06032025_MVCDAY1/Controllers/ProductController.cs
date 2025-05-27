@@ -119,11 +119,12 @@ namespace _06032025_MVCDAY1.Controllers
             int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
             var product = _Prodrepository.GetProductById(id); // single product
             var addresses = _repository.GetAddressesByUserId(userId); // list
+            var reviews = _Prodrepository.GetReviewsByProductId(id);
 
             // ✅ Wrap product in a List to match expected model
             var productList = new List<Product> { product };
 
-            var model = Tuple.Create(productList.AsEnumerable(), addresses);
+            var model = Tuple.Create(productList.AsEnumerable(), addresses,reviews);
 
             return View(model);
         }

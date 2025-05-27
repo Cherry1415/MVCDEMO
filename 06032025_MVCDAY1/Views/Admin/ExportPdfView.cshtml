@@ -1,0 +1,28 @@
+﻿@model List<_06032025_MVCDAY1.Models.AdminPaymentViewModel>
+
+<h2>Payment Report</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Payment ID</th>
+            <th>Order ID</th>
+            <th>Amount</th>
+            
+            <th>Paid On</th>
+            <th>Razorpay Order ID</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.PaymentId</td>
+                <td>@p.OrderId</td>
+                <td>@p.Amount</td>
+               
+                <td>@p.PaidOn.ToString("yyyy-MM-dd")</td>
+                <td>@p.RazorpayOrderId</td>
+            </tr>
+        }
+    </tbody>
+</table>

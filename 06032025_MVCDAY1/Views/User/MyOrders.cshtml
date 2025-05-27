@@ -35,8 +35,15 @@
                     <strong>Total:</strong> ₹@order.TotalAmount
                 </div>
                 <div class="text-end">
+                    
                     <strong>Order ID:</strong> @order.Id<br />
                     <span class="badge bg-primary">@order.Status</span>
+                    @if (order.Status.ToLower() == "paid" || order.Status.ToLower() == "delivered")
+                    {
+                        <button class="btn btn-success btn-sm mb-2" onclick="generateBill(@order.Id)">
+                            🧾 Download Bill
+                        </button>
+                    }
                 </div>
             </div>
 
@@ -52,8 +59,8 @@
                         <strong class="text-success">₹@(item.Quantity * item.Price)</strong>
                     </div>
                     <div class="text-end">
-                        <button class="btn btn-outline-primary btn-sm mb-2">Buy Again</button><br />
-                        <button class="btn btn-outline-secondary btn-sm mb-2">View Details</button>
+                        <a class="btn btn-outline-secondary btn-sm mb-2" asp-controller="Product" asp-action="DetailProduct" asp-route-id="@item.ProductId">Buy Again</a><br />
+                       @*  <button class="btn btn-outline-secondary btn-sm mb-2">View Details</button> *@
                         @if (order.Status == "delivered")
                         {
                             <button class="btn btn-outline-primary btn-sm mb-2" data-bs-toggle="modal" data-bs-target="#reviewModal"
@@ -61,12 +68,15 @@
                                 Rate this product
                             </button>
                         }
+                        
                     </div>
                 </div>
             }
         </div>
     }
 </div>
+
+
 <!-- Modal for Review -->
 <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -185,3 +195,12 @@
         });
     }
 </script>
+<script>
+        function generateBill(orderId) {
+        window.location.href = '/User/GenerateBill?orderId=' + orderId;
+    }
+</script>
+
+
+
+

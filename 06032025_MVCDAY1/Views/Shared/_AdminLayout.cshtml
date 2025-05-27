@@ -12,44 +12,24 @@
     <link href="~/bootstrap/js/bootstrap.min.js" rel="stylesheet" />
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    <style>
-        body {
-            background-color: #131722;
-            color: white;
-        }
-
-        .sidebar {
-            height: 100vh;
-            background-color: #1c1f2e;
-        }
-
-            .sidebar a {
-                color: white;
-                display: block;
-                padding: 15px;
-                text-decoration: none;
-            }
-
-                .sidebar a:hover {
-                    background-color: #2c3147;
-                }
-
-        .card-custom {
-            background-color: #1c1f2e;
-            border: none;
-            border-radius: 10px;
-            color: white;
-        }
-    </style>
+    <link  rel="stylesheet" href="~/css/admin.css"/>
 </head>
 <body>
+    <nav class="navbar navbar-dark bg-dark d-md-none">
+        <button class="btn btn-outline-light" id="sidebarToggle">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <span class="navbar-brand ms-3">Deal Bazar Admin</span>
+    </nav>
+   
     <div class="container-fluid">
         <div class="row">
-            <div class="col-2 sidebar">
+            <div class="col-2 sidebar" id="sidebar">
                 <h3 class="p-3">Deal Bazar</h3>
                 <a href="@Url.Action("Index", "Admin")">Dashboard</a>
                 <a href="@Url.Action("Orders", "Admin")">Orders</a>
                 <a href="@Url.Action("Products", "Admin")">Products</a>
+                <a href="@Url.Action("PayOut", "Admin")">PayOut</a>
                 <div class="dropdown">
                     <a class="dropdown-toggle d-block px-3 py-2 text-white" href="#" id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Category
@@ -61,12 +41,24 @@
 
                 </div>
                 <a href="@Url.Action("ProductApproval", "Admin")">ProductApprovals</a>
+
+                <a href="@Url.Action("PaymentHistory", "Admin")">Payment History</a>
+                <a href="@Url.Action("OrderReport", "Admin")">Reports</a>
                 <a href="@Url.Action("HomeDashBoard", "DashBoard")">Logout</a>
             </div>
-            <div class="col-10 p-4">
+            <div class="col-10 p-4" id="mainContent">
                 @RenderBody()
             </div>
         </div>
     </div>
 </body>
+
+
 </html>
+<script>
+        $(document).ready(function() {
+        $('#sidebarToggle').on('click', function () {
+            $('#sidebar').toggleClass('show');
+        });
+    });
+</script>

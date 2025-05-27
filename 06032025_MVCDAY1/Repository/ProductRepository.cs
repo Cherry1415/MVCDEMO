@@ -636,6 +636,43 @@ namespace _06032025_MVCDAY1.Repository
             return ratings;
         }
 
+        public List<ProductReview> GetReviewsByProductId(int productId)
+        {
+            List<ProductReview> reviews = new List<ProductReview>();
 
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                string query = @"SELECT cr.review_id,
+                 vp.product_name,
+                 cc.first_name + ' ' + cc.last_name AS Customer_Name,
+                 cr.CreateDate,
+                 cr.rating,
+                 cr.review
+                 FROM customer.Reviews cr
+                 INNER JOIN vendor.Products vp ON vp.product_id = cr.product_id
+                 INNER JOIN customer.registeruser cc ON cc.user_id = cr.user_id
+                 WHERE vp.product_id=@ProductId";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ProductId", productId);
+                con.Open();
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    reviews.Add(new ProductReview
+                    {
+                        Id = Convert.ToInt32(reader["review_id"]),
+                        //ProductId = Convert.ToInt32(reader["ProductId"]),
+                        username = reader["Customer_Name"].ToString(),
+                        product_name = reader["product_name"].ToString(),
+                        Rating = Convert.ToInt32(reader["rating"]),
+                        Review = reader["review"].ToString(),
+                        CreatedDate = Convert.ToDateTime(reader["CreateDate"])
+                    });
+                }
+            }
+
+            return reviews;
+        }
     }
 }

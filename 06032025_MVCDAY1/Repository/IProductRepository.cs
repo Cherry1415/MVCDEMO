@@ -25,5 +25,7 @@ namespace _06032025_MVCDAY1.Repository
 
         //customer reviews
         List<ProductReview> GetAllReviewsbyvendor(int vendorid);
+
+        List<ProductReview> GetReviewsByProductId(int productId);
     }
 }

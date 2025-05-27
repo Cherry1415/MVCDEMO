@@ -500,6 +500,139 @@ namespace _06032025_MVCDAY1.Repository
             }
         }
 
-     
+        //methods for user bill
+        public UserOrder GetOrderById(int orderId)
+        {
+            UserOrder order = null;
+
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                string query = @"SELECT order_id, user_id, TotalAmount, Status,order_date,address_id  FROM customer.Orders WHERE order_id = @OrderId";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@OrderId", orderId);
+
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    order = new UserOrder
+                    {
+                        Id = Convert.ToInt32(reader["order_id"]),
+                        UserId = Convert.ToInt32(reader["user_id"]),
+                        TotalAmount = Convert.ToDecimal(reader["TotalAmount"]),
+                        Status = reader["Status"].ToString(),
+                        CreatedDate = Convert.ToDateTime(reader["order_date"]),
+                        ordered_addressid =Convert.ToInt32(reader["address_id"]),
+                        OrderItems = new List<OrderItem>() // fill below from OrderItemRepository
+                    };
+                }
+
+                reader.Close();
+            }
+
+            // Fill OrderItems
+            if (order != null)
+            {
+                order.OrderItems = GetOrderItemsByOrderId(orderId);
+            }
+
+            return order;
+        }
+
+        public List<OrderItem> GetOrderItemsByOrderId(int orderId)
+        {
+            List<OrderItem> items = new List<OrderItem>();
+
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                string query = @"SELECT oi.product_id, oi.Quantity, oi.Price, p.product_name
+                         FROM customer.Order_Items oi 
+                         INNER JOIN vendor.Products p ON oi.product_id = p.product_id 
+                         WHERE oi.order_id = @OrderId";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@OrderId", orderId);
+
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    items.Add(new OrderItem
+                    {
+                        ProductId = Convert.ToInt32(reader["product_id"]),
+                        Quantity = Convert.ToInt32(reader["Quantity"]),
+                        Price = Convert.ToDecimal(reader["Price"]),
+                        product_name = reader["product_name"].ToString()
+                        
+                    });
+                }
+
+                reader.Close();
+            }
+
+            return items;
+        }
+
+        public User GetUserById(int userId)
+        {
+            User user = null;
+
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                string query = "SELECT user_id,first_name+' '+last_name As Customer_name, Email, Phone FROM customer.registeruser WHERE user_id = @UserId";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@UserId", userId);
+
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    user = new User
+                    {
+                        user_id = Convert.ToInt32(reader["user_id"]),
+                        User_name = reader["Customer_name"].ToString(),
+                        email = reader["Email"].ToString(),
+                        phone = reader["Phone"].ToString()
+                       
+                    };
+                }
+
+                reader.Close();
+            }
+
+            return user;
+        }
+        public AddressViewModel GetAddressById(int addressId)
+        {
+            AddressViewModel address = null;
+
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT * FROM customer.Addresses WHERE address_id = @id", con);
+                cmd.Parameters.AddWithValue("@id", addressId);
+                con.Open();
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+                if (rdr.Read())
+                {
+                    address = new AddressViewModel
+                    {
+                        address_id = Convert.ToInt32(rdr["address_id"]),
+                        user_id = Convert.ToInt32(rdr["user_id"]),
+                        Name = rdr["Name"].ToString(),
+                        Street = rdr["Street"].ToString(),
+                        City = rdr["City"].ToString(),
+                        ZipCode = rdr["ZipCode"].ToString(),
+                        Phone = rdr["Phone"].ToString()
+                    };
+                }
+            }
+
+            return address;
+        }
     }
 }

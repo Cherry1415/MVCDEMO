@@ -1,4 +1,6 @@
-﻿namespace _06032025_MVCDAY1.Models
+﻿using System.Globalization;
+
+namespace _06032025_MVCDAY1.Models
 {
     public class UserOrder
     {
@@ -11,9 +13,17 @@
         public decimal TotalAmount { get; set; }    // In INR
         public string Status { get; set; }          // e.g., "Pending", "Paid", "Failed"
         public DateTime CreatedDate { get; set; }
-
+         public DateTime? require_date { get; set; }
         public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>(); // List of purchased items
         public string addressid { get; set; }
 
+        public int ordered_addressid { get; set; }
+
+        public string cancelreason { get; set; }
+
+        public string PaymentId { get; set; }
+
+        public int supplierId { get; set; }
+        public List<SupplierViewModel> AllSuppliers { get; set; }
     }
 }

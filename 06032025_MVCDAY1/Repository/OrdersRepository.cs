@@ -180,6 +180,19 @@ namespace _06032025_MVCDAY1.Repository
             }
         }
 
+        public void UpdatePaymentIdINUser(string razorpayOrderId, string paymentId)
+        {
+            using (SqlConnection conn = new SqlConnection(_constring))
+            {
+                string query = "UPDATE customer.Orders SET PaymentId = @PaymentId WHERE RazorpayOrderId = @RazorpayOrderId";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@PaymentId", paymentId);
+                cmd.Parameters.AddWithValue("@RazorpayOrderId", razorpayOrderId);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
         public List<UserOrder> GetUserOrdersWithItemsAndImages(int userId)
         {
             var orders = new List<UserOrder>();
@@ -301,39 +314,7 @@ namespace _06032025_MVCDAY1.Repository
 
             return userorders;
         }
+
+        
     }
 }
-/*
-  using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        if (product == null)
-                        {
-                            product = new Product
-                            {
-                                product_id = Convert.ToInt32(reader["product_id"]),
-                                product_name = reader["product_name"].ToString(),
-                                brand_id = Convert.ToInt32(reader["brand_id"]),
-                                category_id = Convert.ToInt32(reader["category_id"]),
-                                sub_category_id = Convert.ToInt32(reader["subcategory_id"]),
-                                price = Convert.ToDecimal(reader["price"]),
-                                Prod_Attributes = new List<Prod_Attributes>(),
-                                ProductImages = new List<ProductImage>()
-                            };
-
-                            // Add only once
-                            product.Prod_Attributes.Add(new Prod_Attributes
-                            {
-                                size = reader["size"].ToString(),
-                                color = reader["color"].ToString(),
-                                material = reader["material"].ToString(),
-                                gender = reader["gender"].ToString(),
-                                processor = reader["processor"].ToString(),
-                                display = reader["display"].ToString(),
-                                capacity = reader["capacity"].ToString(),
-                                weight = reader["weight"].ToString()
-                            });
-                        }
-
- */

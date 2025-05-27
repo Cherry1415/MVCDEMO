@@ -1,0 +1,96 @@
+﻿@model List<_06032025_MVCDAY1.Models.AdminPaymentViewModel>
+@{
+    Layout = "_AdminLayout";
+}
+<h2>Payment History</h2>
+<div class="mb-3 text-right">
+    <button id="btnExportExcel" class="btn btn-success">
+        <i class="fas fa-file-excel mr-1"></i> Export to Excel
+    </button>
+    <button id="btnExportPDF" class="btn btn-danger">
+        <i class="fas fa-file-pdf mr-1"></i> Export to PDF
+    </button>
+</div>
+<style>
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 24px;
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
+</style>
+
+<table class=" table table-dark table-striped">
+    <thead>
+        <tr>
+            <th>Payment ID</th>
+            <th>Order ID</th>
+            <th>User ID</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Paid On</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.PaymentId</td>
+                <td>@p.OrderId</td>
+                <td>@p.UserId</td>
+                <td>₹@p.Amount</td>
+                <td>@p.PaymentStatus</td>
+                <td>@p.PaidOn.ToString("dd-MM-yyyy hh:mm tt")</td>
+                <td>
+                    <button class="btn btn-sm btn-info" onclick="showDetails(@p.OrderId)">Details</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal for Details -->
+<!-- Order Item Details Modal -->
+<div id="paymentDetailModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="paymentDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0 rounded-lg">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="paymentDetailModalLabel">
+                    <i class="fas fa-receipt mr-2"></i>Order Item Details
+                </h5>
+                <label for="menu-toggle" class="close-btn">&times;</label>
+            </div>
+            <div class="modal-body" id="orderItemDetails">
+                <div class="text-center text-muted">
+                    Loading...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+        function showDetails(orderId) {
+            $.get('/Admin/GetOrderItems?orderId=' + orderId, function (data) {
+                $('#orderItemDetails').html(data);
+                $('#paymentDetailModal').modal('show');
+            });
+        }
+</script>
+
+<script>
+    $('#btnExportExcel').click(function () {
+        window.location.href = '@Url.Action("ExportPaymentsToExcel", "Admin")';
+    });
+
+    $('#btnExportPDF').click(function () {
+        window.location.href = '@Url.Action("ExportPaymentsToPdf", "Admin")';
+    });
+</script>

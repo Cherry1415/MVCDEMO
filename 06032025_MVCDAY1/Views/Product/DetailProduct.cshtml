@@ -3,11 +3,51 @@
 *@
 @{
 }
-@model Tuple<IEnumerable<_06032025_MVCDAY1.Models.Product>,List<_06032025_MVCDAY1.Models.AddressViewModel>>
+@model Tuple<IEnumerable<_06032025_MVCDAY1.Models.Product>,List<_06032025_MVCDAY1.Models.AddressViewModel>,List<ProductReview>>
 
 
 @* <script src="~/js/makePayment.js"></script> *@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $('.add-to-cart-btn').click(function (e) {
+            var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to add items to your wishlist.");
+            return false; // Stop further execution
+        }
+            e.preventDefault();
+
+            var productId = $(this).data('product-id');
+            var price = $(this).data('price');
+
+            $.ajax({
+                url: '/Cart/AddToCartAjax',
+                type: 'POST',
+                data: {
+                    productId: productId,
+                    quantity: 1,
+                    price: price
+                },
+                success: function (html) {
+                    // Replace sidebar
+                    $('#cartSidebarContainer').html(html);
+
+                    // Show Bootstrap offcanvas (important)
+                    var offcanvasEl = document.getElementById('cartSidebar');
+                    var bsOffcanvas = new bootstrap.Offcanvas(offcanvasEl);
+                    bsOffcanvas.show();
+                },
+                error: function () {
+                    alert('Failed to add product to cart.');
+                }
+            });
+        });
+    });
+</script>
 <style>
     /* .modal-content {
     border-radius: 10px;
@@ -319,7 +359,7 @@
 </style>
 
 
-
+<div id="cartSidebarContainer"></div>
 @if (Model?.Item1 != null)
 {
     <div class="container">
@@ -362,9 +402,12 @@
                             </button>
                         </div>
                     </div>
-
-                    <button class="btn-cart">Add to Cart</button>
-                    <button class="btn-buy buyNowBtn" data-name="@product.product_name" data-productid="@product.product_id" data-price="@product.price">
+                    <button class="btn-cart add-to-cart-btn" data-product-id="@product.product_id"
+                            data-price="@product.price">
+                        Add to Cart
+                    </button>
+                    <button class="btn-buy buyNowBtn" data-name="@product.product_name" data-productid="@product.product_id" data-price="@product.price"
+                      data-image="@Url.Content("~/uploads/" + product.ProductImages?.FirstOrDefault()?.imgName)">
                         Buy it now
                     </button>
 
@@ -375,6 +418,47 @@
                             <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
                             @* Repeat info removed for brevity *@
                         </div>
+                    </div>
+                    
+
+
+                </div>
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <strong>Customer Reviews</strong>
+                    </div>
+                    <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                        @if (Model.Item3 != null && Model.Item3.Any())
+                        {
+                            <div class="row">
+                                @foreach (var review in Model.Item3)
+                                {
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card h-100 shadow-sm border-0" style="background: #f9f9f9;">
+                                            <div class="card-body py-2 px-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <strong class="text-dark">@review.username</strong>
+                                                    <small class="text-muted">@review.CreatedDate.ToString("dd MMM yyyy")</small>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <span style="color: #f4b400; font-size: 16px;">
+                                                        @for (int i = 1; i <= 5; i++)
+                                                        {
+                                                            @Html.Raw(i <= review.Rating ? "&#9733;" : "&#9734;")
+                                                        }
+                                                    </span>
+                                                </div>
+                                                <p class="mb-1 text-secondary" style="font-size: 14px;">@review.Review</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-muted">No reviews yet. Be the first to review!</div>
+                        }
                     </div>
                 </div>
             </div>

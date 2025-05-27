@@ -3,5 +3,6 @@
     public interface IPaymentRepository
     {
         void SavePayment(string razorpayOrderId, string razorpayPaymentId, decimal amount, string status);
+        
     }
 }

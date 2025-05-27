@@ -6,31 +6,31 @@
 
 <h2>Dashboard</h2>
 <div class="row mb-4">
-    <div class="col-md-3">
+    <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
         <div class="card card-custom text-center p-3">
             <h5>All Orders</h5>
             <h2>@Model.TotalOrders</h2>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
         <div class="card card-custom text-center p-3">
             <h5>Pending</h5>
             <h2>@Model.PendingCount</h2>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
         <div class="card card-custom text-center p-3">
             <h5>Rejected</h5>
             <h2>@Model.RejectCount</h2>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
         <div class="card card-custom text-center p-3">
             <h5>Delivered</h5>
             <h2>@Model.DeliveredCount</h2>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
         <div class="card card-custom text-center p-3">
             <h5>Completed</h5>
             <h2>@Model.CompletedCount</h2>
@@ -39,16 +39,20 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-lg-6 col-md-12 mb-4">
         <div class="card card-custom p-3">
             <h5>Orders Status</h5>
-            <canvas id="orderStatusChart" height="100" width="100"></canvas>
+            <div class="chart-container" style="position: relative; height: 40vh; width: 100%;">
+                <canvas id="orderStatusChart"></canvas>
+            </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-lg-6 col-md-12 mb-4">
         <div class="card card-custom p-3">
             <h5>Top 5 Selling Products</h5>
-            <canvas id="topProductsChart" height="100" width="100"></canvas>
+            <div class="chart-container" style="position: relative; height: 40vh; width: 100%;">
+                <canvas id="topProductsChart"></canvas>
+            </div>
         </div>
     </div>
 </div>
@@ -76,14 +80,58 @@
 
     new Chart(document.getElementById("orderStatusChart"), {
         type: 'pie',
-        data: statusData
+        data: statusData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        font: { size: 20 },
+                        color: 'white'
+                    }
+                },
+                tooltip: {
+                    bodyFont: { size: 16 },
+                    titleFont: { size: 18 }
+                }
+            }
+        }
     });
 
     new Chart(document.getElementById("topProductsChart"), {
-        type: 'doughnut',
-        data: topProducts
+        type: 'bar',
+        data: topProducts,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        font: { size: 14 },
+                        color: 'white'
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: { size: 12 },
+                        color: 'white'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        font: { size: 16 },
+                        color: 'white'
+                    }
+                },
+                tooltip: {
+                    bodyFont: { size: 16 },
+                    titleFont: { size: 18 }
+                }
+            }
+        }
     });
 </script>
-
-
-

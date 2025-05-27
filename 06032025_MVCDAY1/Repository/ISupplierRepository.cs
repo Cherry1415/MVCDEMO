@@ -22,5 +22,9 @@ namespace _06032025_MVCDAY1.Repository
         WareHouse_details GetWareHouse_details(int warehouse_id);
 
         bool AddWareHouseDetails(WareHouse_details warehouseDetails);
+
+        //Add by my side
+
+        
     }
 }
