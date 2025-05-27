@@ -8,6 +8,8 @@ namespace _06032025_MVCDAY1.Controllers.Vendor
     public class VendorController : Controller
     {
         private readonly IProductRepository _Prodrepository;
+
+       
         private static List<Products> product = new List<Products>();
 
         public VendorController(IProductRepository repository)
@@ -124,5 +126,7 @@ namespace _06032025_MVCDAY1.Controllers.Vendor
             var ratings = _Prodrepository.GetAllReviewsbyvendor(vendorid);
             return View(ratings);
         }
+
+        
     }
 }

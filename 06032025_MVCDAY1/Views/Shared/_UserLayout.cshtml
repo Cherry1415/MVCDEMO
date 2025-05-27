@@ -70,6 +70,15 @@
                 </form>
                
                 <div class="d-flex">
+                    <div>
+                        <li class="nav-item dropdown" style="list-style:none">
+                            <a class="nav-link position-relative" href="@Url.Action("AssignSupplier","Orders")"  role="button" data-bs- aria-expanded="false">
+                                🔔
+                                
+                            </a>
+                            
+                        </li>
+                    </div>
 <div>
                         <i class="fa fa-fw fa-user" style='font-size:16px'></i>
 </div>
@@ -128,8 +137,12 @@
                             <a class="nav-link" asp-area="" asp-controller="Product" asp-action="GetProduct"> Products</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Orders" asp-action="AssignSupplier">AssignSupplier On Orders</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Orders" asp-action="Orders">Manage Orders</a>
                         </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="review">Manage Reviews</a>
                         </li>
@@ -142,9 +155,9 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="User" asp-action="SignIn">Log Out</a>
                         </li>
-                       @*  <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="review">Report</a>
-                        </li> *@
+                        
+
+
                         
                       
                     </ul>

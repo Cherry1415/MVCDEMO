@@ -315,6 +315,67 @@ namespace _06032025_MVCDAY1.Repository
             return userorders;
         }
 
-        
+        public List<UserOrder> GetOrdersWithoutSupplier()
+        {
+            List<UserOrder> list = new List<UserOrder>();
+
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                string query = @"SELECT o.order_id,u.first_name +' '+u.last_name AS CustomerName, o.Status
+                         FROM [customer].[Orders] o
+                         INNER JOIN [customer].registeruser u ON o.user_id = u.user_id
+                         WHERE o.Status='Paid' AND o.supplier_id IS NULL";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    list.Add(new UserOrder
+                    {
+                        Id = Convert.ToInt32(rdr["order_id"]),
+                        Customer_name= rdr["CustomerName"].ToString(),
+                        Status = rdr["Status"].ToString()
+                    });
+                }
+            }
+            return list;
+        }
+        public List<SupplierViewModel> GetAllSuppliers()
+        {
+            List<SupplierViewModel> list = new List<SupplierViewModel>();
+
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                string query = "SELECT supplier_id,supplier_name FROM Supplier.Supplier_tbl";
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    list.Add(new SupplierViewModel
+                    {
+                        SupplierId = Convert.ToInt32(rdr["supplier_id"]),
+                        Name = rdr["supplier_name"].ToString()
+                    });
+                }
+            }
+            return list;
+        }
+        public bool AssignSupplierToOrder(int orderId, int supplierId)
+        {
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                string query = "UPDATE [customer].[Orders] SET supplier_id = @SupplierId WHERE order_id = @OrderId";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@SupplierId", supplierId);
+                cmd.Parameters.AddWithValue("@OrderId", orderId);
+
+                con.Open();
+                int rows = cmd.ExecuteNonQuery();
+                return rows > 0;
+            }
+        }
     }
 }

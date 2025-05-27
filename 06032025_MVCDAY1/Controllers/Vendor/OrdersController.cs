@@ -51,5 +51,30 @@ namespace _06032025_MVCDAY1.Controllers.Vendor
             return Json(lowStockList);
         }
 
+        public ActionResult AssignSupplier()
+        {
+            var orders = _repository.GetOrdersWithoutSupplier(); // orders without supplier
+            var suppliers = _repository.GetAllSuppliers();
+
+            var viewModel = orders.Select(o => new UserOrder
+            {
+                Id = o.Id,
+                Customer_name = o.Customer_name,
+                Status = o.Status,
+                AllSuppliers = suppliers
+            }).ToList();
+
+            return View(viewModel);
+        }
+        [HttpPost]
+        public ActionResult AssignSupplier(int orderId, int supplierId)
+        {
+            if (supplierId > 0)
+            {
+                _repository.AssignSupplierToOrder(orderId, supplierId);
+            }
+
+            return RedirectToAction("AssignSupplier");
+        }
     }
 }

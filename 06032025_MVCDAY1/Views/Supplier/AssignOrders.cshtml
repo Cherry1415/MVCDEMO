@@ -1,0 +1,42 @@
+﻿@model List<_06032025_MVCDAY1.Models.UserOrder>
+
+<h2 class="mb-4 text-primary">My Assigned Orders</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No orders assigned yet.</div>
+}
+else
+{
+    <table class="table table-bordered table-hover shadow-sm">
+        <thead class="table-light">
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Order Date</th>
+                <th>Status</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.Customer_name</td>
+                    <td>@order.CreatedDate.ToString("dd-MMM-yyyy")</td>
+                    <td>
+                        <span class="badge bg-@(
+                            order.Status.ToLower() == "pending" ? "warning" :
+                            order.Status.ToLower() == "delivered" ? "success" : "secondary"
+                        )">
+                            @order.Status
+                        </span>
+                    </td>
+                    <td>@order.addressid</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

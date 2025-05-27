@@ -210,5 +210,12 @@ namespace _06032025_MVCDAY1.Controllers.Supplier
             }
             return View(details); // Show form again with errors if any
         }
+
+        public IActionResult AssignOrders(int supplierid)
+        {
+            var suppid = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            var assign = _supplierRepository.GetOrdersAssignedToSupplier(suppid);
+            return View(assign);
+        }
     }
 }

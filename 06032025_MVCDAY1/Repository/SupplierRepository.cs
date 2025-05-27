@@ -359,6 +359,40 @@ namespace _06032025_MVCDAY1.Repository
                 return rowsAffected > 0;
             }
         }
-        
+
+        public List<UserOrder> GetOrdersAssignedToSupplier(int supplierId)
+        {
+            List<UserOrder> list = new List<UserOrder>();
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                string query = @"SELECT o.order_id, c.first_name+' '+c.last_name AS CustomerName, o.Status, o.order_date, ca.Street+','+ca.City+','+ca.ZipCode AS Customer_Address
+                         FROM [customer].[Orders] o
+                         INNER JOIN [customer].registeruser c ON o.user_id = c.user_id
+						 INNER JOIN customer.Addresses ca ON o.address_id=ca.address_id
+                         WHERE o.supplier_id = (
+							SELECT supplier_id FROM Supplier.Supplier_tbl WHERE user_id = @SupplierId
+						)
+						ORDER BY o.order_date DESC";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@SupplierId", supplierId);
+
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    list.Add(new UserOrder
+                    {
+                        Id = Convert.ToInt32(rdr["order_id"]),
+                        Customer_name = rdr["CustomerName"].ToString(),
+                        Status = rdr["Status"].ToString(),
+                        CreatedDate = Convert.ToDateTime(rdr["order_date"]),
+                        addressid = rdr["Customer_Address"].ToString()
+                    });
+                }
+            }
+            return list;
+        }
     }
 }

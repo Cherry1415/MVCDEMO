@@ -25,6 +25,6 @@ namespace _06032025_MVCDAY1.Repository
 
         //Add by my side
 
-        
+        List<UserOrder> GetOrdersAssignedToSupplier(int supplierId);
     }
 }
