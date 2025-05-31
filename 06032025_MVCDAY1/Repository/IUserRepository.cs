@@ -64,6 +64,6 @@ namespace _06032025_MVCDAY1.Repository
         User GetUserById(int userId);
 
         AddressViewModel GetAddressById(int addressId);
-
+        UserOrder GetOrderTrackingDetails(int orderId, int userId);
     }
 }

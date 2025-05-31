@@ -1,16 +1,4 @@
-﻿
-@model List<_06032025_MVCDAY1.Models.Product>
-@{
-    var filterModel = ViewData["FilterModel"] as _06032025_MVCDAY1.Models.ProductFilterModel;
-}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/makePayment.js"></script>
-
-
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
+﻿@model List<_06032025_MVCDAY1.Models.Product>
 @{
     int userid = Convert.ToInt32(Context.Session.GetString("user_id"));
 }
@@ -160,8 +148,8 @@
 
 
     /* .product-card .position-relative {
-                position: relative;
-            } */
+                    position: relative;
+                } */
     #imgdiv {
         position: relative;
     }
@@ -185,7 +173,7 @@
         display: block; /* Show the button on hover */
     }
 
-    
+
     .product-card img {
         width: 100%;
         height: 250px;
@@ -245,103 +233,50 @@
         fill: white;
     }
     /* .carousel-item{
-                height:500px;
-            } */
+                    height:500px;
+                } */
 </style>
-
-<div id="cartSidebarContainer"></div>
-<div class="container-fluid d-inline-block">
-
-    <div>
-        <div>
-            <input type="checkbox" id="menu-togglemobilefilter">
-            <label for="menu-togglemobilefilter" class="overlay"></label>
-
-            <!-- ====== NAVBAR (New) ====== -->
-            <div class="navbar">
-                <label for="menu-togglemobilefilter" class="open-btn"><i for="menu-togglemobilefilter" class="fas fa-filter open-btn " style="font-size:24px; color:slategray"></i></label>
-            </div>
-
-
-            <div class="filtersidebar">
-                <label for="menu-togglemobilefilter" class="close-btn">&times;</label>
-                <hr />
-                @if (filterModel != null)
-                {
-                    @await Html.PartialAsync("ProductFilter", filterModel)
-                }
-            </div>
-        </div>
-        <div>
-            <div class="container mt-5">
-                <div id="productResults">
-                <div class="row"> 
-                    @foreach (var product in Model)
-                    {
-                        <div class="col-md-3 col-sm-6 col-12 py-3">
-                            <div class="card product-card">
-                                 
-                                <div id="imgdiv">
-                                    
-                                    <form action="@Url.Action("AddToWishlist", "User")" method="post" target="wishlistFrame" class="wishlist-form">
-                                        <input type="hidden" name="productId" value="@product.product_id" />
-                                            <input type="hidden" name="productId" value="@product.vendor_id" />
-                                        <input type="hidden" asp-for="@userid" />
-
-                                        <button type="submit" class="wishlist-label"  style="background:none;border:none;padding:0;" onclick="toggleWishlistIcon(this);">
-                                         
-
-                                            <svg class="heart-icon @(product.IsInWishlist ? "filled" : "empty")" viewBox="0 0 24 24"
-                                                   >
-                                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                                            </svg>
-                                        </button> 
-                                    </form>
-                                    <!-- Hidden iframe to handle form submission without page refresh -->
-                                    <iframe name="wishlistFrame" style="display:none;"></iframe>
-
-
-
-
-                                        <a asp-area="" asp-controller="Product" asp-action="DetailProduct" asp-route-id="@product.product_id">
-                                            <img src="~/uploads/@product.ProductImages.FirstOrDefault()?.imgName" width="100" height="100"
-                                                 class="product-img"
-                                                 id="image"
-                                                 data-productid="@product.product_id"
-                                                 data-name="@product.product_name"
-                                                 data-price="@product.price"
-                                                 data-description="a portable, handheld device that allows users to make and receive calls, send and receive messages, and access the internet via a wireless connection. ">
-                                        </a>
-                                    <a href="#" class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" onclick="showQuickView(this)" align="center">Quick View</a>
-                                </div>
-                                <div class="card-body" class="wishlist-item" id="wishlist-item1">
-                                    <h5 class="card-title" id="product_name">@product.product_name</h5>
-                                    <p class="card-text" id="price">₹ @product.price</p>
-                                    <div class="text-center mt-auto">
-
-
-                                            <button class="btn btn-outline-info edit-btn add-to-cart-btn"
-                                                    data-product-id="@product.product_id"
-                                                    data-price="@product.price">
-                                                Add To Cart
-                                            </button>
-                                    </div>
-                                    @* <a asp-area="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
-                                </div>
-                               
-                            </div>
-                        </div>
-                    }
+<div class="row">
+    @foreach (var product in Model)
+    {
+        <div class="col-md-3 col-sm-6 col-12 py-3">
+            <div class="card product-card">
+                <div id="imgdiv">
+                    <form action="@Url.Action("AddToWishlist", "User")" method="post" target="wishlistFrame" class="wishlist-form">
+                        <input type="hidden" name="productId" value="@product.product_id" />
+                        <input type="hidden" asp-for="@userid" />
+                        <button type="submit" class="wishlist-label" style="background:none;border:none;padding:0;" onclick="toggleWishlistIcon(this);">
+                            <svg class="heart-icon @(product.IsInWishlist ? "filled" : "empty")" viewBox="0 0 24 24">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                            </svg>
+                        </button>
+                    </form>
+                    <a asp-area="" asp-controller="Product" asp-action="DetailProduct" asp-route-id="@product.product_id">
+                        <img src="~/uploads/@product.ProductImages.FirstOrDefault()?.imgName" width="100" height="100"
+                             class="product-img"
+                             id="image"
+                             data-productid="@product.product_id"
+                             data-name="@product.product_name"
+                             data-price="@product.price"
+                             data-description="a portable, handheld device that allows users to make and receive calls, send and receive messages, and access the internet via a wireless connection. ">
+                    </a>
+                    <a href="#" class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" onclick="showQuickView(this)" align="center">Quick View</a>
                 </div>
+                <div class="card-body" class="wishlist-item" id="wishlist-item1">
+                    <h5 class="card-title" id="product_name">@product.product_name</h5>
+                    <p class="card-text" id="price">₹ @product.price</p>
+                    <div class="d-flex gap-2 align-items-center">
+                        <button class="btn btn-outline-info edit-btn add-to-cart-btn"
+                                data-product-id="@product.product_id"
+                                data-price="@product.price">
+                            Add To Cart
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-
+    }
 </div>
-
-<!-- Quick View Modal -->
 
 <div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -362,8 +297,8 @@
                         <p id="modalProductDescription"></p>
                         <p class="price">
                             RS. <span id="modalProductPrice"></span>
-                           
-                           
+
+
                         </p>
                         <a href="#" id="quickbuynow" class="btn btn-success">Buy Now</a>
                     </div>
@@ -372,6 +307,3 @@
         </div>
     </div>
 </div>
-
-
-

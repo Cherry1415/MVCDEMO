@@ -43,6 +43,9 @@
                         <button class="btn btn-success btn-sm mb-2" onclick="generateBill(@order.Id)">
                             🧾 Download Bill
                         </button>
+                        <a href="@Url.Action("TrackOrder", "User", new { id = order.Id })" class="btn btn-outline-primary btn-sm">
+                            Track
+                        </a>
                     }
                 </div>
             </div>

@@ -19,7 +19,7 @@ namespace _06032025_MVCDAY1.Controllers.Supplier
         }
         public IActionResult Contact1()
         {
-            ViewBag.Message = TempData["Message"];
+           // ViewBag.Message = TempData["Message"];
             return View();
         }
         [HttpPost]

@@ -6,9 +6,10 @@ namespace _06032025_MVCDAY1.Repository
     {
         IEnumerable<Product> GetProducts(int catid,int subcateid);
         IEnumerable<Product> VendorGetProducts();
+        IEnumerable<Product> VendorOwnProducts(int vendorId);
         IEnumerable<Product> PendingApproval();
         Product GetProductById(int id);
-        void NewProduct(Product product, List<ProductImage> images, List<Prod_Attributes> attributes, List<VendorStock> vstock);
+        void NewProduct(int userID,Product product, List<ProductImage> images, List<Prod_Attributes> attributes, List<VendorStock> vstock);
         void UpdateProduct(Product product, List<ProductImage> images, List<Prod_Attributes> attributes);
         IEnumerable<Category> GetCategories();
         IEnumerable<Subcategory> GetSubcategories();
@@ -27,5 +28,14 @@ namespace _06032025_MVCDAY1.Repository
         List<ProductReview> GetAllReviewsbyvendor(int vendorid);
 
         List<ProductReview> GetReviewsByProductId(int productId);
+
+        // FIlter Product feature for Customer
+
+        
+        IEnumerable<Product> GetFilteredProducts(int catid, int subcateid,List<string> brands, decimal minPrice, decimal maxPrice);
+        List<string> GetAllBrands(int categoryId, int subcategoryId);
+        (decimal, decimal) GetPriceRange(int catid, int subcatid);
+        IEnumerable<Product> TopSellingProduct();
+
     }
 }

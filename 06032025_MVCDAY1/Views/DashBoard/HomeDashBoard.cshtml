@@ -1,7 +1,148 @@
-﻿@model List<_06032025_MVCDAY1.Models.CategoryWithProductsViewModel>
+﻿@model Tuple<List<CategoryWithProductsViewModel>,List<Product>>
+@{
+    int userid = Convert.ToInt32(Context.Session.GetString("user_id"));
+}
 <link rel="stylesheet" href="~/css/carouselhome.css" asp-append-version="true" />
 
 <h1>@TempData["Usermail"]</h1>
+<script>
+    function toggleWishlistIcon(button) {
+        var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to add items to your wishlist.!!");
+            return false; // Stop further execution
+        }
+        const icon = button.querySelector('.heart-icon');
+        icon.classList.toggle('filled');
+        icon.classList.toggle('empty');
+        // allow the form to submit silently
+    }
+</script>
+<script>
+    function toggleWishlist(button, productId) {
+        var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to add items to your wishlist.");
+            return false; // Stop further execution
+        }
+
+        var heartIcon = button.querySelector(".heart-icon");
+
+        // Send request via hidden iframe
+        var form = button.closest("form");
+        form.submit();
+
+        // Toggle the icon color immediately
+        var currentColor = heartIcon.style.fill;
+        heartIcon.style.fill = (currentColor === "red") ? "white" : "red";
+
+        // Save wishlist state in sessionStorage (to persist color on page reload)
+        let wishlist = JSON.parse(sessionStorage.getItem("wishlist")) || [];
+        if (heartIcon.style.fill === "red") {
+            if (!wishlist.includes(productId)) wishlist.push(productId);
+        } else {
+            wishlist = wishlist.filter(id => id !== productId);
+        }
+        sessionStorage.setItem("wishlist", JSON.stringify(wishlist));
+
+        return false; // Prevent default form submission
+    }
+
+    // Restore wishlist colors on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        let wishlist = JSON.parse(sessionStorage.getItem("wishlist")) || [];
+        document.querySelectorAll(".heart-icon").forEach(icon => {
+            let productId = parseInt(icon.closest("button").querySelector("input[name='productId']").value);
+            if (wishlist.includes(productId)) {
+                icon.style.fill = "red";
+            }
+        });
+    });
+</script>
+
+<script>
+    // When "Quick View" button is clicked, pass the product data to the modal
+    $('#quickViewModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var image = button.data('image'); // Extract info from data-* attributes
+        var name = button.data('name');
+        var price = button.data('price');
+
+        var modal = $(this);
+        modal.find('#modalImage').attr('src', image);
+        modal.find('#modalName').text(name);
+        modal.find('#modalPrice').text(price);
+
+
+    });
+</script>
+
+<script>
+    function toggleFavorite(element) {
+        $(element).find("i").toggleClass("fas far");
+    }
+
+    function showQuickView(element) {
+        var product = $(element).closest('.product-card');
+        var imgSrc = product.find('.product-img').attr('src');
+        var name = product.find('.product-img').data('name');
+        var price = product.find('.product-img').data('price');
+        var description = product.find('.product-img').data('description');
+        var prodid=product.find('.product-img').data('productid');
+
+        $("#modalProductImage").attr("src", imgSrc);
+        $("#modalProductName").text(name);
+        $("#modalProductPrice").text(price);
+        $("#modalProductDescription").text(description);
+        $("#modalProductID").text(prodid);
+          // Set dynamic URL on Buy Now button
+        $("#quickbuynow").attr("href", "/Product/DetailProduct/" + prodid);
+
+        $("#quickViewModal").modal("show");
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        $('.add-to-cart-btn').click(function (e) {
+            var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to add items to your wishlist.");
+            return false; // Stop further execution
+        }
+            e.preventDefault();
+
+            var productId = $(this).data('product-id');
+            var price = $(this).data('price');
+
+            $.ajax({
+                url: '/Cart/AddToCartAjax',
+                type: 'POST',
+                data: {
+                    productId: productId,
+                    quantity: 1,
+                    price: price
+                },
+                success: function (html) {
+                    // Replace sidebar
+                    $('#cartSidebarContainer').html(html);
+
+                    // Show Bootstrap offcanvas (important)
+                    var offcanvasEl = document.getElementById('cartSidebar');
+                    var bsOffcanvas = new bootstrap.Offcanvas(offcanvasEl);
+                    bsOffcanvas.show();
+                },
+                error: function () {
+                    alert('Failed to add product to cart.');
+                }
+            });
+        });
+    });
+</script>
 <style>
     .carousel-wrapper {
         width: 100%;
@@ -36,6 +177,102 @@
         width: 20px;
         height: 20px;
     }
+
+    /* newww */
+
+    .modal-content {
+        border-radius: 10px;
+    }
+
+
+    /* .product-card .position-relative {
+                    position: relative;
+                } */
+    #imgdiv {
+        position: relative;
+    }
+
+    .quick-view-btn {
+        display: none; /* Initially hide the button */
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.4); /* Transparent background */
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.6); /* Light border */
+        padding: 10px 0;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: background-color 0.3s, border-color 0.3s;
+        position: absolute;
+        transform: translate(-50%,-50%);
+    }
+
+    .product-card:hover .quick-view-btn {
+        display: block; /* Show the button on hover */
+    }
+
+
+    .product-card img {
+        width: 100%;
+        height: 250px;
+        border-radius: 12px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .quick-view-btn:hover {
+        background-color: rgba(0, 0, 0, 0.7); /* Darker background on hover */
+        border-color: rgba(255, 255, 255, 1);
+    }
+
+    .small-images img {
+        width: 80px;
+        height: 130px;
+        object-fit: cover;
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    .small-images {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    @@media (max-width: 765px) {
+        /* Hide small image thumbnails on small screens */
+        .small-images {
+            display: none !important;
+        }
+        /* Make the image carousel full width and show all images */
+        #mainImageCarousel .carousel-item {
+            width: 100% !important;
+        }
+
+        #mainImageCarousel .carousel-control-prev,
+        #mainImageCarousel .carousel-control-next {
+            display: block;
+        }
+        /* Stack columns vertically on small screens */
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .modal-body .col-md-9, .modal-body .col-md-3 {
+                width: 100%;
+            }
+    }
+
+    .heart-icon.filled {
+        fill: red;
+    }
+
+    .heart-icon.empty {
+        fill: white;
+    }
+    /* .carousel-item{
+                    height:500px;
+                } */
 </style>
 <!-- Full Width Carousel -->
 <!-- Full Width Responsive Carousel -->
@@ -70,8 +307,76 @@
 <!-- Category and Product Cards with background and shadow -->
 <div class="py-5" style="background-color: #e7f1fb;">
     <div class="container shadow-lg rounded-4 p-4" style="background-color: white;">
+        <h3 class="mb-4 text-center fw-bold text-primary">🔥 Top 5 Selling Products</h3>
+        <div class="container mt-5">
+            <div id="productResults">
+                <div class="row">
+                    @foreach (var product in Model.Item2)
+                    {
+                        <div class="col-md-3 col-sm-6 col-12 py-3">
+                            <div class="card product-card">
+
+                                <div id="imgdiv">
+
+                                    <form action="@Url.Action("AddToWishlist", "User")" method="post" target="wishlistFrame" class="wishlist-form">
+                                        <input type="hidden" name="productId" value="@product.product_id" />
+                                        <input type="hidden" asp-for="@userid" />
+
+                                        <button type="submit" class="wishlist-label" style="background:none;border:none;padding:0;" onclick="toggleWishlistIcon(this);">
+
+
+                                            <svg class="heart-icon @(product.IsInWishlist ? "filled" : "empty")" viewBox="0 0 24 24">
+                                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                    <!-- Hidden iframe to handle form submission without page refresh -->
+                                    <iframe name="wishlistFrame" style="display:none;"></iframe>
+
+
+
+
+                                    <a asp-area="" asp-controller="Product" asp-action="DetailProduct" asp-route-id="@product.product_id">
+                                        <img src="~/uploads/@product.ProductImages.FirstOrDefault()?.imgName" width="100" height="100"
+                                             class="product-img"
+                                             id="image"
+                                             data-productid="@product.product_id"
+                                             data-name="@product.product_name"
+                                             data-price="@product.price"
+                                             data-description="a portable, handheld device that allows users to make and receive calls, send and receive messages, and access the internet via a wireless connection. ">
+                                    </a>
+
+
+                                    <a href="#" class="quick-view-btn position-absolute bottom-0 start-50 translate-middle-x mb-3" onclick="showQuickView(this)" align="center">Quick View</a>
+                                </div>
+                                <div class="card-body" class="wishlist-item" id="wishlist-item1">
+                                    <h5 class="card-title" id="product_name">@product.product_name</h5>
+                                    <p class="card-text" id="price">₹ @product.price</p>
+                                    <div class="text-center mt-auto">
+
+
+                                        <button class="btn btn-outline-info edit-btn add-to-cart-btn"
+                                                data-product-id="@product.product_id"
+                                                data-price="@product.price">
+                                            Add To Cart
+                                        </button>
+                                    </div>
+                                    @* <a asp-area="" asp-controller="Payment" asp-action="PaymentProduct" class="btn btn-primary buyNowBtn">Buy Now</a> *@
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="py-5" style="background-color: #e7f1fb;">
+    <div class="container shadow-lg rounded-4 p-4" style="background-color: white;">
+        
         <div class="row">
-            @foreach (var category in Model)
+            @foreach (var category in Model.Item1)
             {
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
                     <div class="card h-100 p-3 shadow-sm">
@@ -93,6 +398,36 @@
                 </div>
             }
         </div>
+        
     </div>
 </div>
 
+<div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quickViewModalLabel">Product Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img id="modalProductImage" src="" class="img-fluid" alt="Product Image">
+                    </div>
+                    <div class="col-md-6">
+                        <!-- Hidden Field to store Product ID -->
+                        <span id="modalProductID" style="display:none;"></span>
+                        <h4 id="modalProductName"></h4>
+                        <p id="modalProductDescription"></p>
+                        <p class="price">
+                            RS. <span id="modalProductPrice"></span>
+
+
+                        </p>
+                        <a href="#" id="quickbuynow" class="btn btn-success">Buy Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

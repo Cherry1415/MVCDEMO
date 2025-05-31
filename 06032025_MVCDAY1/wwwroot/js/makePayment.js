@@ -54,7 +54,7 @@ function makePayment(addressid) {
                     "key": "rzp_test_A6DIgBxiN6cygo",
                     "amount": totalAmount * 100,
                     "currency": "INR",
-                    "name": "Your Company",
+                    "name": "Deal Bazar",
                     "description": "Order Payment",
                     "order_id": data.orderId,
                     "handler": function (response) {

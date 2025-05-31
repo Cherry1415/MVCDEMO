@@ -14,17 +14,24 @@ else
                 <th>Order ID</th>
                 <th>Customer</th>
                 <th>Order Date</th>
+                <th>Require Date</th>
                 <th>Status</th>
+                <th>Delivered Date</th>
                 <th>Address</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var order in Model)
             {
-                <tr>
+                var isDelivered = order.Status?.ToLower() == "delivered";
+                var rowClass = isDelivered ? "table-success" : "";
+                <!-- Light green background -->
+                <tr class="@rowClass">
                     <td>@order.Id</td>
                     <td>@order.Customer_name</td>
                     <td>@order.CreatedDate.ToString("dd-MMM-yyyy")</td>
+                    <td>@order.require_date?.ToString("dd-MMM-yyyy")</td>
                     <td>
                         <span class="badge bg-@(
                             order.Status.ToLower() == "pending" ? "warning" :
@@ -33,7 +40,20 @@ else
                             @order.Status
                         </span>
                     </td>
+                    <td>@order.delivered_date?.ToString("dd-MMM-yyyy")</td>
                     <td>@order.addressid</td>
+                    <td>
+                        <form asp-action="UpdateStatus" asp-controller="Supplier" method="post" style="display:inline;">
+                            <input type="hidden" name="orderId" value="@order.Id" />
+                            <input type="hidden" name="newStatus" value="delivered" />
+                            <button type="submit" class="btn btn-success btn-sm" @(isDelivered ? "disabled" : "")>Complete</button>
+                        </form>
+                        <form asp-action="UpdateStatus" asp-controller="Supplier" method="post" style="display:inline;">
+                            <input type="hidden" name="orderId" value="@order.Id" />
+                            <input type="hidden" name="newstatus" value="rejected" />
+                            <button type="submit" class="btn btn-danger btn-sm" @(isDelivered ? "disabled" : "")>Reject</button>
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>

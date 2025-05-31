@@ -14,14 +14,18 @@ namespace _06032025_MVCDAY1.Models
       //  public string? PaymentId { get; set; }      // Razorpay's payment ID (set after success)
         public decimal TotalAmount { get; set; }    // In INR
         public string Status { get; set; }          // e.g., "Pending", "Paid", "Failed"
+        public string shipped_status { get; set; }  // e.g. ,assign,packed,delivered
         public DateTime CreatedDate { get; set; }
          public DateTime? require_date { get; set; }
+
+        public DateTime? delivered_date { get; set; }
         public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>(); // List of purchased items
         public string addressid { get; set; }
 
         public int ordered_addressid { get; set; }
 
         public string cancelreason { get; set; }
+        public string product_name { get; set; }
 
         public string PaymentId { get; set; }
 

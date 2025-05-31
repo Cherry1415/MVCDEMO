@@ -11,6 +11,8 @@
             public int RejectCount { get; set; }
 
         public List<TopProduct> TopProducts { get; set; } = new List<TopProduct>();
+        public int WeekNumber { get; set; }
+        public decimal TotalSales { get; set; }
         //public class TopProduct
         //{
         //    public string Name { get; set; }

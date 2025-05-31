@@ -74,8 +74,19 @@ namespace _06032025_MVCDAY1.Controllers
 
             int catid = _Prodrepository.GetCategoryIdByName(categoryname);
             int subcateid = _Prodrepository.GetSubCategoryIdByName(subcategoryname);
+            //var (minPriceRange, maxPriceRange) = _Prodrepository.GetPriceRange(catid, subcateid);
+            //var filterModel = new ProductFilterModel
+            //{
+            //    AvailableBrands = _Prodrepository.GetAllBrands(catid, subcateid),
+            //    MinPriceRange = minPriceRange,
+            //    MaxPriceRange = maxPriceRange,
+            //    MinPrice = minPriceRange,
+            //    MaxPrice = maxPriceRange
+            //};
 
-           var products = _Prodrepository.GetProducts(catid,subcateid);
+            //ViewData["FilterModel"] = filterModel;
+
+            var products = _Prodrepository.GetProducts(catid,subcateid);
 
             List<int> wishlistid = _repository.GetUserWishlist(uid).Select(w => w.product_id)
                                   .ToList();
@@ -88,7 +99,8 @@ namespace _06032025_MVCDAY1.Controllers
 
             return View(products);
         }
-
+        
+       
         //Mobile
         public IActionResult ProductFilter()
         {
@@ -148,6 +160,7 @@ namespace _06032025_MVCDAY1.Controllers
         [HttpPost]
         public IActionResult NewProduct(Product product, List<IFormFile> images, List<Prod_Attributes> attributes, List<VendorStock> vstock)
         {
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
             if (images == null || images.Count == 0)
             {
                 ModelState.AddModelError("images", "Please upload at least one image.");
@@ -183,7 +196,7 @@ namespace _06032025_MVCDAY1.Controllers
             }
 
             // Call repository method
-            _Prodrepository.NewProduct(product, productImages, attributes, vstock);
+            _Prodrepository.NewProduct(userId,product, productImages, attributes, vstock);
             ViewBag.Categories = _Prodrepository.GetCategories();
             ViewBag.Subcategories = _Prodrepository.GetSubcategories();
             ViewBag.Brands = _Prodrepository.GetBrands();
@@ -194,7 +207,8 @@ namespace _06032025_MVCDAY1.Controllers
         
         public IActionResult GetProduct()
         {
-            var allproduct = _Prodrepository.VendorGetProducts();
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            var allproduct = _Prodrepository.VendorOwnProducts(userId);
             return View(allproduct);
         }
 

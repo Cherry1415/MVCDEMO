@@ -17,7 +17,7 @@ namespace _06032025_MVCDAY1.Repository
         void ClearCart(int userId);
         List<UserOrder> GetUserOrdersWithItemsAndImages(int userId);
 
-        List<UserOrder> GetOrdersWithoutSupplier();
+        List<UserOrder> GetOrdersWithoutSupplier(int vendorid);
         List<SupplierViewModel> GetAllSuppliers();
         bool AssignSupplierToOrder(int orderId, int supplierId);
 

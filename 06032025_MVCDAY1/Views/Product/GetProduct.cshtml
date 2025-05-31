@@ -18,10 +18,11 @@
 
     }
 </style>
+
 <div id="productResults">
     <div class="container p-4">
         <div class="container shadow-lg mt-2">
-
+            <input class="form-control me-2" type="text" placeholder="Search" aria-label="Search" id="partnerSearch" autocomplete="off">
             <div class="table-responsive">
                 <table class="table table-bordered align-middle text-nowrap">
                     <thead class="table-light">
@@ -169,6 +170,23 @@
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded',function(){
+            const searchInput = document.getElementById('partnerSearch');
+    searchInput.addEventListener('keyup', () => {
+        const searchText = searchInput.value.toLowerCase();
+        const rows = table.querySelectorAll('tbody tr');
+
+        rows.forEach(row => {
+            const partnerName = row.querySelector('td:second-child').textContent.toLowerCase();
+            row.style.display = partnerName.includes(searchText) ? '' : 'none';
+        });
+
+       
+    });
+    })
+</script>
+<script>
+
     $(document).ready(function () {
         $('.edit-btn').on('click', function () {
             var productId = $(this).data('id');

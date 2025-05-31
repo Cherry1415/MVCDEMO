@@ -1,5 +1,6 @@
 ﻿using _06032025_MVCDAY1.Models;
 using Microsoft.Data.SqlClient;
+using System;
 using System.Data;
 
 namespace _06032025_MVCDAY1.Repository
@@ -90,26 +91,7 @@ namespace _06032025_MVCDAY1.Repository
 
 
 
-        public bool UpdateOrderStatus(int orderId, string newStatus)
-        {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand("sp_UpdateOrderStatus", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    // Add parameters expected by the stored procedure
-                    cmd.Parameters.AddWithValue("@orderId", orderId);
-                    cmd.Parameters.AddWithValue("@newStatus", newStatus);
-
-                    conn.Open();
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    conn.Close();
-
-                    return rowsAffected > 0;
-                }
-            }
-        }
+        
         public bool AddVendor(SupplierVendor vendor)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
@@ -360,13 +342,33 @@ namespace _06032025_MVCDAY1.Repository
             }
         }
 
+        public bool UpdateOrderStatus(int orderId, string newStatus)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_UpdateOrderStatus", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Add parameters expected by the stored procedure
+                    cmd.Parameters.AddWithValue("@orderId", orderId);
+                    cmd.Parameters.AddWithValue("@newStatus", newStatus);
+
+                    conn.Open();
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    conn.Close();
+
+                    return rowsAffected > 0;
+                }
+            }
+        }
         public List<UserOrder> GetOrdersAssignedToSupplier(int supplierId)
         {
             List<UserOrder> list = new List<UserOrder>();
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                string query = @"SELECT o.order_id, c.first_name+' '+c.last_name AS CustomerName, o.Status, o.order_date, ca.Street+','+ca.City+','+ca.ZipCode AS Customer_Address
+                string query = @"SELECT o.order_id, c.first_name+' '+c.last_name AS CustomerName, o.Status, o.order_date,o.require_date,o.delivery_date,ca.Street+','+ca.City+','+ca.ZipCode AS Customer_Address
                          FROM [customer].[Orders] o
                          INNER JOIN [customer].registeruser c ON o.user_id = c.user_id
 						 INNER JOIN customer.Addresses ca ON o.address_id=ca.address_id
@@ -388,6 +390,10 @@ namespace _06032025_MVCDAY1.Repository
                         Customer_name = rdr["CustomerName"].ToString(),
                         Status = rdr["Status"].ToString(),
                         CreatedDate = Convert.ToDateTime(rdr["order_date"]),
+                        require_date=Convert.ToDateTime(rdr["require_date"]),
+                        delivered_date = rdr["delivery_date"] != DBNull.Value
+                 ? Convert.ToDateTime(rdr["delivery_date"])
+                 : (DateTime?)null,
                         addressid = rdr["Customer_Address"].ToString()
                     });
                 }

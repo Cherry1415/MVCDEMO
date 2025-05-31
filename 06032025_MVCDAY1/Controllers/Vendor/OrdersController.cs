@@ -21,8 +21,9 @@ namespace _06032025_MVCDAY1.Controllers.Vendor
         }
         public IActionResult Inventory()
         {
-            int vendorId = 1; // Or get from session/auth
-            var stockList = _repository.manageInventoty(vendorId);
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+             // Or get from session/auth
+            var stockList = _repository.manageInventoty(userId);
 
             if (stockList == null || !stockList.Any())
             {
@@ -53,14 +54,17 @@ namespace _06032025_MVCDAY1.Controllers.Vendor
 
         public ActionResult AssignSupplier()
         {
-            var orders = _repository.GetOrdersWithoutSupplier(); // orders without supplier
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            var orders = _repository.GetOrdersWithoutSupplier(userId); // orders without supplier
             var suppliers = _repository.GetAllSuppliers();
 
             var viewModel = orders.Select(o => new UserOrder
             {
                 Id = o.Id,
                 Customer_name = o.Customer_name,
+                CreatedDate=o.CreatedDate,
                 Status = o.Status,
+                product_name=o.product_name,
                 AllSuppliers = suppliers
             }).ToList();
 

@@ -18,36 +18,7 @@
 
 }
 <h3>My WishList</h3>
-<div class="modal fade" id="buyNowModal" tabindex="-1" aria-labelledby="buyNowModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
 
-        <div class="modal-content">
-            @* <form method="post" asp-action="InitiateOrder"> *@
-            <div class="modal-header">
-
-                <h5 class="modal-title" id="buyNowModalLabel">Confirm Your Purchase</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <img id="productImage" src="" width="200" height="200" class="mb-3" alt="Product Image">
-                <h5 id="productName"></h5>
-                <p class="text-success">You are eligible for free shipping.</p>
-
-
-                <input type="number" id="amount" name="amount" value="" class="w-75 mx-5 mt-2" />
-
-
-                <p class="text-muted small">Taxes included. Discounts and shipping calculated at checkout.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                @* <a class="btn btn-primary" asp-area="" asp-controller="Payment" asp-action="InitiateOrder">Proceed to Checkout</a> *@
-                <a class="btn btn-primary" onclick="makePayment()">Proceed to Checkout</a>
-            </div>
-            @* </form> *@
-        </div>
-    </div>
-</div>
 
 <script>
     function makePayment() {
@@ -107,6 +78,145 @@
         });
     });
 </script>
+
+<script>
+    $(document).ready(function () {
+
+        $('.add-to-cart-btn').click(function (e) {
+            var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to add items to your wishlist.");
+            return false; // Stop further execution
+        }
+            e.preventDefault();
+
+            var productId = $(this).data('product-id');
+            var price = $(this).data('price');
+
+            $.ajax({
+                url: '/Cart/AddToCartAjax',
+                type: 'POST',
+                data: {
+                    productId: productId,
+                    quantity: 1,
+                    price: price
+                },
+                success: function (html) {
+                    // Replace sidebar
+                    $('#cartSidebarContainer').html(html);
+
+                    // Show Bootstrap offcanvas (important)
+                    var offcanvasEl = document.getElementById('cartSidebar');
+                    var bsOffcanvas = new bootstrap.Offcanvas(offcanvasEl);
+                    bsOffcanvas.show();
+                },
+                error: function () {
+                    alert('Failed to add product to cart.');
+                }
+            });
+        });
+    });
+</script>
+<script>
+    function toggleWishlistIcon(button) {
+        var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to add items to your wishlist.");
+            return false; // Stop further execution
+        }
+        const icon = button.querySelector('.heart-icon');
+        icon.classList.toggle('filled');
+        icon.classList.toggle('empty');
+        // allow the form to submit silently
+    }
+</script>
+<script>
+    function toggleWishlist(button, productId) {
+        var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+
+        if (!isLoggedIn) {
+            alert("Please log in to add items to your wishlist.");
+            return false; // Stop further execution
+        }
+
+        var heartIcon = button.querySelector(".heart-icon");
+
+        // Send request via hidden iframe
+        var form = button.closest("form");
+        form.submit();
+
+        // Toggle the icon color immediately
+        var currentColor = heartIcon.style.fill;
+        heartIcon.style.fill = (currentColor === "red") ? "white" : "red";
+
+        // Save wishlist state in sessionStorage (to persist color on page reload)
+        let wishlist = JSON.parse(sessionStorage.getItem("wishlist")) || [];
+        if (heartIcon.style.fill === "red") {
+            if (!wishlist.includes(productId)) wishlist.push(productId);
+        } else {
+            wishlist = wishlist.filter(id => id !== productId);
+        }
+        sessionStorage.setItem("wishlist", JSON.stringify(wishlist));
+
+        return false; // Prevent default form submission
+    }
+
+    // Restore wishlist colors on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        let wishlist = JSON.parse(sessionStorage.getItem("wishlist")) || [];
+        document.querySelectorAll(".heart-icon").forEach(icon => {
+            let productId = parseInt(icon.closest("button").querySelector("input[name='productId']").value);
+            if (wishlist.includes(productId)) {
+                icon.style.fill = "red";
+            }
+        });
+    });
+</script>
+
+<script>
+    // When "Quick View" button is clicked, pass the product data to the modal
+    $('#quickViewModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var image = button.data('image'); // Extract info from data-* attributes
+        var name = button.data('name');
+        var price = button.data('price');
+
+        var modal = $(this);
+        modal.find('#modalImage').attr('src', image);
+        modal.find('#modalName').text(name);
+        modal.find('#modalPrice').text(price);
+
+
+    });
+</script>
+
+<script>
+    function toggleFavorite(element) {
+        $(element).find("i").toggleClass("fas far");
+    }
+
+    function showQuickView(element) {
+        var product = $(element).closest('.product-card');
+        var imgSrc = product.find('.product-img').attr('src');
+        var name = product.find('.product-img').data('name');
+        var price = product.find('.product-img').data('price');
+        var description = product.find('.product-img').data('description');
+        var prodid=product.find('.product-img').data('productid');
+
+        $("#modalProductImage").attr("src", imgSrc);
+        $("#modalProductName").text(name);
+        $("#modalProductPrice").text(price);
+        $("#modalProductDescription").text(description);
+        $("#modalProductID").text(prodid);
+          // Set dynamic URL on Buy Now button
+        $("#quickbuynow").attr("href", "/Product/DetailProduct/" + prodid);
+
+        $("#quickViewModal").modal("show");
+    }
+</script>
+
 
 <style>
     .modal-content {
@@ -204,28 +314,10 @@
                 } */
 </style>
 
-
+<div id="cartSidebarContainer"></div>
 <div class="container-fluid d-inline-block">
 
     <div>
-        @* <div>
-            <input type="checkbox" id="menu-togglemobilefilter">
-            <label for="menu-togglemobilefilter" class="overlay"></label>
-
-            <!-- ====== NAVBAR (New) ====== -->
-            <div class="navbar">
-                <label for="menu-togglemobilefilter" class="open-btn"><i for="menu-togglemobilefilter" class="fas fa-filter open-btn " style="font-size:24px; color:slategray"></i></label>
-            </div>
-
-
-            <div class="filtersidebar">
-                <label for="menu-togglemobilefilter" class="close-btn">&times;</label>
-                <hr />
-                @{
-                    Html.RenderPartial("~/Views/Product/ProductFilter.cshtml");
-                }
-            </div>
-        </div> *@
         <div>
             <div class="container mt-5">
 
@@ -235,20 +327,15 @@
                         <div class="col-md-3 col-sm-6 col-12 py-3">
                             <div class="card product-card">
                                 <div id="imgdiv">
-                                    @*  @{
-                                        var wishlistString = Context.Session.GetString("Wishlist");
-                                        var wishlistIds = !string.IsNullOrEmpty(wishlistString) ? wishlistString.Split(',').Select(int.Parse).ToList() : new List<int>();
-                                        bool isInWishlist = wishlistIds.Contains(product.product_id);
-                                    }  *@
+                                    
                                     <form action="@Url.Action("AddToWishlist", "User")" method="post" target="wishlistFrame" class="wishlist-form">
                                         <input type="hidden" name="productId" value="@product.product_id" />
                                         <input type="hidden" asp-for="@userid" />
 
                                         <button type="submit" class="wishlist-label" style="background:none;border:none;padding:0;" onclick="toggleWishlistIcon(this);">
-                                            @* <input type="checkbox" class="wishlist-checkbox" onclick="toggleWishlist(this)" > *@
+                                           
 
-                                            <svg class="heart-icon @(product.IsInWishlist ? "empty" : "filled")" viewBox="0 0 24 24"
-                                            @* style="fill: @(product.IsInWishlist ? "red" : "white");"   *@ >
+                                            <svg class="heart-icon @(product.IsInWishlist ? "empty" : "filled")" viewBox="0 0 24 24" >
                                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
                                             </svg>
                                         </button>
@@ -257,20 +344,17 @@
                                     <!-- Hidden iframe to handle form submission without page refresh -->
                                     <iframe name="wishlistFrame" style="display:none;"></iframe>
 
-                                    @* @foreach (var img in product.ProductImages) *@
-                                    @* { *@
-
-                                    @* } *@
+                                   
 
 
                                     <a asp-area="" asp-controller="Product" asp-action="DetailProduct" asp-route-id="@product.product_id">
                                         <img src="~/uploads/@product.ProductImages.FirstOrDefault()?.imgName" width="100" height="100"
                                              class="product-img"
                                              id="image"
+                                             data-productid="@product.product_id"
                                              data-name="@product.product_name"
                                              data-price="@product.price"
                                              data-description="A beautifully woven Golden Zari Saree with traditional patterns."
-                                        @* onclick="showQuickView(this)*@
                                             >
                                     </a>
                                    
@@ -279,19 +363,17 @@
                                 <div class="card-body" class="wishlist-item" id="wishlist-item1">
                                     <h5 class="card-title" id="product_name">@product.product_name</h5>
                                     <p class="card-text" id="price">₹ @product.price</p>
-                                    <div class="d-flex gap-2 align-items-center">
-                                        <form method="post" asp-controller="Cart" asp-action="AddToCart">
-                                            <input type="hidden" name="productId" value="@product.product_id" />
-                                            <input type="hidden" name="quantity" value="1" />
-                                            <input type="hidden" name="price" value="@product.price" />
-                                            <button type="submit" class="btn btn-outline-info edit-btn">Add To Cart</button>
-                                        </form>
+                                    <div class="text-center mt-auto">
+
+
+                                        <button class="btn btn-outline-info edit-btn add-to-cart-btn"
+                                                data-product-id="@product.product_id"
+                                                data-price="@product.price">
+                                            Add To Cart
+                                        </button>
                                     </div>
                                 </div>
-                                @* <div class="product-info">
-                                    <p class="price">@product.price<span class="original-price">@product.price</span> <span class="discount">16% Off</span></p>
-                                    <a href="#" class="buy-now">BUY NOW</a>
-                                </div> *@
+                                
                             </div>
                         </div>
                     }
@@ -319,6 +401,8 @@
                         <img id="modalProductImage" src="" class="img-fluid" alt="Product Image">
                     </div>
                     <div class="col-md-6">
+                        <!-- Hidden Field to store Product ID -->
+                        <span id="modalProductID" style="display:none;"></span>
                         <h4 id="modalProductName"></h4>
                         <p id="modalProductDescription"></p>
                         <p class="price">
@@ -326,7 +410,7 @@
 
 
                         </p>
-                        <a href="#" class="btn btn-success">Buy Now</a>
+                        <a href="#" id="quickbuynow" class="btn btn-success">Buy Now</a>
                     </div>
                 </div>
             </div>
@@ -334,98 +418,4 @@
     </div>
 </div>
 
-<script>
-    function toggleWishlistIcon(button) {
-        var isLoggedIn = '@Context.Session.GetString("email")' !== '';
-
-        if (!isLoggedIn) {
-            alert("Please log in to add items to your wishlist.");
-            return false; // Stop further execution
-        }
-        const icon = button.querySelector('.heart-icon');
-        icon.classList.toggle('filled');
-        icon.classList.toggle('empty');
-        // allow the form to submit silently
-    }
-</script>
-<script>
-    function toggleWishlist(button, productId) {
-        var isLoggedIn = '@Context.Session.GetString("email")' !== '';
-
-        if (!isLoggedIn) {
-            alert("Please log in to add items to your wishlist.");
-            return false; // Stop further execution
-        }
-
-        var heartIcon = button.querySelector(".heart-icon");
-
-        // Send request via hidden iframe
-        var form = button.closest("form");
-        form.submit();
-
-        // Toggle the icon color immediately
-        var currentColor = heartIcon.style.fill;
-        heartIcon.style.fill = (currentColor === "red") ? "white" : "red";
-
-        // Save wishlist state in sessionStorage (to persist color on page reload)
-        let wishlist = JSON.parse(sessionStorage.getItem("wishlist")) || [];
-        if (heartIcon.style.fill === "red") {
-            if (!wishlist.includes(productId)) wishlist.push(productId);
-        } else {
-            wishlist = wishlist.filter(id => id !== productId);
-        }
-        sessionStorage.setItem("wishlist", JSON.stringify(wishlist));
-
-        return false; // Prevent default form submission
-    }
-
-    // Restore wishlist colors on page load
-    document.addEventListener("DOMContentLoaded", function () {
-        let wishlist = JSON.parse(sessionStorage.getItem("wishlist")) || [];
-        document.querySelectorAll(".heart-icon").forEach(icon => {
-            let productId = parseInt(icon.closest("button").querySelector("input[name='productId']").value);
-            if (wishlist.includes(productId)) {
-                icon.style.fill = "red";
-            }
-        });
-    });
-</script>
-
-<script>
-    // When "Quick View" button is clicked, pass the product data to the modal
-    $('#quickViewModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var image = button.data('image'); // Extract info from data-* attributes
-        var name = button.data('name');
-        var price = button.data('price');
-
-        var modal = $(this);
-        modal.find('#modalImage').attr('src', image);
-        modal.find('#modalName').text(name);
-        modal.find('#modalPrice').text(price);
-
-
-    });
-</script>
-
-<script>
-    function toggleFavorite(element) {
-        $(element).find("i").toggleClass("fas far");
-    }
-
-    function showQuickView(element) {
-        var product = $(element).closest('.product-card');
-        var imgSrc = product.find('.product-img').attr('src');
-        var name = product.find('.product-img').data('name');
-        var price = product.find('.product-img').data('price');
-        var description = product.find('.product-img').data('description');
-
-        $("#modalProductImage").attr("src", imgSrc);
-        $("#modalProductName").text(name);
-        $("#modalProductPrice").text(price);
-        $("#modalProductDescription").text(description);
-
-        $("#quickViewModal").modal("show");
-    }
-</script>
 

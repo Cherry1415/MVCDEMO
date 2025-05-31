@@ -634,5 +634,40 @@ namespace _06032025_MVCDAY1.Repository
 
             return address;
         }
+        public UserOrder GetOrderTrackingDetails(int orderId, int userId)
+        {
+            UserOrder order = null;
+
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                string query = @"SELECT o.order_id, o.status, o.shipp_status, o.order_date, 
+                                o.delivery_date,cr.first_name +' '+cr.last_name AS CustomerName
+                         FROM customer.Orders o
+                         INNER JOIN customer.registeruser cr ON o.user_id = cr.user_id
+                         WHERE o.order_id = @orderId AND o.user_id = @userId";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderId", orderId);
+                cmd.Parameters.AddWithValue("@userId", userId);
+
+                con.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.Read())
+                {
+                    order = new UserOrder
+                    {
+                        Id = Convert.ToInt32(dr["order_id"]),
+                        Status = dr["status"].ToString(),
+                        shipped_status = dr["shipp_status"].ToString(),
+                        CreatedDate = Convert.ToDateTime(dr["order_date"]),
+                        delivered_date = dr["delivery_date"] as DateTime?,
+                        Customer_name = dr["CustomerName"].ToString()
+                    };
+                }
+            }
+
+            return order;
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using _06032025_MVCDAY1.Models;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
 
@@ -222,7 +223,8 @@ namespace _06032025_MVCDAY1.Repository
                         WHERE product_id = p.product_id
                         ORDER BY prod_img_id ASC
                     ) pi
-                    WHERE o.user_id = @UserId";
+                    WHERE o.user_id = @UserId
+                    ORDER BY o.order_date desc";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@UserId", userId);
@@ -315,18 +317,26 @@ namespace _06032025_MVCDAY1.Repository
             return userorders;
         }
 
-        public List<UserOrder> GetOrdersWithoutSupplier()
+        public List<UserOrder> GetOrdersWithoutSupplier(int vendorid)
         {
             List<UserOrder> list = new List<UserOrder>();
 
             using (SqlConnection con = new SqlConnection(_constring))
             {
-                string query = @"SELECT o.order_id,u.first_name +' '+u.last_name AS CustomerName, o.Status
+                string query = @"SELECT o.order_id,u.first_name +' '+u.last_name AS CustomerName,STRING_AGG(vp.product_name, ', ') AS ProductName,o.order_date,o.Status
                          FROM [customer].[Orders] o
                          INNER JOIN [customer].registeruser u ON o.user_id = u.user_id
-                         WHERE o.Status='Paid' AND o.supplier_id IS NULL";
+						 inner join customer.Order_Items coi
+						 ON coi.order_id=o.order_id
+						 INNER JOIN vendor.Products vp
+						 ON vp.product_id=coi.product_id
+                         WHERE o.Status='Paid' AND o.supplier_id IS NULL AND vp.vendor_id = (
+                        SELECT vendor_id FROM vendor.Vendors WHERE user_id = @vendorId
+                        )
+                        GROUP BY o.order_id, u.first_name, u.last_name, o.order_date, o.Status";
 
                 SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@vendorId", vendorid);
                 con.Open();
                 SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
@@ -335,7 +345,9 @@ namespace _06032025_MVCDAY1.Repository
                     {
                         Id = Convert.ToInt32(rdr["order_id"]),
                         Customer_name= rdr["CustomerName"].ToString(),
-                        Status = rdr["Status"].ToString()
+                        CreatedDate= Convert.ToDateTime(rdr["order_date"]),
+                        Status = rdr["Status"].ToString(),
+                        product_name = rdr["ProductName"].ToString()
                     });
                 }
             }
@@ -367,7 +379,7 @@ namespace _06032025_MVCDAY1.Repository
         {
             using (SqlConnection con = new SqlConnection(_constring))
             {
-                string query = "UPDATE [customer].[Orders] SET supplier_id = @SupplierId WHERE order_id = @OrderId";
+                string query = "UPDATE [customer].[Orders] SET supplier_id = @SupplierId,shipp_status='AssignedToSupplier' WHERE order_id = @OrderId";
                 SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@SupplierId", supplierId);
                 cmd.Parameters.AddWithValue("@OrderId", orderId);

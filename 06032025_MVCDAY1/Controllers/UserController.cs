@@ -355,6 +355,12 @@ namespace _06032025_MVCDAY1.Controllers
             return View(orders);
         }
 
+        public ActionResult TrackOrder(int id)  // id = OrderId
+        {
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));  // or use claims
+            var order = _repo.GetOrderTrackingDetails(id, userId);
+            return View(order);
+        }
         //product reviews
         [HttpPost]
         public IActionResult SubmitReview(int productId, int rating, string review)
