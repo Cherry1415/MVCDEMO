@@ -368,7 +368,7 @@ namespace _06032025_MVCDAY1.Repository
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                string query = @"SELECT o.order_id, c.first_name+' '+c.last_name AS CustomerName, o.Status, o.order_date,o.require_date,o.delivery_date,ca.Street+','+ca.City+','+ca.ZipCode AS Customer_Address
+                string query = @"SELECT o.order_id, c.first_name+' '+c.last_name AS CustomerName, o.Status, o.order_date,o.require_date,o.delivery_date,o.shipp_status,ca.Street+','+ca.City+','+ca.ZipCode AS Customer_Address
                          FROM [customer].[Orders] o
                          INNER JOIN [customer].registeruser c ON o.user_id = c.user_id
 						 INNER JOIN customer.Addresses ca ON o.address_id=ca.address_id
@@ -394,11 +394,194 @@ namespace _06032025_MVCDAY1.Repository
                         delivered_date = rdr["delivery_date"] != DBNull.Value
                  ? Convert.ToDateTime(rdr["delivery_date"])
                  : (DateTime?)null,
-                        addressid = rdr["Customer_Address"].ToString()
+                        shipped_status = rdr["shipp_status"] != DBNull.Value
+                        ? rdr["shipp_status"].ToString(): "",
+                        addressid = rdr["Customer_Address"].ToString(),
+                        
                     });
                 }
             }
             return list;
         }
+
+
+        public List<OrderChartData> GetOrdersLast7Days(int supplierId)
+        {
+            List<OrderChartData> list = new List<OrderChartData>();
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                string query = @"
+            SELECT 
+                CAST(order_date AS DATE) AS OrderDate, 
+                COUNT(*) AS TotalOrders
+            FROM customer.Orders
+            WHERE supplier_id = (
+            SELECT supplier_id FROM Supplier.Supplier_tbl WHERE user_id = @supplierId) 
+            AND order_date >= CAST(GETDATE() - 15 AS DATE)
+            GROUP BY CAST(order_date AS DATE)
+            ORDER BY OrderDate";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@supplierId", supplierId);
+                con.Open();
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    list.Add(new OrderChartData
+                    {
+                        Date = Convert.ToDateTime(rdr["OrderDate"]),
+                        Count = Convert.ToInt32(rdr["TotalOrders"])
+                    });
+                }
+            }
+
+            return list;
+        }
+        public int GetAssignedOrdersCount(int supplierId)
+        {
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                string query = "SELECT COUNT(*) FROM customer.Orders WHERE supplier_id = (SELECT supplier_id FROM Supplier.Supplier_tbl WHERE user_id = @supplierId)";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@supplierId", supplierId);
+
+                con.Open();
+                return (int)cmd.ExecuteScalar();
+            }
+        }
+
+        public int GetDeliveredOrdersCount(int supplierId)
+        {
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                string query = "SELECT COUNT(*) FROM customer.Orders WHERE supplier_id = (SELECT supplier_id FROM Supplier.Supplier_tbl WHERE user_id = @supplierId) AND shipp_status = 'delivered'";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@supplierId", supplierId);
+
+                con.Open();
+                return (int)cmd.ExecuteScalar();
+            }
+        }
+
+        public int GetInTransitOrdersCount(int supplierId)
+        {
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                string query = "SELECT COUNT(*) FROM customer.Orders WHERE supplier_id = (SELECT supplier_id FROM Supplier.Supplier_tbl WHERE user_id = @supplierId) AND shipp_status = 'AssignedToSupplier'";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@supplierId", supplierId);
+
+                con.Open();
+                return (int)cmd.ExecuteScalar();
+            }
+        }
+
+        public int GetRejectedOrdersCount(int supplierId)
+        {
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                string query = "SELECT COUNT(*) FROM customer.Orders WHERE supplier_id = (SELECT supplier_id FROM Supplier.Supplier_tbl WHERE user_id = @supplierId) AND shipp_status = 'rejected'";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@supplierId", supplierId);
+
+                con.Open();
+                return (int)cmd.ExecuteScalar();
+            }
+        }
+
+        public List<UserOrder> GetRecentOrders(int supplierId)
+        {
+            List<UserOrder> orders = new List<UserOrder>();
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                string query = @"SELECT TOP 5 order_id,cr.first_name+' '+cr.last_name AS Customer_Name, order_date, status, require_date, address_id, supplier_id, shipp_status, delivery_date 
+                             FROM customer.Orders co
+							 INNER JOIN customer.registeruser cr
+							 ON cr.user_id=co.user_id
+                             WHERE supplier_id = (
+                                SELECT supplier_id FROM Supplier.Supplier_tbl WHERE user_id = @supplierId) AND shipp_status='AssignedToSupplier'
+                             ORDER BY order_date,order_id DESC";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@supplierId", supplierId);
+
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    orders.Add(new UserOrder
+                    {
+                        Id = Convert.ToInt32(rdr["order_id"]),
+                        Customer_name = rdr["Customer_Name"].ToString(), // You can join to fetch actual name
+                        CreatedDate = Convert.ToDateTime(rdr["order_date"]),
+                        Status = rdr["status"].ToString(),
+                        require_date = rdr["require_date"] as DateTime?,
+                        addressid = rdr["address_id"].ToString(),
+                        supplierId = rdr["supplier_id"] as int?,
+                        shipped_status = rdr["shipp_status"]?.ToString(),
+                        delivered_date = rdr["delivery_date"] as DateTime?
+                    });
+                }
+            }
+
+            return orders;
+        }
+
+        public List<UserOrder> GetTodayDeliveries(int supplierId)
+        {
+            List<UserOrder> list = new List<UserOrder>();
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT co.order_id,cr.first_name+' '+cr.last_name AS CustomerName,co.require_date FROM customer.Orders co JOIN customer.registeruser cr ON cr.user_id=co.user_id WHERE supplier_id = (SELECT supplier_id FROM Supplier.Supplier_tbl WHERE user_id = @supplierId) AND CAST(require_date AS DATE) = CAST(GETDATE() AS DATE) AND shipp_status != 'rejected'", con);
+                cmd.Parameters.AddWithValue("@supplierId", supplierId);
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    list.Add(new UserOrder
+                    {
+                        Id = Convert.ToInt32(rdr["order_id"]),
+                        Customer_name = rdr["CustomerName"].ToString(), // Replace with actual join if needed
+                        require_date = Convert.ToDateTime(rdr["require_date"])
+                    });
+                }
+            }
+            return list;
+        }
+        public bool CancelSupplierOrder(int orderId, string reason, string comment)
+        {
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                string query = @"UPDATE customer.Orders
+                         SET shipp_status = 'undelivered',
+                             cancel_reason = @reason,
+                             cancel_comment = @comment,
+                             cancel_date = GETDATE()
+                         WHERE order_id = @orderId";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderId", orderId);
+                cmd.Parameters.AddWithValue("@reason", reason);
+                cmd.Parameters.AddWithValue("@comment", comment ?? "");
+
+                con.Open();
+                int rows = cmd.ExecuteNonQuery();
+                return rows > 0;
+            }
+        }
+        public bool MarkRetryDelivery(int orderId)
+        {
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("UPDATE customer.Orders SET retry_delivery = 1 WHERE order_id = @id", con);
+                cmd.Parameters.AddWithValue("@id", orderId);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
     }
 }
+

@@ -213,7 +213,7 @@
             $('#weeklySalesChart').show();
         } else {
             labels = weeklyData.map(d => `Week ${d.weekNumber}`);
-            values = weeklyData.map(d => d.totalSales);
+            values = weeklyData.map(d => d.payout);
             $('#noDataMessage').hide();
             $('#weeklySalesChart').show();
         }

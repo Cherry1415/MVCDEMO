@@ -26,5 +26,16 @@ namespace _06032025_MVCDAY1.Repository
         //Add by my side
 
         List<UserOrder> GetOrdersAssignedToSupplier(int supplierId);
+
+        int GetAssignedOrdersCount(int supplierId);
+        int GetDeliveredOrdersCount(int supplierId);
+        int GetInTransitOrdersCount(int supplierId);
+        int GetRejectedOrdersCount(int supplierId);
+        List<UserOrder> GetRecentOrders(int supplierId);
+        List<OrderChartData> GetOrdersLast7Days(int supplierId); //for chart
+        List<UserOrder> GetTodayDeliveries(int supplierId);
+
+        bool CancelSupplierOrder(int orderId, string reason, string comment);
+        bool MarkRetryDelivery(int orderId);
     }
 }

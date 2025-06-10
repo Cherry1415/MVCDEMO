@@ -1,0 +1,89 @@
+﻿@model List<Product>
+@{
+    ViewBag.Title = "Out of Stock Notifications";
+    Layout = "_UserLayout";
+}
+<style>
+    td img {
+        max-height: 50px;
+        object-fit: contain;
+    }
+
+    @@media (max-width: 768px) {
+        th, td {
+            font-size: 14px;
+        }
+    }
+</style>
+<div class="container mt-4">
+    <h3 class="text-danger mb-4">⚠️ Out of Stock Products</h3>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-success">
+            ✅ All products are in stock!
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>ProductName</th>
+                    <th>BrandName</th>
+                    <th>CategoryName</th>
+                    <th>SubCategoryName</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Image</th>
+                    <th>Edit / Delete</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.product_id</td>
+                        <td>@item.product_name</td>
+                        <td>@item.brand_name</td>
+                        <td>@item.category_name</td>
+                        <td>@item.subcat_name</td>
+                        <td>
+                            @if (item.Prod_Attributes != null && item.Prod_Attributes.Any())
+                            {
+                                @item.Prod_Attributes.First().product_desc_id
+                            }
+                        </td>
+                        <td>@item.price</td>
+                        <td>
+                            @if (item.ProductImages != null && item.ProductImages.Any())
+                            {
+                                foreach (var img in item.ProductImages)
+                                {
+                                    <img src="~/uploads/@img.imgName" class="img-fluid rounded me-2" style="max-width:100px;" />
+                                }
+                            }
+                            else
+                            {
+                                <span>No Images</span>
+                            }
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-outline-info edit-btn"
+                                    data-bs-toggle="modal"
+                                    data-id="@item.product_id">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <a href="@Url.Action("DeleteProduct", new { id = item.product_id })" class="btn btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                        <td><span class="badge bg-danger">Out of Stock</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

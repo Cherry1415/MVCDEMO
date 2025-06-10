@@ -12,40 +12,40 @@
 <script>
     $(document).ready(function () {
 
-        $('.add-to-cart-btn').click(function (e) {
-            var isLoggedIn = '@Context.Session.GetString("email")' !== '';
+    $('.add-to-cart-btn').click(function (e) {
+    var isLoggedIn = '@Context.Session.GetString("email")' !== '';
 
-        if (!isLoggedIn) {
-            alert("Please log in to add items to your wishlist.");
-            return false; // Stop further execution
-        }
-            e.preventDefault();
+    if (!isLoggedIn) {
+    alert("Please log in to add items to your wishlist.");
+    return false; // Stop further execution
+    }
+    e.preventDefault();
 
-            var productId = $(this).data('product-id');
-            var price = $(this).data('price');
+    var productId = $(this).data('product-id');
+    var price = $(this).data('price');
 
-            $.ajax({
-                url: '/Cart/AddToCartAjax',
-                type: 'POST',
-                data: {
-                    productId: productId,
-                    quantity: 1,
-                    price: price
-                },
-                success: function (html) {
-                    // Replace sidebar
-                    $('#cartSidebarContainer').html(html);
+    $.ajax({
+    url: '/Cart/AddToCartAjax',
+    type: 'POST',
+    data: {
+    productId: productId,
+    quantity: 1,
+    price: price
+    },
+    success: function (html) {
+    // Replace sidebar
+    $('#cartSidebarContainer').html(html);
 
-                    // Show Bootstrap offcanvas (important)
-                    var offcanvasEl = document.getElementById('cartSidebar');
-                    var bsOffcanvas = new bootstrap.Offcanvas(offcanvasEl);
-                    bsOffcanvas.show();
-                },
-                error: function () {
-                    alert('Failed to add product to cart.');
-                }
-            });
-        });
+    // Show Bootstrap offcanvas (important)
+    var offcanvasEl = document.getElementById('cartSidebar');
+    var bsOffcanvas = new bootstrap.Offcanvas(offcanvasEl);
+    bsOffcanvas.show();
+    },
+    error: function () {
+    alert('Failed to add product to cart.');
+    }
+    });
+    });
     });
 </script>
 <style>
@@ -59,10 +59,10 @@
     /* } */
 
     .address-card.selected {
-        border: 2px solid #28a745; /* green border */
-        background-color: #e9fbe9; /* light green bg */
-        border-radius: 8px;
-        transition: 0.3s;
+    border: 2px solid #28a745; /* green border */
+    background-color: #e9fbe9; /* light green bg */
+    border-radius: 8px;
+    transition: 0.3s;
     }
     .col-8.modal-body {
     position: relative;
@@ -230,6 +230,16 @@
     border: none;
     }
 
+    .btn-stock{
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        background-color:lightgray;
+        cursor:not-allowed;
+    }
     .btn-cart {
     background-color: cornflowerblue;
     color: white;
@@ -402,14 +412,23 @@
                             </button>
                         </div>
                     </div>
-                    <button class="btn-cart add-to-cart-btn" data-product-id="@product.product_id"
-                            data-price="@product.price">
-                        Add to Cart
-                    </button>
-                    <button class="btn-buy buyNowBtn" data-name="@product.product_name" data-productid="@product.product_id" data-price="@product.price"
-                      data-image="@Url.Content("~/uploads/" + product.ProductImages?.FirstOrDefault()?.imgName)">
-                        Buy it now
-                    </button>
+                    @if(product.IsAvailable)
+                    {
+                        <button class="btn-cart add-to-cart-btn" data-product-id="@product.product_id"
+                        data-price="@product.price">
+                            Add to Cart
+                        </button>
+                        <button class="btn-buy buyNowBtn" data-name="@product.product_name" data-productid="@product.product_id" data-price="@product.price"
+                        data-image="@Url.Content("~/uploads/" + product.ProductImages?.FirstOrDefault()?.imgName)">
+                            Buy it now
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn-stock" disabled>Out of Stock</button>
+                        @* <button class="btn btn-secondary" disabled>Out of Stock</button> *@
+                    }
+                    
 
                     <div class="mt-4">
                         <h5><strong>About the product</strong></h5>

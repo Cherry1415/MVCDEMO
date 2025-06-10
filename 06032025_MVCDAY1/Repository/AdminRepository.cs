@@ -599,8 +599,7 @@ namespace _06032025_MVCDAY1.Repository
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(@"
-            SELECT order_id, user_id, order_date, status, RazorPayOrderId, TotalAmount, require_date, 
-                    PaymentId
+            SELECT order_id, user_id, order_date, status, RazorPayOrderId, TotalAmount, require_date
             FROM customer.Orders
             WHERE (@fromDate IS NULL OR order_date >= @fromDate)
               AND (@toDate IS NULL OR order_date <= @toDate)
@@ -625,7 +624,7 @@ namespace _06032025_MVCDAY1.Repository
                         // Uncomment and apply same logic for below fields if needed:
                         // OrderStatus = reader["order_status"] != DBNull.Value ? reader["order_status"].ToString() : string.Empty,
                         // CancelReason = reader["cancelreason"] != DBNull.Value ? reader["cancelreason"].ToString() : string.Empty,
-                        PaymentId = reader["PaymentId"] != DBNull.Value ? reader["PaymentId"].ToString() : string.Empty
+                        
                     });
                 }
             }
@@ -651,7 +650,8 @@ namespace _06032025_MVCDAY1.Repository
                     result.Add(new WeekSalesViewModel
                     {
                         WeekNumber = Convert.ToInt32(rdr["WeekNumber"]),
-                        TotalSales = Convert.ToDecimal(rdr["TotalSales"])
+                        Payout = Convert.ToDecimal(rdr["Payout"]),
+                        Pending = Convert.ToDecimal(rdr["Pending"])
                     });
                 }
             }
@@ -662,9 +662,9 @@ namespace _06032025_MVCDAY1.Repository
         {
             var weeklyData = GetWeeklySales(month, year); // your method
 
-            decimal totalSales = weeklyData.Sum(w => w.TotalSales);
-            decimal payout = totalSales * 0.8m;     // e.g., 70% payout
-            decimal pending = totalSales - payout;
+            decimal payout = weeklyData.Sum(w => w.Payout);
+            decimal pending = weeklyData.Sum(w => w.Pending);    
+            decimal totalSales =payout+pending;
 
             return new AdminPayoutSummary
             {

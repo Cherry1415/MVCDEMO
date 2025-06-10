@@ -1,4 +1,7 @@
 ﻿@model List<_06032025_MVCDAY1.Models.UserOrder>
+@{
+    Layout = "_MyLayout1";
+}
 
 <h2 class="mb-4 text-primary">My Assigned Orders</h2>
 
@@ -19,13 +22,19 @@ else
                 <th>Delivered Date</th>
                 <th>Address</th>
                 <th>Action</th>
+                <th>Return</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var order in Model)
             {
                 var isDelivered = order.Status?.ToLower() == "delivered";
-                var rowClass = isDelivered ? "table-success" : "";
+                var isRejected = order.Status?.ToLower() == "rejected";
+                var rowClass = isDelivered ? "table-success" :
+                               isRejected ? "table-danger ": "";
+
+                var disablebutton = isDelivered || isRejected;
+
                 <!-- Light green background -->
                 <tr class="@rowClass">
                     <td>@order.Id</td>
@@ -34,7 +43,7 @@ else
                     <td>@order.require_date?.ToString("dd-MMM-yyyy")</td>
                     <td>
                         <span class="badge bg-@(
-                            order.Status.ToLower() == "pending" ? "warning" :
+                            order.Status.ToLower() == "rejected" ? "danger" :
                             order.Status.ToLower() == "delivered" ? "success" : "secondary"
                         )">
                             @order.Status
@@ -46,17 +55,63 @@ else
                         <form asp-action="UpdateStatus" asp-controller="Supplier" method="post" style="display:inline;">
                             <input type="hidden" name="orderId" value="@order.Id" />
                             <input type="hidden" name="newStatus" value="delivered" />
-                            <button type="submit" class="btn btn-success btn-sm" @(isDelivered ? "disabled" : "")>Complete</button>
+                            <button type="submit" class="btn btn-success btn-sm" @(disablebutton ? "disabled" : "")>Complete</button>
                         </form>
                         <form asp-action="UpdateStatus" asp-controller="Supplier" method="post" style="display:inline;">
                             <input type="hidden" name="orderId" value="@order.Id" />
                             <input type="hidden" name="newstatus" value="rejected" />
-                            <button type="submit" class="btn btn-danger btn-sm" @(isDelivered ? "disabled" : "")>Reject</button>
+                            <button type="submit" class="btn btn-danger btn-sm" @(disablebutton ? "disabled" : "")>Reject</button>
                         </form>
+                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal_@order.Id" @(disablebutton ? "disabled" : "")>
+                            Cancel Delivery
+                        </button>
+                        
+                    </td>
+                    <td>
+                        @if (order.shipped_status == "undelivered")
+                        {
+                            <form asp-action="RetryDelivery" method="post">
+                                <input type="hidden" name="orderId" value="@order.Id" />
+                                <button type="submit" class="btn btn-warning btn-sm">Retry Delivery</button>
+                            </form>
+                        }
                     </td>
                 </tr>
+                <!-- Modal -->
+                <div class="modal fade" id="cancelModal_@order.Id" tabindex="-1">
+                    <div class="modal-dialog">
+                        <form asp-action="CancelOrder" asp-controller="Supplier" method="post">
+                            <input type="hidden" name="orderId" value="@order.Id" />
+                            <div class="modal-content">
+                                <div class="modal-header bg-danger text-white">
+                                    <h5 class="modal-title">Cancel Delivery</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <label class="form-label">Reason</label>
+                                    <select name="reason" class="form-select" required>
+                                        <option value="">Select reason</option>
+                                        <option value="Customer not available">Customer not available</option>
+                                        <option value="Address incorrect">Address incorrect</option>
+                                        <option value="Item damaged">Item damaged</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+
+                                    <label class="form-label mt-2">Comments (optional)</label>
+                                    <textarea name="comment" class="form-control" rows="3"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">Confirm Cancel</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             }
         </tbody>
     </table>
+
 }
+
 

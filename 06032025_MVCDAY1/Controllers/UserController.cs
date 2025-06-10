@@ -239,7 +239,7 @@ namespace _06032025_MVCDAY1.Controllers
                 if (roleFromDB == 3)
                     return RedirectToAction("SellerHome", "Seller");
                 else if (roleFromDB == 4)
-                    return RedirectToAction("Index", "Supplier");
+                    return RedirectToAction("SupplierDashboard", "Supplier");
 
                 return RedirectToAction("HomeDashBoard", "DashBoard");
             }

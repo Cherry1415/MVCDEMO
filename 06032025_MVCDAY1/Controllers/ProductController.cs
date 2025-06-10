@@ -95,6 +95,8 @@ namespace _06032025_MVCDAY1.Controllers
             {
                 product.ProductImages = _repository.GetImagesByProductId(product.product_id);
                 product.IsInWishlist = wishlistid.Contains(product.product_id);
+                product.AvailableQuantity = _Prodrepository.GetStockByProductId(product.product_id); // <- NEW LINE
+                product.IsAvailable = product.AvailableQuantity > 0; // <- NEW LINE
             }
 
             return View(products);
@@ -132,6 +134,8 @@ namespace _06032025_MVCDAY1.Controllers
             var product = _Prodrepository.GetProductById(id); // single product
             var addresses = _repository.GetAddressesByUserId(userId); // list
             var reviews = _Prodrepository.GetReviewsByProductId(id);
+            product.AvailableQuantity = _Prodrepository.GetStockByProductId(product.product_id); // <- NEW LINE
+            product.IsAvailable = product.AvailableQuantity > 0; // <- NEW LINE
 
             // ✅ Wrap product in a List to match expected model
             var productList = new List<Product> { product };
@@ -212,6 +216,12 @@ namespace _06032025_MVCDAY1.Controllers
             return View(allproduct);
         }
 
+        public IActionResult OutOfStockNotifications()
+        {
+            int vendorId = Convert.ToInt32(HttpContext.Session.GetString("vendor_id"));
+            var outOfStockProducts = _Prodrepository.GetOutOfStockProducts(vendorId);
+            return View(outOfStockProducts);
+        }
         [HttpGet]
         public JsonResult GetProductById(int id)
         {

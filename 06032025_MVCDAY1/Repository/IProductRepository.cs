@@ -7,10 +7,12 @@ namespace _06032025_MVCDAY1.Repository
         IEnumerable<Product> GetProducts(int catid,int subcateid);
         IEnumerable<Product> VendorGetProducts();
         IEnumerable<Product> VendorOwnProducts(int vendorId);
+        List<Product> GetOutOfStockProducts(int vendorId);
         IEnumerable<Product> PendingApproval();
         Product GetProductById(int id);
         void NewProduct(int userID,Product product, List<ProductImage> images, List<Prod_Attributes> attributes, List<VendorStock> vstock);
         void UpdateProduct(Product product, List<ProductImage> images, List<Prod_Attributes> attributes);
+        int GetStockByProductId(int productId); //for stock check
         IEnumerable<Category> GetCategories();
         IEnumerable<Subcategory> GetSubcategories();
         IEnumerable<Brands> GetBrands();

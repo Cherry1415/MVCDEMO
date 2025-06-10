@@ -27,9 +27,16 @@ namespace _06032025_MVCDAY1.Models
         public string cancelreason { get; set; }
         public string product_name { get; set; }
 
-        public string PaymentId { get; set; }
+        
 
-        public int supplierId { get; set; }
+        public int? supplierId { get; set; }
         public List<SupplierViewModel> AllSuppliers { get; set; }
+
+        //if order undelivered
+
+        public string cancel_reason { get; set; }
+
+        public string cancel_comment { get; set; }
+        public DateTime? cancel_date { get; set; }
     }
 }

@@ -2,6 +2,8 @@
 using _06032025_MVCDAY1.Models;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Core.Types;
+using DocumentFormat.OpenXml.Drawing.Wordprocessing;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 
 namespace _06032025_MVCDAY1.Controllers.Supplier
 {
@@ -34,6 +36,29 @@ namespace _06032025_MVCDAY1.Controllers.Supplier
 
             return View(contact);
         }
+
+        public IActionResult SupplierDashboard()
+        {
+            int supplierId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+
+            var model = new SupplierDashboard
+            {
+                TotalAssigned = _supplierRepository.GetAssignedOrdersCount(supplierId),
+                Delivered = _supplierRepository.GetDeliveredOrdersCount(supplierId),
+                InTransit = _supplierRepository.GetInTransitOrdersCount(supplierId),
+                Rejected = _supplierRepository.GetRejectedOrdersCount(supplierId),
+                RecentOrders = _supplierRepository.GetRecentOrders(supplierId),
+                ChartData = _supplierRepository.GetOrdersLast7Days(supplierId)
+            };
+
+            // 🔔 Get new/pending orders for notification
+            ViewBag.NewOrders = _supplierRepository.GetRecentOrders(supplierId);
+
+            //for today's Deliveries
+            var today = DateTime.Today;
+            ViewBag.TodayDeliveries = _supplierRepository.GetTodayDeliveries(supplierId);
+            return View(model);
+        }
         public IActionResult Dashboard()
         {
             return View();
@@ -65,7 +90,7 @@ namespace _06032025_MVCDAY1.Controllers.Supplier
                 TempData["Message"] = $"Failed to update Order #{orderId}";
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("AssignOrders");
         }
 
         public IActionResult Vendor()
@@ -216,6 +241,30 @@ namespace _06032025_MVCDAY1.Controllers.Supplier
             var suppid = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
             var assign = _supplierRepository.GetOrdersAssignedToSupplier(suppid);
             return View(assign);
+        }
+
+        //cancel delivery part if customer not available or address no found
+        [HttpPost]
+        public IActionResult CancelOrder(int orderId, string reason, string comment)
+        {
+            bool success = _supplierRepository.CancelSupplierOrder(orderId, reason, comment);
+
+            if (success)
+            {
+                TempData["msg"] = "Order cancelled successfully!";
+            }
+            else
+            {
+                TempData["msg"] = "Failed to cancel order.";
+            }
+
+            return RedirectToAction("AssignOrders"); // or wherever you show assigned orders
+        }
+        public IActionResult RetryDelivery(int orderId)
+        {
+            _supplierRepository.MarkRetryDelivery(orderId);
+            TempData["msg"] = "Order marked for retry delivery.";
+            return RedirectToAction("AssignedOrders");
         }
     }
 }

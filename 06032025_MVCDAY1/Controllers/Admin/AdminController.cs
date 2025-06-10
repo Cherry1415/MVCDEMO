@@ -423,9 +423,9 @@ namespace _06032025_MVCDAY1.Controllers.Admin
         {
             var weeklyData = _Repo.GetWeeklySales(month, year);
 
-            decimal totalSales = weeklyData.Sum(x => x.TotalSales);
-            decimal payout = totalSales * 0.8m; // Assume 80% payout
-            decimal pending = totalSales - payout;
+            decimal payout = weeklyData.Sum(w => w.Payout);
+            decimal pending = weeklyData.Sum(w => w.Pending);
+            decimal totalSales = payout + pending;
 
             return Json(new
             {

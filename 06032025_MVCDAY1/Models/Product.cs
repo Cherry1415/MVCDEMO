@@ -25,5 +25,9 @@ namespace _06032025_MVCDAY1.Models
       //  public List<AddressViewModel> addressViewModels { get; set; } = new List<AddressViewModel>();
 
         public bool IsApproved { get; set; }
+
+        // for stock 
+        public int AvailableQuantity { get; set; }
+        public bool IsAvailable { get; set; }
     }
 }

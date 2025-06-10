@@ -2,6 +2,7 @@
 using Humanizer;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
+//using Razorpay.Api;
 using System.Collections.Generic;
 using System.Data;
 using System.Net.WebSockets;
@@ -98,6 +99,23 @@ namespace _06032025_MVCDAY1.Repository
 
         }
 
+        public int GetStockByProductId(int productId)
+        {
+            int quantity = 0;
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT quantity_available FROM vendor.stock WHERE product_id = @productId", con);
+                cmd.Parameters.AddWithValue("@productId", productId);
+
+                con.Open();
+                object result = cmd.ExecuteScalar();
+                if (result != null && result != DBNull.Value)
+                {
+                    quantity = Convert.ToInt32(result);
+                }
+            }
+            return quantity;
+        }
         public IEnumerable<Product> GetProducts(int catid,int subcateid)
         {
             List<Product> products = new List<Product>();
@@ -172,6 +190,7 @@ namespace _06032025_MVCDAY1.Repository
             }
             return products;
         }
+
         public IEnumerable<Product> VendorGetProducts()
         {
             List<Product> products = new List<Product>();
@@ -311,6 +330,74 @@ namespace _06032025_MVCDAY1.Repository
                             display = reader["display"].ToString(),
                             processor = reader["processor"].ToString(),
 
+                        };
+
+                        product.Prod_Attributes.Add(prodA);
+                    }
+                }
+            }
+            return products;
+        }
+        public List<Product> GetOutOfStockProducts(int vendorId)
+        {
+            List<Product> products = new List<Product>();
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                SqlCommand cmd = new SqlCommand("vendor.sp_GetOutOfStockProducts", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@vendor_id", vendorId);
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    int product_id = Convert.ToInt32(rdr["product_id"]);
+
+                    // Try to find the existing product in the list
+                    Product product = products.Find(p => p.product_id == product_id);
+                    // If not found, create and add new product
+                    if (product == null)
+                    {
+                        product = new Product
+                        {
+                            product_id = Convert.ToInt32(rdr["product_id"]),
+                            product_name = rdr["product_name"].ToString(),
+                            brand_name = rdr["BrandName"].ToString(),
+                            category_name = rdr["CategoryName"].ToString(),
+                            subcat_name = rdr["SubCategoryName"].ToString(),
+                            vendor_id = Convert.ToInt32(rdr["vendor_id"]),
+                            price = Convert.ToDecimal(rdr["price"]),
+                            ProductImages = new List<ProductImage>(),
+                            Prod_Attributes = new List<Prod_Attributes>()
+                        };
+                        products.Add(product);
+                    }
+                    // Add image if available
+                    if (rdr["prod_img_id"] != DBNull.Value)
+                    {
+                        ProductImage img = new ProductImage
+                        {
+                            prod_img_id = Convert.ToInt32(rdr["prod_img_id"]),
+                            imgName = rdr["imgName"].ToString(),
+                            imgType = rdr["imgType"].ToString(),
+                            product_id = Convert.ToInt32(rdr["product_id"])
+                        };
+
+                        product.ProductImages.Add(img);
+                    }
+                    if (rdr["product_desc_id"] != DBNull.Value)
+                    {
+                        Prod_Attributes prodA = new Prod_Attributes
+                        {
+                            product_desc_id = Convert.ToInt32(rdr["product_desc_id"]),
+                            product_id = Convert.ToInt32(rdr["product_id"]),
+                            size = rdr["size"].ToString(),
+                            color = rdr["product_id"].ToString(),
+                            material = rdr["material"].ToString(),
+                            weight = rdr["weight"].ToString(),
+                            gender = rdr["gender"].ToString(),
+                            capacity = rdr["capacity"].ToString(),
+                            display = rdr["display"].ToString(),
+                            processor = rdr["processor"].ToString(),
                         };
 
                         product.Prod_Attributes.Add(prodA);
