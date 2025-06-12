@@ -39,5 +39,9 @@ namespace _06032025_MVCDAY1.Repository
         (decimal, decimal) GetPriceRange(int catid, int subcatid);
         IEnumerable<Product> TopSellingProduct();
 
+        //product perfomance list
+
+        List<ProductPerformanceModel> GetProductPerformance(int vendorId);
+
     }
 }

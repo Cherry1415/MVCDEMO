@@ -22,6 +22,13 @@ namespace _06032025_MVCDAY1.Controllers
         {
             return View();
         }
+        public IActionResult SellerHome()
+        {
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            var perform = _Prodrepository.GetProductPerformance(userId);
+            return View(perform);
+
+        }
         public IActionResult SearchProduct(string query)
         {
             List<Product> matchedProducts;
@@ -279,5 +286,11 @@ namespace _06032025_MVCDAY1.Controllers
             return View(products);
         }
 
+        public IActionResult VendorPerformance()
+        {
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
+            var perform = _Prodrepository.GetProductPerformance(userId);
+            return View(perform);
+        }
     }
 }

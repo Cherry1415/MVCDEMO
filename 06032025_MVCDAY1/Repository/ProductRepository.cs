@@ -1055,5 +1055,31 @@ namespace _06032025_MVCDAY1.Repository
             }
             return products;
         }
+
+        //product perfomance
+
+        public List<ProductPerformanceModel> GetProductPerformance(int vendorId)
+        {
+            List<ProductPerformanceModel> list = new List<ProductPerformanceModel>();
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                SqlCommand cmd = new SqlCommand("sp_GetProductPerformance", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@VendorId", vendorId);
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    list.Add(new ProductPerformanceModel
+                    {
+                        ProductName = rdr["product_name"].ToString(),
+                        TotalOrders = Convert.ToInt32(rdr["TotalOrders"]),
+                        TotalRevenue = Convert.ToDecimal(rdr["TotalRevenue"])
+                        
+                    });
+                }
+            }
+            return list;
+        }
     }
 }

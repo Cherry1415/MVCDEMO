@@ -237,7 +237,7 @@ namespace _06032025_MVCDAY1.Controllers
                 HttpContext.Session.SetString("wishlist", string.Join(",", wishitem));
 
                 if (roleFromDB == 3)
-                    return RedirectToAction("SellerHome", "Seller");
+                    return RedirectToAction("VendorPerformance", "Product");
                 else if (roleFromDB == 4)
                     return RedirectToAction("SupplierDashboard", "Supplier");
 

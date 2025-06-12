@@ -10,7 +10,7 @@
 }
 <link rel="stylesheet" href="~/css/EcomStyles.css" asp-append-version="true" />
 <div class="mt-1">
-    
+
     <div class="container-fluid box1" id="divLog">
 
         <div class="container-fluid " id="divLogOuter">
@@ -24,9 +24,7 @@
                     Sell your product with us
                 </h2>
             </div>
-            <div class="container  justify-content-md-start">
-                <a href="@Url.Action("SignIn","User")">Login</a>
-            </div>
+
         </div>
         <div></div>
         <div class="container-fluid  " id="divLogOuter">
@@ -138,3 +136,100 @@
 
 
 </div>
+<div class="container mt-4">
+    <h3 class="mb-4">📊 Product Performance</h3>
+    <canvas id="performanceChart" height="100"></canvas>
+</div>
+<div class="container mt-5">
+    <h3 class="mb-4">📈 Product Performance Report</h3>
+    <table class="table table-striped shadow">
+        <thead class="table-dark">
+            <tr>
+                <th>Product</th>
+                <th>Total Orders</th>
+                <th>Total Revenue</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@item.TotalOrders</td>
+                    <td>₹@item.TotalRevenue</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+
+    const performanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(Json.Serialize(productNames)),
+            datasets: [
+                {
+                    label: 'Total Orders',
+                    data: @Html.Raw(Json.Serialize(totalOrders)),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y',
+                },
+                {
+                    label: 'Total Revenue',
+                    data: @Html.Raw(Json.Serialize(totalRevenue)),
+                    type: 'bar',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 2,
+                    yAxisID: 'y1',
+                    tension: 0.4,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            stacked: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Product-wise Orders and Revenue',
+                    font: { size: 18 }
+                }
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Total Orders'
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Total Revenue (₹)'
+                    },
+                    grid: {
+                        drawOnChartArea: false
+                    }
+                }
+            }
+        }
+    });
+</script>
