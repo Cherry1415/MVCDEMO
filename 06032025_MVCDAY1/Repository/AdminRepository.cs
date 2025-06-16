@@ -63,7 +63,35 @@ namespace _06032025_MVCDAY1.Repository
             }
             return logs;
         }
+
         //all category methods
+        public List<Category> GetAll()
+        {
+            var list = new List<Category>();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                string query = @"SELECT category_id, name, description, status, created_at,updated_at
+                         FROM admin.category";
+                using (var cmd = new SqlCommand(query, conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new Category
+                        {
+                            category_id = (int)reader["category_id"],
+                            name = reader["name"].ToString(),
+                            description = reader["description"].ToString(),
+                            status = reader["status"].ToString(),
+                            created_at = reader["created_at"] == DBNull.Value ? null : (DateTime?)reader["created_at"],
+                            updated_at = reader["updated_at"] == DBNull.Value ? null : (DateTime?)reader["updated_at"]
+                        });
+                    }
+                }
+            }
+            return list;
+        }
         public void Add(Category category)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
@@ -108,33 +136,7 @@ namespace _06032025_MVCDAY1.Repository
             }
         }
 
-        public List<Category> GetAll()
-        {
-            var list = new List<Category>();
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
-                string query = @"SELECT category_id, name, description, status, created_at,updated_at
-                         FROM admin.category";
-                using (var cmd = new SqlCommand(query, conn))
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        list.Add(new Category
-                        {
-                            category_id = (int)reader["category_id"],
-                            name = reader["name"].ToString(),
-                            description = reader["description"].ToString(),
-                            status = reader["status"].ToString(),
-                            created_at = reader["created_at"] == DBNull.Value ? null : (DateTime?)reader["created_at"],
-                             updated_at = reader["updated_at"] == DBNull.Value ? null : (DateTime?)reader["updated_at"]
-                        });
-                    }
-                }
-            }
-            return list;
-        }
+       
         public Category GetById(int id)
         {
             Category category = null;
@@ -161,6 +163,105 @@ namespace _06032025_MVCDAY1.Repository
             return category;
         }
 
+
+        //BRANDS
+        public List<Brands> GetAllBrands()
+        {
+            var list = new List<Brands>();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                string query = @"SELECT brand_id, name, description, status, created_at,updated_at
+                         FROM admin.brands";
+                using (var cmd = new SqlCommand(query, conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new Brands
+                        {
+                            brand_id = (int)reader["brand_id"],
+                            name = reader["name"].ToString(),
+                            description = reader["description"].ToString(),
+                            status = reader["status"].ToString(),
+                            created_at = reader["created_at"] == DBNull.Value ? null : (DateTime?)reader["created_at"],
+                            updated_at = reader["updated_at"] == DBNull.Value ? null : (DateTime?)reader["updated_at"]
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+
+        public void AddBrand(Brands brand)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                string query = @"INSERT INTO admin.brands (name, description, status, created_at) 
+                                 VALUES (@name, @description, @status, GETDATE())";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@name", brand.name);
+                cmd.Parameters.AddWithValue("@description", brand.description ?? "");
+                cmd.Parameters.AddWithValue("@status", brand.status);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public Brands BrandGetById(int id)
+        {
+            Brands brand = null;
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                string query = "SELECT brand_id, name, description, status, created_at, updated_at FROM admin.brands WHERE brand_id = @id";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@id", id);
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    brand = new Brands
+                    {
+                        brand_id = Convert.ToInt32(reader["brand_id"]),
+                        name = reader["name"].ToString(),
+                        description = reader["description"].ToString(),
+                        status = reader["status"].ToString(),
+                        //  created_at = reader["created_at"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["created_at"]),
+                        //  updated_at = reader["updated_at"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["updated_at"])
+                    };
+                }
+            }
+            return brand;
+        }
+        public void UpdateBrand(Brands brands)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                string query = @"UPDATE admin.brands 
+                         SET name = @name, description = @description, status = @status, updated_at = GETDATE()
+                         WHERE brand_id = @id";
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@name", brands.name);
+                    cmd.Parameters.AddWithValue("@description", brands.description ?? "");
+                    cmd.Parameters.AddWithValue("@status", brands.status);
+                    cmd.Parameters.AddWithValue("@id", brands.brand_id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public void DeleteBrand(int id)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                string query = "DELETE FROM admin.brands WHERE brand_id = @id";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@id", id);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        } 
         public List<AdminOrderViewModel> GetAllOrders(string status)
         {
             List<AdminOrderViewModel> orders = new List<AdminOrderViewModel>();
@@ -217,10 +318,12 @@ namespace _06032025_MVCDAY1.Repository
                 conn.Open();
 
                 string query = @"
-                SELECT P.product_id, P.product_name, C.name AS Category,sc.name as SubCategory, P.Price
+                SELECT P.product_id,P.product_name, C.name AS Category,sc.name as SubCategory, P.Price,vv.seller_name
                 FROM vendor.Products P
                 JOIN admin.category C 
                 ON P.category_id= C.category_id
+                JOIN vendor.Vendors vv
+                ON P.vendor_id=vv.vendor_id
                 JOIN admin.sub_category sc
                 ON p.subcategory_id=sc.sub_category_id";
 
@@ -235,7 +338,8 @@ namespace _06032025_MVCDAY1.Repository
                             Name = reader.GetString(1),
                             Category = reader.GetString(2),
                             subcategory=reader.GetString(3),
-                            Price = reader.GetDecimal(4)
+                            Price = reader.GetDecimal(4),
+                            SellerName=reader.GetString(5)
                             
                         });
                     }

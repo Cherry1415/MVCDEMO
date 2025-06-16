@@ -32,6 +32,15 @@ namespace _06032025_MVCDAY1.Repository
         //delete category
         void Delete(int id);
 
+        //allbrands
+
+        List<Brands> GetAllBrands();
+        Brands BrandGetById(int id);
+
+        void AddBrand(Brands brand);
+        void UpdateBrand(Brands brand);
+        void DeleteBrand(int id);
+
         //all subcategory
 
         List<Subcategory> GetAllSubCategory();

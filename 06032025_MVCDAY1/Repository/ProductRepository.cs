@@ -431,9 +431,9 @@ namespace _06032025_MVCDAY1.Repository
                         {
                             product_id = Convert.ToInt32(reader["product_id"]),
                             product_name = reader["product_name"].ToString(),
-                            brand_id = Convert.ToInt32(reader["brand_id"]),
-                            category_id = Convert.ToInt32(reader["category_id"]),
-                            sub_category_id = Convert.ToInt32(reader["subcategory_id"]),
+                            brand_name = reader["BrandName"].ToString(),
+                            category_name = reader["CategoryName"].ToString(),
+                            subcat_name = reader["SubCategoryName"].ToString(),
                             vendor_id = Convert.ToInt32(reader["vendor_id"]),
                             price = Convert.ToDecimal(reader["price"]),
                            

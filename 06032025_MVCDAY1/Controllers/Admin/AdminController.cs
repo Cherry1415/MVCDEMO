@@ -86,8 +86,53 @@ namespace _06032025_MVCDAY1.Controllers.Admin
             }
         }
 
-        //subcategory show
+        //Brands show
 
+        public IActionResult GetAllBrands()
+        {
+            return View();
+        }
+        [HttpGet]
+
+        public IActionResult GetAllBrands1()
+        {
+            var brand = _Repo.GetAllBrands();
+            return Json(brand);
+        }
+        [HttpGet]
+        public IActionResult GetBrandById(int id)
+        {
+            var brand = _Repo.BrandGetById(id);
+            return Json(brand);
+        }
+
+        [HttpPost]
+        public IActionResult SaveBrand(Brands model)
+        {
+            if (model.brand_id == 0)
+                _Repo.AddBrand(model);
+            else
+                _Repo.UpdateBrand(model);
+
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public JsonResult DeleteBrand(int id)
+        {
+            try
+            {
+                _Repo.DeleteBrand(id);
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+        //SubCategory show
         public IActionResult GetAllsubcategory()
         {
             return View();
@@ -117,6 +162,8 @@ namespace _06032025_MVCDAY1.Controllers.Admin
             _Repo.Deletesubcategory(id);
             return Json(new { success = true });
         }
+
+
 
         public IActionResult ProductApproval()
         {

@@ -33,7 +33,7 @@
                             <th>Brand ID</th>
                             <th>Category</th>
                             <th>Subcategory</th>
-                            <th>Size</th>
+                            @* <th>Size</th> *@
                             <th>Price</th>
                             <th>Image</th>
                             <th>Edit / Delete</th>
@@ -54,7 +54,7 @@
                                 <td>@i.brand_id</td>
                                 <td>@i.category_id</td>
                                 <td>@i.sub_category_id</td>
-                                <td>
+                                @* <td>
                                     @if (i.Prod_Attributes != null && i.Prod_Attributes.Any())
                                     {
                                         @i.Prod_Attributes.First().size
@@ -63,14 +63,17 @@
                                     {
                                         <span>Not available</span>
                                     }
-                                </td>
+                                </td> *@
                                 <td>@i.price</td>
                                 <td>
                                     @if (i.ProductImages != null && i.ProductImages.Any())
                                     {
                                         foreach (var img in i.ProductImages)
                                         {
-                                            <img src="~/uploads/@img.imgName" class="img-fluid rounded me-2" style="max-width:100px;" />
+                                            <img src="~/uploads/@img.imgName" class="img-fluid rounded me-2 preview-img" style="max-width:100px; cursor:pointer;"
+                                                 data-bs-toggle="modal"
+                                                 data-bs-target="#imagePreviewModal"
+                                                 data-img="@Url.Content("~/uploads/" + img.imgName)" />
                                         }
                                     }
                                     else
@@ -94,6 +97,23 @@
                 </table>
             </div>
 
+        </div>
+    </div>
+
+    @* imageview modal *@
+
+    <!-- Modal for Image Preview -->
+    <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Product Image Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="previewImage" src="" class="img-fluid rounded" style="max-height: 500px;" />
+                </div>
+            </div>
         </div>
     </div>
 
@@ -252,6 +272,19 @@
                 error: function () {
                     alert('Update failed.');
                 }
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById('imagePreviewModal');
+        const previewImage = document.getElementById('previewImage');
+
+        document.querySelectorAll('.preview-img').forEach(function (img) {
+            img.addEventListener('click', function () {
+                const imagePath = img.getAttribute('data-img');
+                previewImage.setAttribute('src', imagePath);
             });
         });
     });

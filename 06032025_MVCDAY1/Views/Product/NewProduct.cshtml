@@ -103,29 +103,31 @@
                         <div class="section-title">General Information</div>
 
                         <div class="mb-3">
-                            <label class="form-label">Product Name</label>
-                            <input type="text" class="form-control" name="product_name" placeholder="Product Name.." required>
+                            <label class="form-label">Category Name</label>
+                            <select asp-for="category_id" class="form-control" asp-items="@(new SelectList(ViewBag.Categories, "category_id", "name"))" id="categorySelect">
+                                <option value="">-- Select Category--</option>
+                            </select>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Brand ID</label>
+                            <label class="form-label">Subcategory Name</label>
+                            <select asp-for="sub_category_id" class="form-control" asp-items="@(new SelectList(ViewBag.Subcategories, "sub_category_id", "name"))">
+                                <option value="">-- Select Category--</option>
+                            </select>
+                        </div>
+
+                       
+
+                        <div class="mb-3">
+                            <label class="form-label">Brand Name</label>
                             <select asp-for="brand_id" class="form-control" asp-items="@(new SelectList(ViewBag.Brands, "brand_id", "name"))">
                                 <option value="">-- Select Brand--</option>
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Category ID</label>
-                            <select asp-for="category_id" class="form-control" asp-items="@(new SelectList(ViewBag.Categories, "category_id", "name"))">
-                                <option value="">-- Select Category--</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Subcategory ID</label>
-                            <select asp-for="sub_category_id" class="form-control" asp-items="@(new SelectList(ViewBag.Subcategories, "sub_category_id", "name"))">
-                                <option value="">-- Select Category--</option>
-                            </select>
+                            <label class="form-label">Product Name</label>
+                            <input type="text" class="form-control" name="product_name" placeholder="Product Name.." required>
                         </div>
 
                         @* <div class="mb-3">
@@ -157,31 +159,45 @@
             <div class="col-md-5 col-equal-height">
                 <div class="form-card attributes-section">
                     <div class="section-title">Product Attributes</div>
-
-                    <div class="mb-3">
-                        <label class="form-label d-block">Size</label>
-                        <div style="display: flex; gap: 15px;">
-                            <label style="display: flex; align-items: center; gap: 4px;">
-                                <input type="radio" name="attributes[0].size" value="S" />
-                                <span>S</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 4px;">
-                                <input type="radio" name="attributes[0].size" value="M" />
-                                <span>M</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 4px;">
-                                <input type="radio" name="attributes[0].size" value="L" />
-                                <span>L</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 4px;">
-                                <input type="radio" name="attributes[0].size" value="XL" />
-                                <span>XL</span>
-                            </label>
+                    <div id="sizeGenderSection">
+                        <div class="mb-3">
+                            <label class="form-label d-block">Size</label>
+                            <div style="display: flex; gap: 15px;">
+                                <label style="display: flex; align-items: center; gap: 4px;">
+                                    <input type="radio" name="attributes[0].size" value="S" />
+                                    <span>S</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 4px;">
+                                    <input type="radio" name="attributes[0].size" value="M" />
+                                    <span>M</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 4px;">
+                                    <input type="radio" name="attributes[0].size" value="L" />
+                                    <span>L</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 4px;">
+                                    <input type="radio" name="attributes[0].size" value="XL" />
+                                    <span>XL</span>
+                                </label>
+                            </div>
                         </div>
+
+                        <div class="mb-3">
+                            <label class="form-label d-block">Gender</label>
+                            <div style="display: flex; gap: 15px;">
+                                <label style="display: flex; align-items: center; gap: 4px;">
+                                    <input type="radio" name="attributes[0].gender" value="Male" />
+                                    <span>Male</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 4px;">
+                                    <input type="radio" name="attributes[0].gender" value="Female" />
+                                    <span>Female</span>
+                                </label>
+                            </div>
+                        </div>
+
                     </div>
-
-
-
+                    
                     <div class="row">
                         <div class="col-6 mb-3">
                             <label>Color</label>
@@ -209,19 +225,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label d-block">Gender</label>
-                        <div style="display: flex; gap: 15px;">
-                            <label style="display: flex; align-items: center; gap: 4px;">
-                                <input type="radio" name="attributes[0].gender" value="Male" />
-                                <span>Male</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 4px;">
-                                <input type="radio" name="attributes[0].gender" value="Female" />
-                                <span>Female</span>
-                            </label>
-                        </div>
-                    </div>
+                    
 
 
                 <div>
@@ -288,4 +292,24 @@
             reader.readAsDataURL(file);
         });
     }
+</script>
+<script>
+    $(document).ready(function () {
+        function toggleSizeGender() {
+            var selectedText = $("#categorySelect option:selected").text().toLowerCase();
+            if (selectedText === "clothing" || selectedText === "clothing") {
+                $("#sizeGenderSection").show();
+            } else {
+                $("#sizeGenderSection").hide();
+            }
+        }
+
+        // Initial check in case the page loads with selected value
+        toggleSizeGender();
+
+        // Trigger check when dropdown changes
+        $("#categorySelect").change(function () {
+            toggleSizeGender();
+        });
+    });
 </script>

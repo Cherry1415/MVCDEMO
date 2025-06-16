@@ -8,6 +8,8 @@
 
         public string subcategory { get; set; }
         public decimal Price { get; set; }
+
+        public string SellerName { get; set; }
         public bool IsActive { get; set; }
     }
 }
