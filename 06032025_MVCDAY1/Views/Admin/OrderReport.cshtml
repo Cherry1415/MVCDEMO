@@ -46,7 +46,7 @@
         <thead>
             <tr>
                 <th>Order ID</th>
-                <th>User ID</th>
+                <th>User Name</th>
                 <th>Order Date</th>
                 <th>Status</th>
                 <th>Total Amount</th>
@@ -58,7 +58,7 @@
             {
                 <tr>
                     <td>@order.Id</td>
-                    <td>@order.UserId</td>
+                    <td>@order.Customer_name</td>
                     <td>@order.CreatedDate.ToString("dd-MM-yyyy")</td>
                     <td>@order.Status</td>
                     <td>₹@order.TotalAmount.ToString("F2")</td>

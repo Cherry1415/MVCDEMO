@@ -3,7 +3,7 @@
 *@
 @{
 }
-@model Tuple<IEnumerable<_06032025_MVCDAY1.Models.Product>,List<_06032025_MVCDAY1.Models.AddressViewModel>,List<ProductReview>>
+@model Tuple<IEnumerable<_06032025_MVCDAY1.Models.Product>,List<_06032025_MVCDAY1.Models.AddressViewModel>,List<ProductReview>,IEnumerable<Product>>
 
 
 @* <script src="~/js/makePayment.js"></script> *@
@@ -438,9 +438,6 @@
                             @* Repeat info removed for brevity *@
                         </div>
                     </div>
-                    
-
-
                 </div>
                 <div class="card mt-4">
                     <div class="card-header">
@@ -480,6 +477,37 @@
                         }
                     </div>
                 </div>
+
+                @if (Model.Item4 != null && Model.Item4.Any())
+                {
+                    
+
+                    <div class="container mt-5">
+                        <strong>Related Products</strong>
+                        <div class="row">
+
+                           <div class="row flex-nowrap overflow-auto">
+                        @foreach (var item in Model.Item4)
+                        {
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100 shadow-sm">
+                                            <a href="/Product/DetailProduct/@item.product_id">
+                                                <img src="~/uploads/@item.ProductImages?.FirstOrDefault()?.imgName"
+                                                     class="card-img-top"
+                                                     style="height:200px; object-fit:cover;" />
+                                            </a>
+                                    <div class="card-body text-center">
+                                        <h6 class="fw-bold">@item.product_name</h6>
+                                        <p>₹@item.price</p>
+                                        <a href="/Product/ProductDetails/@item.product_id" class="btn btn-outline-primary btn-sm">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                  </div>
+                        </div>
+                    </div>
+                }
             </div>
         }
     </div>
@@ -491,12 +519,6 @@ else
 
 <hr />
 
-<div class="d-flex justify-content-center align-content-center">
-    <h2>FAQs</h2>
-</div>
-@{
-    Html.RenderPartial("~/Views/Product/ProductFAQ.cshtml");
-}
 
 <div class="modal fade" id="buyNowModal" tabindex="-1" aria-labelledby="buyNowModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

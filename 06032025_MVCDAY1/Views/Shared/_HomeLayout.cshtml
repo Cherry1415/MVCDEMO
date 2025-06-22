@@ -134,7 +134,7 @@
                             
                             <hr />
                             <h5>Home Appliances</h5>
-                            <a href="#">Air Conditioners</a>
+                            <a href="@Url.Action("Product","Product",new {categoryname = "Electronics", subcategoryname = "Air Conditioner"})">Air Conditioners</a>
                             <a href="#">Refrigerators</a>
                             <a href="#">Washing Machines</a>
 
@@ -234,8 +234,8 @@
 
 
                         <h4>Programs & Features</h4>
-                        <a href="#">Amazon Pay</a>
-
+                        <a href="@Url.Action("ProductFAQ","Product")">FAQs</a>
+                        <a href="@Url.Action("SignIn","User")" class="mt-auto text-danger"><i class="fa fa-sign-out-alt me-2"></i> Logout</a>
                     </div>
                 </div>
 

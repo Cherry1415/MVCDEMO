@@ -191,6 +191,83 @@ namespace _06032025_MVCDAY1.Repository
             return products;
         }
 
+        public IEnumerable<Product> GetRelatedProducts(int subcategoryId, int excludeProductId)
+        {
+            List<Product> products = new List<Product>();
+
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT TOP 6 vp.product_id,\r\n\t\tvp.product_name,\r\n\t\tvp.brand_id,\r\n\t\tvp.category_id,\r\n\t\tvp.subcategory_id,\r\n\t\tvp.vendor_id,\r\n\t\tvp.price,\r\n\t\tvpi.prod_img_id,\r\n\t\tvpi.imgName,\r\n\t\tvpi.imgType,\r\n\t\tvpa.size,\r\n\t\tvpa.product_desc_id,\r\n\t\tvpa.color,\r\n\t\tvpa.material,\r\n\t\tvpa.gender,\r\n\t\tvpa.processor,\r\n\t\tvpa.display,\r\n\t\tvpa.capacity,\r\n\t\tvpa.weight\r\n\tFROM vendor.Products vp\r\n\tOUTER APPLY (\r\n\t\tSELECT TOP 1 * \r\n\t\tFROM vendor.prodImages \r\n\t\tWHERE product_id = vp.product_id\r\n\t\tORDER BY prod_img_id -- optional: adjust based on your requirement\r\n\t) vpi\r\n\tINNER JOIN vendor.Prod_Attributes vpa\r\n\t\tON vp.product_id = vpa.product_id INNER JOIN admin.brands ab ON vp.brand_id=ab.brand_id WHERE vp.subcategory_id = @subid and vp.product_id != @pid and isApproved=1", con);
+                cmd.Parameters.AddWithValue("@subid", subcategoryId);
+                cmd.Parameters.AddWithValue("@pid", excludeProductId);
+
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int product_id = Convert.ToInt32(reader["product_id"]);
+                    // Try to find the existing product in the list
+                    Product product = products.Find(p => p.product_id == product_id);
+
+                    // If not found, create and add new product
+                    if (product == null)
+                    {
+                        product = new Product
+                        {
+                            product_id = Convert.ToInt32(reader["product_id"]),
+                            product_name = reader["product_name"].ToString(),
+                            brand_id = Convert.ToInt32(reader["brand_id"]),
+                            category_id = Convert.ToInt32(reader["category_id"]),
+                            sub_category_id = Convert.ToInt32(reader["subcategory_id"]),
+                            vendor_id = Convert.ToInt32(reader["vendor_id"]),
+                            price = Convert.ToDecimal(reader["price"]),
+                            ProductImages = new List<ProductImage>(),
+                            Prod_Attributes = new List<Prod_Attributes>()
+                        };
+
+                        products.Add(product);
+                    }
+
+                    // Add image if available
+                    if (reader["prod_img_id"] != DBNull.Value)
+                    {
+                        ProductImage img = new ProductImage
+                        {
+                            prod_img_id = Convert.ToInt32(reader["prod_img_id"]),
+                            imgName = reader["imgName"].ToString(),
+                            imgType = reader["imgType"].ToString(),
+                            product_id = Convert.ToInt32(reader["product_id"])
+                        };
+
+                        product.ProductImages.Add(img);
+                    }
+                    if (reader["product_desc_id"] != DBNull.Value)
+                    {
+                        Prod_Attributes prodA = new Prod_Attributes
+                        {
+                            product_desc_id = Convert.ToInt32(reader["product_desc_id"]),
+                            product_id = Convert.ToInt32(reader["product_id"]),
+                            size = reader["size"].ToString(),
+                            color = reader["product_id"].ToString(),
+                            material = reader["material"].ToString(),
+                            weight = reader["weight"].ToString(),
+                            gender = reader["gender"].ToString(),
+                            capacity = reader["capacity"].ToString(),
+                            display = reader["display"].ToString(),
+                            processor = reader["processor"].ToString(),
+
+                        };
+
+                        product.Prod_Attributes.Add(prodA);
+                    }
+                }
+                con.Close();
+            }
+
+            return products;
+        }
+
+
         public IEnumerable<Product> VendorGetProducts()
         {
             List<Product> products = new List<Product>();
@@ -216,9 +293,9 @@ namespace _06032025_MVCDAY1.Repository
                         {
                             product_id = Convert.ToInt32(reader["product_id"]),
                             product_name = reader["product_name"].ToString(),
-                            brand_id = Convert.ToInt32(reader["brand_id"]),
-                            category_id = Convert.ToInt32(reader["category_id"]),
-                            sub_category_id = Convert.ToInt32(reader["subcategory_id"]),
+                            brand_name = reader["BrandName"].ToString(),
+                            category_name = reader["CategoryName"].ToString(),
+                            subcat_name = reader["SubCategoryName"].ToString(),
                             vendor_id = Convert.ToInt32(reader["vendor_id"]),
                             price = Convert.ToDecimal(reader["price"]),
                             ProductImages = new List<ProductImage>(),
@@ -290,9 +367,9 @@ namespace _06032025_MVCDAY1.Repository
                         {
                             product_id = Convert.ToInt32(reader["product_id"]),
                             product_name = reader["product_name"].ToString(),
-                            brand_id = Convert.ToInt32(reader["brand_id"]),
-                            category_id = Convert.ToInt32(reader["category_id"]),
-                            sub_category_id = Convert.ToInt32(reader["subcategory_id"]),
+                            brand_name = reader["BrandName"].ToString(),
+                            category_name = reader["CategoryName"].ToString(),
+                            subcat_name = reader["SubCategoryName"].ToString(),
                             vendor_id = Convert.ToInt32(reader["vendor_id"]),
                             price = Convert.ToDecimal(reader["price"]),
                             ProductImages = new List<ProductImage>(),
@@ -680,7 +757,89 @@ namespace _06032025_MVCDAY1.Repository
 
             return product;
         }
+        public List<SubCategoryWithProductsViewModel> GetHomePagesubCategoriesWithProducts()
+        {
+            var list = new List<SubCategoryWithProductsViewModel>();
 
+            using (SqlConnection con = new SqlConnection(_constring))
+            {
+                con.Open();
+
+                // 1. Get all categories
+                SqlCommand cmd = new SqlCommand("SELECT sub_category_id, name FROM admin.sub_category", con);
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var subcategory = new SubCategoryWithProductsViewModel
+                        {
+                            subcategory_id = Convert.ToInt32(reader["sub_category_id"]),
+                            subcatname = reader["name"].ToString(),
+                            Products = new List<Product>() // Initialize product list
+                        };
+                        list.Add(subcategory);
+                    }
+                }
+
+                // 2. For each category, get TOP 4 products with one image
+                foreach (var cat in list)
+                {
+                    SqlCommand prodCmd = new SqlCommand(@"
+                SELECT TOP 4 
+                    p.product_id, 
+                    p.product_name, 
+                    p.price,
+                    (SELECT TOP 1 imgName FROM vendor.prodImages WHERE product_id = p.product_id) AS imgName
+                FROM vendor.Products p
+                WHERE p.subcategory_id = @cid
+                ORDER BY p.product_id DESC", con);
+
+                    prodCmd.Parameters.AddWithValue("@cid", cat.subcategory_id);
+
+                    using (SqlDataReader prodReader = prodCmd.ExecuteReader())
+                    {
+                        while (prodReader.Read())
+                        {
+                            var product = new Product
+                            {
+                                product_id = Convert.ToInt32(prodReader["product_id"]),
+                                product_name = prodReader["product_name"].ToString(),
+                                price = Convert.ToDecimal(prodReader["price"]),
+                                ProductImages = new List<ProductImage>()
+                            };
+                            //if (prodReader["imgName"] == DBNull.Value)
+                            //{
+                            //    ProductImage img = new ProductImage
+                            //    {
+                            //        prod_img_id = Convert.ToInt32(prodReader["prod_img_id"]),
+                            //        imgName = prodReader["imgName"].ToString(),
+                            //        imgType = prodReader["imgType"].ToString(),
+                            //        product_id = Convert.ToInt32(prodReader["product_id"])
+                            //    };
+
+                            //    product.ProductImages.Add(img);
+                            //}
+                            // Add image if exists
+                            if (prodReader["imgName"] != DBNull.Value)
+                            {
+                                product.ProductImages.Add(new ProductImage
+                                {
+                                    imgName = prodReader["imgName"].ToString(),
+                                    //   prod_img_id = Convert.ToInt32(prodReader["prod_img_id"]),
+                                    //   product_id = Convert.ToInt32(prodReader["product_id"])
+                                });
+                            }
+
+                            cat.Products.Add(product);
+                        }
+                    }
+                }
+
+                con.Close();
+            }
+
+            return list;
+        }
         public List<CategoryWithProductsViewModel> GetHomePageCategoriesWithProducts()
         {
             var list = new List<CategoryWithProductsViewModel>();
@@ -836,6 +995,9 @@ namespace _06032025_MVCDAY1.Repository
             return reviews;
         }
 
+        //Get related products
+
+        
         public IEnumerable<Product> GetFilteredProducts(int catid, int subcateid, List<string> brands, decimal minPrice, decimal maxPrice)
         {
             List<Product> products = new List<Product>();

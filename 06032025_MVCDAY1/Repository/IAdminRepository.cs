@@ -61,7 +61,7 @@ namespace _06032025_MVCDAY1.Repository
 
         List<UserOrder> GetFilteredOrders(DateTime? fromDate, DateTime? toDate, string orderStatus);
 
+        IEnumerable<ProductFAQ> GetFAQs();
 
-        
     }
 }

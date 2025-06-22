@@ -2,6 +2,19 @@
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+
+<style>
+    td img {
+        max-height: 45px;
+        object-fit: contain;
+    }
+
+    @@media (max-width: 768px) {
+        th, td {
+            font-size: 14px;
+        }
+    }
+</style>
 @if (Model != null && Model.Any())
 {
     <div class="container p-4">
@@ -14,10 +27,10 @@
                             <th>pid</th>
                             <th>Product Name</th>
                             <th>Description</th>
-                            <th>Brand ID</th>
+                            <th>Brand</th>
                             <th>Category</th>
                             <th>Subcategory</th>
-                            <th>Size</th>
+                            @* <th>Size</th> *@
                             <th>Price</th>
                             <th>Image</th>
                             <th>Edit / Delete</th>
@@ -35,10 +48,10 @@
                                         @i.Prod_Attributes.First().product_desc_id
                                     }
                                     </td>
-                                    <td>@i.brand_id</td>
-                                    <td>@i.category_id</td>
-                                    <td>@i.sub_category_id</td>
-                                    <td>
+                                    <td>@i.brand_name</td>
+                                    <td>@i.category_name</td>
+                                    <td>@i.subcat_name</td>
+                                 @*    <td>
                                     @if (i.Prod_Attributes != null && i.Prod_Attributes.Any())
                                     {
                                         @i.Prod_Attributes.First().size
@@ -46,22 +59,25 @@
                                     else
                                     {
                                                 <span>Not available</span>
-                                    }
-                                    </td>
+                                    } 
+                                    </td>*@
                                     <td>@i.price</td>
-                                    <td>
+                                <td>
                                     @if (i.ProductImages != null && i.ProductImages.Any())
                                     {
                                         foreach (var img in i.ProductImages)
                                         {
-                                                        <img src="~/uploads/@img.imgName" class="img-fluid rounded me-2" style="max-width:100px;" />
+                                            <img src="~/uploads/@img.imgName" class="img-fluid rounded me-2 preview-img" style="max-width:100px; cursor:pointer;"
+                                                 data-bs-toggle="modal"
+                                                 data-bs-target="#imagePreviewModal"
+                                                 data-img="@Url.Content("~/uploads/" + img.imgName)" />
                                         }
                                     }
                                     else
                                     {
-                                                <span>No Images</span>
+                                        <span>No Images</span>
                                     }
-                                    </td>
+                                </td>
                                     <td>
                                         <button type="button" class="btn btn-outline-info edit-btn"
                                                 data-bs-toggle="modal"
@@ -78,6 +94,23 @@
                 </table>
             </div>
 
+        </div>
+    </div>
+
+    @* imageview modal *@
+
+    <!-- Modal for Image Preview -->
+    <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Product Image Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="previewImage" src="" class="img-fluid rounded" style="max-height: 500px;" />
+                </div>
+            </div>
         </div>
     </div>
 
@@ -226,6 +259,19 @@ else
                 error: function () {
                     alert('Update failed.');
                 }
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById('imagePreviewModal');
+        const previewImage = document.getElementById('previewImage');
+
+        document.querySelectorAll('.preview-img').forEach(function (img) {
+            img.addEventListener('click', function () {
+                const imagePath = img.getAttribute('data-img');
+                previewImage.setAttribute('src', imagePath);
             });
         });
     });

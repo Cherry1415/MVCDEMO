@@ -616,11 +616,12 @@ namespace _06032025_MVCDAY1.Repository
                             
                             p.PaidOn,
                             o.order_id AS OrderId,
-                            o.user_id AS UserId,
+                            cr.first_name+' '+cr.last_name AS Username,
                             o.TotalAmount,
                             o.RazorPayOrderId
                          FROM customer.Payment p
                          INNER JOIN customer.Orders o ON p.RazorpayOrderId = o.RazorPayOrderId
+                         INNER JOIN customer.registeruser cr ON cr.user_id=o.user_id
                          ORDER BY p.PaymentId";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
@@ -637,7 +638,7 @@ namespace _06032025_MVCDAY1.Repository
                         
                         PaidOn = Convert.ToDateTime(reader["PaidOn"]),
                         OrderId = Convert.ToInt32(reader["OrderId"]),
-                        UserId = Convert.ToInt32(reader["UserId"]),
+                        Username = reader["Username"].ToString(),
                         TotalAmount = Convert.ToDecimal(reader["TotalAmount"]),
                         RazorpayOrderId = reader["RazorPayOrderId"].ToString()
                     };
@@ -703,8 +704,10 @@ namespace _06032025_MVCDAY1.Repository
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(@"
-            SELECT order_id, user_id, order_date, status, RazorPayOrderId, TotalAmount, require_date
-            FROM customer.Orders
+            SELECT order_id, cr.first_name+' '+cr.last_name as Username, order_date, status, RazorPayOrderId, TotalAmount,require_date
+            FROM customer.Orders co
+            INNER JOIN customer.registeruser cr 
+             ON cr.user_id=co.user_id
             WHERE (@fromDate IS NULL OR order_date >= @fromDate)
               AND (@toDate IS NULL OR order_date <= @toDate)
               AND (@orderStatus IS NULL OR status = @orderStatus)", conn);
@@ -719,7 +722,7 @@ namespace _06032025_MVCDAY1.Repository
                     orders.Add(new UserOrder
                     {
                         Id = reader["order_id"] != DBNull.Value ? Convert.ToInt32(reader["order_id"]) : 0,
-                        UserId = reader["user_id"] != DBNull.Value ? Convert.ToInt32(reader["user_id"]) : 0,
+                        Customer_name = reader["Username"].ToString(),
                         CreatedDate = reader["order_date"] != DBNull.Value ? Convert.ToDateTime(reader["order_date"]) : DateTime.MinValue,
                         Status = reader["status"] != DBNull.Value ? reader["status"].ToString() : string.Empty,
                         RazorpayOrderId = reader["RazorPayOrderId"] != DBNull.Value ? reader["RazorPayOrderId"].ToString() : string.Empty,
@@ -778,6 +781,27 @@ namespace _06032025_MVCDAY1.Repository
                 Payout = payout,
                 Pending = pending
             };
+        }
+        public IEnumerable<ProductFAQ> GetFAQs()
+        {
+            List<ProductFAQ> faqs = new List<ProductFAQ>();
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT * FROM admin.faqs", con);
+                
+                con.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    faqs.Add(new ProductFAQ
+                    {
+                        FAQID = (int)dr["faq_id"],
+                        Question = dr["question"].ToString(),
+                        Answer = dr["answer"].ToString()
+                    });
+                }
+            }
+            return faqs;
         }
     }
 }

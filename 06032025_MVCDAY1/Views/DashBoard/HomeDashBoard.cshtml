@@ -1,4 +1,4 @@
-﻿@model Tuple<List<CategoryWithProductsViewModel>,List<Product>>
+﻿@model Tuple<List<SubCategoryWithProductsViewModel>,List<Product>>
 @{
     int userid = Convert.ToInt32(Context.Session.GetString("user_id"));
 }
@@ -314,7 +314,7 @@
                     @foreach (var product in Model.Item2)
                     {
                         <div class="col-md-3 col-sm-6 col-12 py-3">
-                            <div class="card product-card">
+                            <div class="card product-card" style="border: none;">
 
                                 <div id="imgdiv">
 
@@ -379,20 +379,22 @@
             @foreach (var category in Model.Item1)
             {
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100 p-3 shadow-sm">
-                        <h5 class="text-center">@category.name</h5>
+                    <div class="card h-100 p-3 shadow-sm" style="border: none;">
+                        <h5 class="text-center">@category.subcatname</h5>
                         <div class="row">
                             @foreach (var product in category.Products)
                             {
                                 <div class="col-6 col-sm-6 mb-3 text-center">
+                                   
                                     <img src="~/uploads/@product.ProductImages.FirstOrDefault()?.imgName"
                                          class="img-fluid rounded"
-                                         style="max-height: 120px; object-fit: contain;" />
+                                         style="max-height: 100px; object-fit: contain;" />
+                                    
                                 </div>
                             }
                         </div>
                         <div class="text-center mt-auto">
-                            <a href="@Url.Action("Product","Product",new {categoryname = "Electronics",subcategoryname = "mobile"})" class="btn btn-outline-primary btn-sm mt-2">See More</a>
+                            <a href="@Url.Action("Product","Product",new {categoryname = "Electronics",subcategoryname = @category.subcatname})" class="btn btn-outline-primary btn-sm mt-2">See More</a>
                         </div>
                     </div>
                 </div>
@@ -431,3 +433,75 @@
         </div>
     </div>
 </div>
+
+
+<div class="card text-center border-danger shadow mb-4">
+    <div class="card-header bg-danger text-white">🔥 Deal of the Day</div>
+    <div class="card-body">
+        <img src="~/uploads/dealproduct.jpg" class="img-fluid mb-2" style="max-height: 200px;" />
+        <h5 class="card-title">LG 55" Smart TV</h5>
+        <p class="text-danger fw-bold">Now: ₹45,999 <del class="text-muted">₹59,999</del></p>
+        <p class="text-warning">⏰ Ends in: <span id="dealTimer">03:25:11</span></p>
+        <a href="/Product/DetailProduct/123" class="btn btn-outline-danger">Grab Now</a>
+    </div>
+</div>
+
+<div class="container mb-4">
+    <h5 class="mb-3">Top Deals on Electronics</h5>
+    <div class="row flex-nowrap overflow-auto">
+        <div class="col-6 col-md-3">
+            <div class="card">
+                <img src="/uploads/product1.jpg" class="card-img-top" />
+                <div class="card-body">
+                    <h6 class="card-title">Samsung TV</h6>
+                    <p>₹25,000</p>
+                </div>
+            </div>
+        </div>
+        <!-- Repeat with scrolling -->
+    </div>
+</div>
+
+
+<div class="bg-dark text-white p-4 rounded mt-5 text-center">
+    <h5>📧 Subscribe to Our Newsletter</h5>
+    <p>Get updates on latest products & exclusive offers!</p>
+    <form class="row g-2 justify-content-center">
+        <div class="col-md-4">
+            <input type="email" class="form-control" placeholder="Enter your email">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-warning">Subscribe</button>
+        </div>
+    </form>
+</div>
+
+@* Countdown script *@
+
+<script>
+    // Set the countdown date (change time as needed)
+    var countDownDate = new Date();
+    countDownDate.setHours(countDownDate.getHours() + 3); // 3 hours from now
+
+    var timer = setInterval(function () {
+        var now = new Date().getTime();
+        var distance = countDownDate - now;
+
+        // Time calculations
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Display the result
+        document.getElementById("dealTimer").innerHTML =
+            `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+        // If the countdown is over
+        if (distance < 0) {
+            clearInterval(timer);
+            document.getElementById("dealTimer").innerHTML = "Expired";
+            // Optional: disable deal button
+            document.querySelector(".deal-btn")?.setAttribute("disabled", true);
+        }
+    }, 1000);
+</script>

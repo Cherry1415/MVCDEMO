@@ -208,9 +208,9 @@ namespace _06032025_MVCDAY1.Controllers.Admin
                 worksheet.Cell(row, 1).Value = "Payment ID";
                 worksheet.Cell(row, 2).Value = "Order ID";
                 worksheet.Cell(row, 3).Value = "Amount";
-                worksheet.Cell(row, 4).Value = "UserID";
+                worksheet.Cell(row, 4).Value = "UserName";
                 worksheet.Cell(row, 5).Value = "Paid On";
-                worksheet.Cell(row, 6).Value = "Razorpay Order ID";
+              //  worksheet.Cell(row, 6).Value = "Razorpay Order ID";
 
                 // Data
                 foreach (var p in payments)
@@ -219,9 +219,9 @@ namespace _06032025_MVCDAY1.Controllers.Admin
                     worksheet.Cell(row, 1).Value = p.PaymentId;
                     worksheet.Cell(row, 2).Value = p.OrderId;
                     worksheet.Cell(row, 3).Value = p.Amount;
-                    worksheet.Cell(row, 4).Value = p.UserId;
+                    worksheet.Cell(row, 4).Value = p.Username;
                     worksheet.Cell(row, 5).Value = p.PaidOn.ToString("yyyy-MM-dd");
-                    worksheet.Cell(row, 6).Value = p.RazorpayOrderId;
+                   // worksheet.Cell(row, 6).Value = p.RazorpayOrderId;
                 }
 
                 using (var stream = new MemoryStream())
@@ -259,7 +259,7 @@ namespace _06032025_MVCDAY1.Controllers.Admin
             table.SetWidths(new float[] { 10, 15, 15, 20, 25 });
 
             // Header row
-            string[] headers = { "Payment ID", "Order ID", "Amount", "Paid On", "Razorpay Order ID" };
+            string[] headers = { "Payment ID", "Order ID", "UserName", "Amount", "Paid On"  };
             foreach (var header in headers)
             {
                 PdfPCell cell = new PdfPCell(new Phrase(header, FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12)))
@@ -275,9 +275,10 @@ namespace _06032025_MVCDAY1.Controllers.Admin
             {
                 table.AddCell(p.PaymentId.ToString());
                 table.AddCell(p.OrderId.ToString());
+                table.AddCell(p.Username);
                 table.AddCell("₹" + p.Amount.ToString("F2"));
                 table.AddCell(p.PaidOn.ToString("yyyy-MM-dd"));
-                table.AddCell(p.RazorpayOrderId);
+                
             }
 
             document.Add(table);
@@ -341,7 +342,7 @@ namespace _06032025_MVCDAY1.Controllers.Admin
 
                 BaseColor headerBgColor = new BaseColor(52, 73, 94);
                 string[] headers = {
-            "Order ID", "User ID", "Date", "Amount", "Status"
+            "Order ID", "User Name", "Date", "Amount", "Status"
         };
 
                 foreach (var header in headers)
@@ -360,7 +361,7 @@ namespace _06032025_MVCDAY1.Controllers.Admin
                 foreach (var order in orders)
                 {
                     table.AddCell(new PdfPCell(new Phrase(order.Id.ToString(), cellFont)) { Padding = 5 });
-                    table.AddCell(new PdfPCell(new Phrase(order.UserId.ToString(), cellFont)) { Padding = 5 });
+                    table.AddCell(new PdfPCell(new Phrase(order.Customer_name.ToString(), cellFont)) { Padding = 5 });
                     table.AddCell(new PdfPCell(new Phrase(order.CreatedDate.ToString("dd-MM-yyyy"), cellFont)) { Padding = 5 });
                     table.AddCell(new PdfPCell(new Phrase("₹" + order.TotalAmount.ToString("F2"), cellFont)) { Padding = 5 });
                     table.AddCell(new PdfPCell(new Phrase(order.Status, cellFont)) { Padding = 5 });
@@ -406,7 +407,7 @@ namespace _06032025_MVCDAY1.Controllers.Admin
                 // Header row
                 var currentRow = 1;
                 worksheet.Cell(currentRow, 1).Value = "Order ID";
-                worksheet.Cell(currentRow, 2).Value = "User ID";
+                worksheet.Cell(currentRow, 2).Value = "User Name";
                 worksheet.Cell(currentRow, 3).Value = "Date";
                 worksheet.Cell(currentRow, 4).Value = "Amount";
                 worksheet.Cell(currentRow, 5).Value = "Status";
@@ -427,7 +428,7 @@ namespace _06032025_MVCDAY1.Controllers.Admin
                 {
                     currentRow++;
                     worksheet.Cell(currentRow, 1).Value = order.Id;
-                    worksheet.Cell(currentRow, 2).Value = order.UserId;
+                    worksheet.Cell(currentRow, 2).Value = order.Customer_name;
                     worksheet.Cell(currentRow, 3).Value = order.CreatedDate.ToString("dd-MM-yyyy");
                     worksheet.Cell(currentRow, 4).Value = order.TotalAmount;
                     worksheet.Cell(currentRow, 5).Value = order.Status;

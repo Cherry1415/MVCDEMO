@@ -281,11 +281,12 @@
                         @foreach (var product in Model)
                         {
                             <div class="col-md-3 col-sm-6 col-12 py-3">
-                                <div class="card product-card">
+                                <div class="card product-card" style="border: none;">
 
                                     <div id="imgdiv">
 
                                         <form action="@Url.Action("AddToWishlist", "User")" method="post" target="wishlistFrame" class="wishlist-form">
+                                            @* <input type="text" name="productId" value="@product.product_id" /> *@
                                             <input type="hidden" name="productId" value="@product.product_id" />
                                             <input type="hidden" name="productId" value="@product.vendor_id" />
                                             <input type="hidden" asp-for="@userid" />

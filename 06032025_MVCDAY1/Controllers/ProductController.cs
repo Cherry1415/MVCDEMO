@@ -11,11 +11,13 @@ namespace _06032025_MVCDAY1.Controllers
 
         private readonly IUserRepository _repository;
         private readonly IProductRepository _Prodrepository;
+        private readonly IAdminRepository _adminrepo;
 
-        public ProductController(IUserRepository repository, IProductRepository prodrepository)
+        public ProductController(IUserRepository repository, IProductRepository prodrepository,IAdminRepository adminRepository)
         {
             _repository = repository;
             _Prodrepository = prodrepository;
+            _adminrepo = adminRepository;
         }
 
         public IActionResult Index()
@@ -58,17 +60,18 @@ namespace _06032025_MVCDAY1.Controllers
         }
         public IActionResult SearchVendorProduct(string query)
         {
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
             List<Product> matchProducts;
             
             if (string.IsNullOrWhiteSpace(query))
             {
                 // Show all products if query is empty
-                matchProducts = _Prodrepository.VendorGetProducts().ToList();
+                matchProducts = _Prodrepository.VendorOwnProducts(userId).ToList();
             }
             else
             {
                 // Filter products based on query
-                matchProducts = _Prodrepository.VendorGetProducts()
+                matchProducts = _Prodrepository.VendorOwnProducts(userId)
                     .Where(p => p.product_name.Contains(query, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
@@ -134,27 +137,31 @@ namespace _06032025_MVCDAY1.Controllers
             return View();
         }
 
-
         public IActionResult DetailProduct(int id)
         {
             int userId = Convert.ToInt32(HttpContext.Session.GetString("user_id"));
             var product = _Prodrepository.GetProductById(id); // single product
             var addresses = _repository.GetAddressesByUserId(userId); // list
             var reviews = _Prodrepository.GetReviewsByProductId(id);
+           
+
+            // 🎯 Get related products based on same subcategory
+            var relatedProducts = _Prodrepository.GetRelatedProducts(product.sub_category_id, product.product_id);
             product.AvailableQuantity = _Prodrepository.GetStockByProductId(product.product_id); // <- NEW LINE
             product.IsAvailable = product.AvailableQuantity > 0; // <- NEW LINE
 
             // ✅ Wrap product in a List to match expected model
             var productList = new List<Product> { product };
 
-            var model = Tuple.Create(productList.AsEnumerable(), addresses,reviews);
+            var model = Tuple.Create(productList.AsEnumerable(), addresses,reviews,relatedProducts);
 
             return View(model);
         }
 
         public IActionResult ProductFAQ()
         {
-            return View();
+            var faq = _adminrepo.GetFAQs();
+            return View(faq);
         }
         //Vendor Side Product Controller...
 

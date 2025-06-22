@@ -22,6 +22,7 @@ namespace _06032025_MVCDAY1.Repository
 
         //user homescreen
         List<CategoryWithProductsViewModel> GetHomePageCategoriesWithProducts();
+        List<SubCategoryWithProductsViewModel> GetHomePagesubCategoriesWithProducts();
         // IEnumerable<Category> GetCategories();
         //Products UpdateProduct(Products product);
         //Products DeleteProduct(int id);
@@ -30,10 +31,11 @@ namespace _06032025_MVCDAY1.Repository
         List<ProductReview> GetAllReviewsbyvendor(int vendorid);
 
         List<ProductReview> GetReviewsByProductId(int productId);
+        IEnumerable<Product> GetRelatedProducts(int subcategoryId, int excludeProductId);
 
         // FIlter Product feature for Customer
 
-        
+
         IEnumerable<Product> GetFilteredProducts(int catid, int subcateid,List<string> brands, decimal minPrice, decimal maxPrice);
         List<string> GetAllBrands(int categoryId, int subcategoryId);
         (decimal, decimal) GetPriceRange(int catid, int subcatid);

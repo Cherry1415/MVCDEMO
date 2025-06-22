@@ -6,7 +6,7 @@
 
 <style>
     td img {
-        max-height: 50px;
+        max-height: 45px;
         object-fit: contain;
     }
     @@media (max-width: 768px) {
@@ -22,7 +22,7 @@
 <div id="productResults">
     <div class="container p-4">
         <div class="container shadow-lg mt-2">
-            <input class="form-control me-2" type="text" placeholder="Search" aria-label="Search" id="partnerSearch" autocomplete="off">
+           
             <div class="table-responsive">
                 <table class="table table-bordered align-middle text-nowrap">
                     <thead class="table-light">
@@ -51,9 +51,9 @@
                                         @i.Prod_Attributes.First().product_desc_id
                                     }
                                 </td>
-                                <td>@i.brand_id</td>
-                                <td>@i.category_id</td>
-                                <td>@i.sub_category_id</td>
+                                <td>@i.brand_name</td>
+                                <td>@i.category_name</td>
+                                <td>@i.subcat_name</td>
                                 @* <td>
                                     @if (i.Prod_Attributes != null && i.Prod_Attributes.Any())
                                     {

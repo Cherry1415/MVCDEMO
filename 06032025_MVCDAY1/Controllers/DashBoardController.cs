@@ -27,7 +27,7 @@ namespace _06032025_MVCDAY1.Controllers
         public IActionResult HomeDashBoard()
 
         {
-            var model = _repo.GetHomePageCategoriesWithProducts();
+            var model = _repo.GetHomePagesubCategoriesWithProducts();
             var prod = _repo.TopSellingProduct().ToList();
             var tup = System.Tuple.Create(model,prod);
             return View(tup);
